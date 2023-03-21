@@ -8,17 +8,19 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class HelpGenerateApi {
-    fun helpGenerateApi() {
+    fun helpGenerateApi(city: String) {
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.openweathermap.org/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val cordsApi = retrofit.create(CordsWeatherApi::class.java)
         CoroutineScope(Dispatchers.IO).launch {
-            val cords = cordsApi.getCordsWeather("Moscow")
+            val cords = cordsApi.getCordsWeather(city)
             val getlatloncords = getLatLonCords(cords)
+            val managerWeatherApi = ManagerWeatherApi()
             val lat = getlatloncords.latGenerate()
             val lon = getlatloncords.lonGenerate()
+            managerWeatherApi.getDataWeather(lat, lon)
         }
     }
 

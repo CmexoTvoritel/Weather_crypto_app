@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/mainMenu">
+    <fragment
+        android:id="@+id/mainMenu"
+        android:name="com.example.weather_crypto_app.MainMenu"
+        android:label="fragment_main_menu"
+        tools:layout="@layout/fragment_main_menu" >
+        <action
+            android:id="@+id/action_mainMenu_to_city_Weather2"
+            app:destination="@id/city_Weather2" />
+    </fragment>
+    <fragment
+        android:id="@+id/city_Weather2"
+        android:name="com.example.weather_crypto_app.City_Weather"
+        android:label="fragment_city__weather"
+        tools:layout="@layout/fragment_city__weather" />
+</navigation>

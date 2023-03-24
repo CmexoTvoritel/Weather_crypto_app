@@ -24,6 +24,14 @@ class MainMenu : Fragment() {
         weather_choose.setOnClickListener { view: View ->
             view.findNavController().navigate(R.id.action_mainMenu_to_city_Weather2)
         }
+
+        map_choose.setOnClickListener { view: View ->
+            view.findNavController().navigate(R.id.action_mainMenu_to_city_Map)
+        }
+
+        crypto_choose.setOnClickListener { view: View ->
+            view.findNavController().navigate(R.id.action_mainMenu_to_crypto_Add)
+        }
     }
 
 }

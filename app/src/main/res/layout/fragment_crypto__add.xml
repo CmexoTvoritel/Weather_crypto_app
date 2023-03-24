@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".City_Weather">
+    tools:context=".Crypto_Add">
 
     <TextView
         android:id="@+id/textView"
@@ -13,7 +13,7 @@
         android:background="#46A4CC"
         android:gravity="center"
         android:orientation="horizontal"
-        android:text="Выбор города"
+        android:text="Выбор криптовалюты"
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"

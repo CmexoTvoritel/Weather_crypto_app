@@ -5,33 +5,41 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.findNavController
-import kotlinx.android.synthetic.main.fragment_main_menu.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.weather_crypto_app.adapters.MainMenuAdapter
+import com.example.weather_crypto_app.models.MainMenuModel
+
 
 
 class MainMenu : Fragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main_menu, container, false)
-    }
+
+    lateinit var recyclerView: RecyclerView
+    lateinit var adapter: MainMenuAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val layoutManager = LinearLayoutManager(context)
+        recyclerView = view.findViewById(R.id.rv_main_menu)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.setHasFixedSize(true)
+        adapter = MainMenuAdapter(add_menu_items())
+    }
 
-        weather_choose.setOnClickListener { view: View ->
-            view.findNavController().navigate(R.id.action_mainMenu_to_city_Weather2)
-        }
+    /*override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_main_menu, container, false)
+        recyclerView = view.findViewById(R.id.rv_main_menu)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = MainMenuAdapter(add_menu_items())
+        return view
+    } */
 
-        map_choose.setOnClickListener { view: View ->
-            view.findNavController().navigate(R.id.action_mainMenu_to_city_Map)
-        }
-
-        crypto_choose.setOnClickListener { view: View ->
-            view.findNavController().navigate(R.id.action_mainMenu_to_crypto_Add)
-        }
+    private fun add_menu_items(): List<MainMenuModel> {
+        val items = mutableListOf<MainMenuModel>()
+        items.add(MainMenuModel("Maps", "Выбрать"))
+        items.add(MainMenuModel("Town", "Выбрать"))
+        items.add(MainMenuModel("Crypto", "Выбрать"))
+        return items
     }
 
 }

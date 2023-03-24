@@ -17,22 +17,14 @@ class MainMenu : Fragment() {
     lateinit var recyclerView: RecyclerView
     lateinit var adapter: MainMenuAdapter
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val layoutManager = LinearLayoutManager(context)
-        recyclerView = view.findViewById(R.id.rv_main_menu)
-        recyclerView.layoutManager = layoutManager
-        recyclerView.setHasFixedSize(true)
-        adapter = MainMenuAdapter(add_menu_items())
-    }
 
-    /*override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_main_menu, container, false)
         recyclerView = view.findViewById(R.id.rv_main_menu)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = MainMenuAdapter(add_menu_items())
         return view
-    } */
+    }
 
     private fun add_menu_items(): List<MainMenuModel> {
         val items = mutableListOf<MainMenuModel>()
@@ -40,6 +32,10 @@ class MainMenu : Fragment() {
         items.add(MainMenuModel("Town", "Выбрать"))
         items.add(MainMenuModel("Crypto", "Выбрать"))
         return items
+    }
+
+    companion object {
+        fun newInstance() = MainMenu()
     }
 
 }

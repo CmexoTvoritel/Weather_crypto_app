@@ -28,9 +28,9 @@ class MainMenu : Fragment() {
 
     private fun add_menu_items(): List<MainMenuModel> {
         val items = mutableListOf<MainMenuModel>()
-        items.add(MainMenuModel("Maps", "Выбрать"))
-        items.add(MainMenuModel("Town", "Выбрать"))
-        items.add(MainMenuModel("Crypto", "Выбрать"))
+        items.add(MainMenuModel("Карта"))
+        items.add(MainMenuModel("Погода"))
+        items.add(MainMenuModel("Курс криптовалют"))
         return items
     }
 

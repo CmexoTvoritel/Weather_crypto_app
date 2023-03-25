@@ -7,11 +7,11 @@
     <fragment
         android:id="@+id/mainMenu"
         android:name="com.example.weather_crypto_app.MainMenu"
-        android:label="fragment_main_menu"
+        android:label="Главный экран"
         tools:layout="@layout/fragment_main_menu" >
         <action
             android:id="@+id/action_mainMenu_to_city_Weather2"
-            app:destination="@id/city_Weather2" />
+            app:destination="@id/city_Weather" />
         <action
             android:id="@+id/action_mainMenu_to_city_Map"
             app:destination="@id/city_Map" />
@@ -20,18 +20,18 @@
             app:destination="@id/crypto_Add" />
     </fragment>
     <fragment
-        android:id="@+id/city_Weather2"
+        android:id="@+id/city_Weather"
         android:name="com.example.weather_crypto_app.City_Weather"
-        android:label="fragment_city__weather"
+        android:label="Выбор города"
         tools:layout="@layout/fragment_city__weather" />
     <fragment
         android:id="@+id/city_Map"
         android:name="com.example.weather_crypto_app.City_Map"
-        android:label="fragment_city__map"
+        android:label="Выбор города"
         tools:layout="@layout/fragment_city__map" />
     <fragment
         android:id="@+id/crypto_Add"
         android:name="com.example.weather_crypto_app.Crypto_Add"
-        android:label="fragment_crypto__add"
+        android:label="Выбор криптовалюты"
         tools:layout="@layout/fragment_crypto__add" />
 </navigation>

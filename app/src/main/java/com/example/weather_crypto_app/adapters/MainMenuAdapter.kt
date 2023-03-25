@@ -14,7 +14,6 @@ class MainMenuAdapter(private val mainMenuList: List<MainMenuModel>): RecyclerVi
 
     class MainMenuViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val name_menu: TextView = itemView.findViewById(R.id.name_menu)
-        val name_button: TextView = itemView.findViewById(R.id.name_button)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainMenuViewHolder {
@@ -24,7 +23,6 @@ class MainMenuAdapter(private val mainMenuList: List<MainMenuModel>): RecyclerVi
 
     override fun onBindViewHolder(holder: MainMenuViewHolder, position: Int) {
         holder.itemView.name_menu.text = mainMenuList[position].name_menu
-        holder.itemView.name_button.text = mainMenuList[position].name_menu
 
     }
 

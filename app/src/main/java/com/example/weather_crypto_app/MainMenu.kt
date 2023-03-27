@@ -12,13 +12,13 @@ import com.example.weather_crypto_app.models.MainMenuModel
 
 
 
-class MainMenu : Fragment() {
+class MainMenu : Fragment(), MainMenuAdapter.Listener {
 
     lateinit var recyclerView: RecyclerView
     lateinit var adapter: MainMenuAdapter
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?{
         val view = inflater.inflate(R.layout.fragment_main_menu, container, false)
         recyclerView = view.findViewById(R.id.rv_main_menu)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -28,14 +28,18 @@ class MainMenu : Fragment() {
 
     private fun add_menu_items(): List<MainMenuModel> {
         val items = mutableListOf<MainMenuModel>()
-        items.add(MainMenuModel("Карта"))
-        items.add(MainMenuModel("Погода"))
-        items.add(MainMenuModel("Курс криптовалют"))
+        items.add(MainMenuModel("Карта", "Выбрать"))
+        items.add(MainMenuModel("Погода", "Выбрать"))
+        items.add(MainMenuModel("Курс криптовалют", "Выбрать"))
         return items
     }
 
     companion object {
         fun newInstance() = MainMenu()
+    }
+
+    override fun onCLick(mainMenuModel: MainMenuModel) {
+
     }
 
 }

@@ -6,19 +6,4 @@
     android:layout_height="match_parent"
     tools:context=".City_Map">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="0dp"
-        android:layout_height="51dp"
-        android:background="#46A4CC"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:text="Выбор города"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="TextContrastCheck" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

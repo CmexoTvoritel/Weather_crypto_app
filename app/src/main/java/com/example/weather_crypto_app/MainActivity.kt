@@ -2,6 +2,8 @@ package com.example.weather_crypto_app
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
+import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -22,10 +24,8 @@ class MainActivity : AppCompatActivity() {
         ) as NavHostFragment
         navController = navHostFragment.navController
 
-
-        navController = findNavController(R.id.mainHostNavActivity)
         appBarConfiguration = AppBarConfiguration(navController.graph)
-        findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        findViewById<Toolbar>(R.id.toolbar)
             .setupWithNavController(navController, appBarConfiguration)
     }
 

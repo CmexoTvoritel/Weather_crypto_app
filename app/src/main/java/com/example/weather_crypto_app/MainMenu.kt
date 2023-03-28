@@ -5,32 +5,43 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.weather_crypto_app.adapters.MainMenuAdapter
+import com.example.weather_crypto_app.presentation.ui.adapters.MainMenuAdapter
 import com.example.weather_crypto_app.models.MainMenuModel
-
+import com.example.weather_crypto_app.models.MainMenuModules
 
 
 class MainMenu : Fragment(), MainMenuAdapter.Listener {
 
     lateinit var recyclerView: RecyclerView
-    lateinit var adapter: MainMenuAdapter
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?{
         val view = inflater.inflate(R.layout.fragment_main_menu, container, false)
-        recyclerView = view.findViewById(R.id.rv_main_menu)
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = MainMenuAdapter(add_menu_items())
         return view
     }
 
-    private fun add_menu_items(): List<MainMenuModel> {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val adapter = MainMenuAdapter(addMenuItems())
+        adapter.clickCallback = { type ->
+            when (type) {
+                MainMenuModules.MAP -> findNavController().navigate() //TODO
+                MainMenuModules.WEATHER -> findNavController().navigate()
+                MainMenuModules.COINS -> findNavController().navigate()
+            }
+        }
+        recyclerView = view.findViewById(R.id.rv_main_menu)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = adapter
+    }
+
+    private fun addMenuItems(): List<MainMenuModel> {
         val items = mutableListOf<MainMenuModel>()
-        items.add(MainMenuModel("Карта", "Выбрать"))
-        items.add(MainMenuModel("Погода", "Выбрать"))
-        items.add(MainMenuModel("Курс криптовалют", "Выбрать"))
+        items.add(MainMenuModel("Карта", "Выбрать", type = MainMenuModules.MAP))
+        items.add(MainMenuModel("Погода", "Выбрать", type = MainMenuModules.WEATHER))
+        items.add(MainMenuModel("Курс криптовалют", "Выбрать", type = MainMenuModules.COINS))
         return items
     }
 

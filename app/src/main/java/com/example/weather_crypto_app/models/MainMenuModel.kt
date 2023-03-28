@@ -1,6 +1,13 @@
 package com.example.weather_crypto_app.models
 
-class MainMenuModel (
-    var name_menu: String,
-    var name_button: String
+data class MainMenuModel (
+    val nameMenu: String,
+    val nameButton: String,
+    val type: MainMenuModules
 )
+
+enum class MainMenuModules {
+    MAP,
+    WEATHER,
+    COINS
+}

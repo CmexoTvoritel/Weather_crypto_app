@@ -27,9 +27,9 @@ class MainMenu : Fragment(), MainMenuAdapter.Listener {
         val adapter = MainMenuAdapter(addMenuItems())
         adapter.clickCallback = { type ->
             when (type) {
-                MainMenuModules.MAP -> findNavController().navigate() //TODO
-                MainMenuModules.WEATHER -> findNavController().navigate()
-                MainMenuModules.COINS -> findNavController().navigate()
+                MainMenuModules.MAP -> findNavController().navigate(R.id.city_Map) //TODO
+                MainMenuModules.WEATHER -> findNavController().navigate(R.id.city_Weather)
+                MainMenuModules.COINS -> findNavController().navigate(R.id.crypto_Add)
             }
         }
         recyclerView = view.findViewById(R.id.rv_main_menu)

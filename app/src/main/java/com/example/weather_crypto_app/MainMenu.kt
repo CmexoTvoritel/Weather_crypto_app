@@ -13,7 +13,7 @@ import com.example.weather_crypto_app.models.MainMenuModel
 import com.example.weather_crypto_app.models.MainMenuModules
 
 
-class MainMenu : Fragment(), MainMenuAdapter.Listener {
+class MainMenu : Fragment() {
 
     lateinit var recyclerView: RecyclerView
 
@@ -47,10 +47,6 @@ class MainMenu : Fragment(), MainMenuAdapter.Listener {
 
     companion object {
         fun newInstance() = MainMenu()
-    }
-
-    override fun onCLick(mainMenuModel: MainMenuModel) {
-
     }
 
 }

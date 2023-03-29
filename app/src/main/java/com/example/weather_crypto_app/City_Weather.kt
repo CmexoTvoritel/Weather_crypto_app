@@ -5,8 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.weather_crypto_app.data.names.city.CityNamesWeather
 import com.example.weather_crypto_app.models.CityWeatherModel
 import com.example.weather_crypto_app.presentation.ui.adapters.CityWeatherAdapter
 
@@ -22,6 +24,9 @@ class City_Weather : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val adapter = CityWeatherAdapter(addWeatherItems())
+
+        adapter.clickCallback = {type -> findNavController().navigate(R.id.mainMenu)}
+
         recyclerView = view.findViewById(R.id.rv_city_weather)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
@@ -29,9 +34,10 @@ class City_Weather : Fragment() {
 
     private fun addWeatherItems(): List<CityWeatherModel> {
         val items = mutableListOf<CityWeatherModel>()
-        items.add(CityWeatherModel("RU", "Москва", "Moscow"))
-        items.add(CityWeatherModel("RU", "Ростов на Дону", "Rostov"))
-        items.add(CityWeatherModel("RU", "Таганрог", "Taganrog"))
+        val cityName: CityNamesWeather = CityNamesWeather()
+        cityName.cityNames.forEach {
+            items.add(it)
+        }
         return items
     }
 }

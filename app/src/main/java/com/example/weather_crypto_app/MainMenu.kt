@@ -27,7 +27,7 @@ class MainMenu : Fragment() {
         val adapter = MainMenuAdapter(addMenuItems())
         adapter.clickCallback = { type ->
             when (type) {
-                MainMenuModules.MAP -> findNavController().navigate(R.id.city_Map) //TODO
+                MainMenuModules.MAP -> findNavController().navigate(R.id.city_Map)
                 MainMenuModules.WEATHER -> findNavController().navigate(R.id.city_Weather)
                 MainMenuModules.COINS -> findNavController().navigate(R.id.crypto_Add)
             }

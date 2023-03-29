@@ -23,12 +23,24 @@
         android:id="@+id/city_Weather"
         android:name="com.example.weather_crypto_app.City_Weather"
         android:label="Выбор города"
-        tools:layout="@layout/fragment_city__weather" />
+        tools:layout="@layout/fragment_city__weather" >
+        <action
+            android:id="@+id/action_city_Weather_to_mainMenu"
+            app:destination="@id/mainMenu"
+            app:popUpTo="@id/mainMenu"
+            app:popUpToInclusive="true"/>
+    </fragment>
     <fragment
         android:id="@+id/city_Map"
         android:name="com.example.weather_crypto_app.City_Map"
         android:label="Выбор города"
-        tools:layout="@layout/fragment_city__map" />
+        tools:layout="@layout/fragment_city__map" >
+        <action
+            android:id="@+id/action_city_Map_to_mainMenu"
+            app:destination="@id/mainMenu"
+            app:popUpTo="@id/mainMenu"
+            app:popUpToInclusive="true"/>
+    </fragment>
     <fragment
         android:id="@+id/crypto_Add"
         android:name="com.example.weather_crypto_app.Crypto_Add"

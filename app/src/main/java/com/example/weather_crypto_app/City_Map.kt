@@ -16,21 +16,19 @@ class City_Map : Fragment() {
 
     lateinit var recyclerView: RecyclerView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_city__map, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val bundle = Bundle()
 
         val adapter = CityMapAdapter(addMapItems())
 
-        adapter.clickCallback = {type -> findNavController().navigate(R.id.mainMenu) }
+        adapter.clickCallback = { type->
+            bundle.putString("CityMap", type.nameApiCity)
+            findNavController().navigate(R.id.mainMenu, bundle) }
 
 
         recyclerView = view.findViewById(R.id.rv_city_map)

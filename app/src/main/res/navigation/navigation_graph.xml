@@ -18,6 +18,18 @@
         <action
             android:id="@+id/action_mainMenu_to_crypto_Add"
             app:destination="@id/crypto_Add" />
+        <argument
+            android:name="CityMap"
+            app:argType="string"
+            android:defaultValue="Карта" />
+        <argument
+            android:name="CityWeather"
+            app:argType="string"
+            android:defaultValue="Погода" />
+        <argument
+            android:name="CryptoAdd"
+            app:argType="string"
+            android:defaultValue="Курс криптовалют" />
     </fragment>
     <fragment
         android:id="@+id/city_Weather"

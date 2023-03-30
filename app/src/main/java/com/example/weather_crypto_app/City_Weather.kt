@@ -22,10 +22,13 @@ class City_Weather : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val bundle = Bundle()
 
         val adapter = CityWeatherAdapter(addWeatherItems())
 
-        adapter.clickCallback = {type -> findNavController().navigate(R.id.mainMenu)}
+        adapter.clickCallback = {type ->
+            bundle.putString("CityWeather", type.nameApiCity)
+            findNavController().navigate(R.id.mainMenu, bundle)}
 
         recyclerView = view.findViewById(R.id.rv_city_weather)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())

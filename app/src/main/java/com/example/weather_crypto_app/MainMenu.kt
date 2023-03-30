@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.Nullable
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +25,9 @@ class MainMenu : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = MainMenuAdapter(addMenuItems())
+        val textMap = arguments?.getString("CityMap")
+        val textWeather = arguments?.getString("CityWeather")
+        val adapter = MainMenuAdapter(addMenuItems(textMap, textWeather))
         adapter.clickCallback = { type ->
             when (type) {
                 MainMenuModules.MAP -> findNavController().navigate(R.id.city_Map)
@@ -37,10 +40,12 @@ class MainMenu : Fragment() {
         recyclerView.adapter = adapter
     }
 
-    private fun addMenuItems(): List<MainMenuModel> {
+    private fun addMenuItems(textMap: String?, textWeather: String?): List<MainMenuModel> {
         val items = mutableListOf<MainMenuModel>()
-        items.add(MainMenuModel("Карта", "Выбрать", type = MainMenuModules.MAP))
-        items.add(MainMenuModel("Погода", "Выбрать", type = MainMenuModules.WEATHER))
+        if(!textMap.isNullOrBlank()) items.add(MainMenuModel(textMap, "Выбрать", type = MainMenuModules.MAP))
+        else items.add(MainMenuModel("Карта", "Выбрать", type = MainMenuModules.MAP))
+        if(!textWeather.isNullOrBlank()) items.add(MainMenuModel(textWeather, "Выбрать", type = MainMenuModules.WEATHER))
+        else items.add(MainMenuModel("Погода", "Выбрать", type = MainMenuModules.WEATHER))
         items.add(MainMenuModel("Курс криптовалют", "Выбрать", type = MainMenuModules.COINS))
         return items
     }

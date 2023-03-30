@@ -29,5 +29,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:titleTextColor="@color/white"/>
+        app:titleTextColor="@color/white">
+
+
+
+
+    </androidx.appcompat.widget.Toolbar>
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/mainMenu">
+    <fragment
+        android:id="@+id/mainMenu"
+        android:name="com.example.weather_crypto_app.MainMenu"
+        android:label="Главный экран"
+        tools:layout="@layout/fragment_main_menu" >
+        <action
+            android:id="@+id/action_mainMenu_to_city_Weather2"
+            app:destination="@id/city_Weather" />
+        <action
+            android:id="@+id/action_mainMenu_to_city_Map"
+            app:destination="@id/city_Map" />
+        <action
+            android:id="@+id/action_mainMenu_to_crypto_Add"
+            app:destination="@id/crypto_Add" />
+        <argument
+            android:name="CityMap"
+            app:argType="string"
+            android:defaultValue="Карта" />
+        <argument
+            android:name="CityWeather"
+            app:argType="string"
+            android:defaultValue="Погода" />
+        <argument
+            android:name="CryptoAdd"
+            app:argType="string"
+            android:defaultValue="Курс криптовалют" />
+    </fragment>
+    <fragment
+        android:id="@+id/city_Weather"
+        android:name="com.example.weather_crypto_app.City_Weather"
+        android:label="Выбор города"
+        tools:layout="@layout/fragment_city__weather" >
+        <action
+            android:id="@+id/action_city_Weather_to_mainMenu"
+            app:destination="@id/mainMenu"
+            app:popUpTo="@id/mainMenu"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/city_Map"
+        android:name="com.example.weather_crypto_app.City_Map"
+        android:label="Выбор города"
+        tools:layout="@layout/fragment_city__map" >
+        <action
+            android:id="@+id/action_city_Map_to_mainMenu"
+            app:destination="@id/mainMenu"
+            app:popUpTo="@id/mainMenu"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/crypto_Add"
+        android:name="com.example.weather_crypto_app.Crypto_Add"
+        android:label="Выбор криптовалюты"
+        tools:layout="@layout/fragment_crypto__add" />
+</navigation>

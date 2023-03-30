@@ -13,7 +13,7 @@
         android:padding="20dp">
 
         <ImageView
-            android:id="@+id/imageCoin"
+            android:id="@+id/image_Coin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -22,7 +22,7 @@
             app:srcCompat="@drawable/usd_coin_usdc_1" />
 
         <TextView
-            android:id="@+id/nameCoin"
+            android:id="@+id/name_Coin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -30,17 +30,17 @@
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageCoin"
+            app:layout_constraintStart_toEndOf="@+id/image_Coin"
             app:layout_constraintTop_toTopOf="parent" />
 
         <CheckBox
-            android:id="@+id/checkEnableCoin"
+            android:id="@+id/check_Enable_Coin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="200dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/nameCoin"
+            app:layout_constraintStart_toEndOf="@+id/name_Coin"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

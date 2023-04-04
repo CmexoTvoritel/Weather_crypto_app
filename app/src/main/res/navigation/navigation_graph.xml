@@ -25,7 +25,7 @@
         <argument
             android:name="CityWeather"
             app:argType="string"
-            android:defaultValue="Погода" />
+            android:defaultValue="" />
         <argument
             android:name="CryptoAdd"
             app:argType="string"

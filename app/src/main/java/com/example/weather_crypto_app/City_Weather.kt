@@ -8,9 +8,16 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.weather_crypto_app.data.CordsWeatherApi
+import com.example.weather_crypto_app.data.WeatherApi
 import com.example.weather_crypto_app.data.names.city.CityNamesWeather
 import com.example.weather_crypto_app.models.CityWeatherModel
 import com.example.weather_crypto_app.presentation.ui.adapters.CityWeatherAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class City_Weather : Fragment() {
 

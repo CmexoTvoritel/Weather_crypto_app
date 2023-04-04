@@ -5,12 +5,13 @@ import com.example.weather_crypto_app.models.crypto.cryptoRep
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class ManagerCryptoApi {
 
-    fun GetDataCrypto(): List<CryptoAddModel>{
+    fun GetDataApi(): List<CryptoAddModel>{
         val data = arrayListOf<CryptoAddModel>()
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.coingecko.com/")

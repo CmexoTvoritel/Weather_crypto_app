@@ -7,6 +7,6 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface CordsWeatherApi {
-    @GET("geo/1.0/direct?q=Moscow&limit=5&appid=22c2b837bf6f65a956144d42d02343bb")
-    suspend fun getCordsWeather(@Query("city") city: String): cityCoords
+    @GET("geo/1.0/direct?q={city}&limit=5&appid=22c2b837bf6f65a956144d42d02343bb")
+    suspend fun getCordsWeather(@Query("city") city: String?): List<cityCoordsItem>
 }

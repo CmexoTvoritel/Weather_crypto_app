@@ -14,7 +14,7 @@ class ManagerWeatherApi {
             .build()
         val weatherApi = retrofit.create(WeatherApi::class.java)
         CoroutineScope(Dispatchers.IO).launch {
-            val weather = weatherApi.getWeather(lat, lon)
+            val weather = weatherApi.getWeather(lat.toString(), lon.toString(), "22c2b837bf6f65a956144d42d02343bb")
         }
     }
 }

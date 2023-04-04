@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.data.CryptoApi
@@ -30,6 +31,7 @@ class Crypto_Add : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val data = arrayListOf<CryptoAddModel>()
+        val viewDataCrypto = arrayListOf<String>()
         val retrofit = Retrofit.Builder()
              .baseUrl("https://api.coingecko.com/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -45,8 +47,26 @@ class Crypto_Add : Fragment() {
                 recyclerView = view.findViewById(R.id.rv_crypto_add)
                 recyclerView.layoutManager = LinearLayoutManager(requireContext())
                 recyclerView.adapter = adapter
+                adapter.clickCallback = {type ->
+                    if(type.enableCoin) {
+                        viewDataCrypto.add(type.nameCoin)
+                        val toastEnable = Toast.makeText(context, "${type.nameCoin} is enabled", Toast.LENGTH_SHORT)
+                        toastEnable.show()
+                    }
+                    else {
+                        viewDataCrypto.remove(type.nameCoin)
+                        val toastDisable = Toast.makeText(context, "${type.nameCoin} is disabled", Toast.LENGTH_SHORT)
+                        toastDisable.show()
+                    }
+                    if(viewDataCrypto.size >= 3) {
+                        val warningText = Toast.makeText(context, "Вы можете выбрать не более 3 криптовалют", Toast.LENGTH_LONG)
+                        warningText.show()
+                    }
+                }
             }
         }
+
+
 
     }
 

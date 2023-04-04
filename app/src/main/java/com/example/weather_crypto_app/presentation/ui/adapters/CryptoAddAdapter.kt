@@ -10,6 +10,8 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.crypto_add_item_layout.view.*
 
 class CryptoAddAdapter(private val cryptoList: List<CryptoAddModel>): RecyclerView.Adapter<CryptoAddViewHolder>() {
+
+    var clickCallback: ((type: CryptoAddModel) -> Unit)?= null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CryptoAddViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.crypto_add_item_layout, parent, false)
         return CryptoAddViewHolder(view)
@@ -23,6 +25,8 @@ class CryptoAddAdapter(private val cryptoList: List<CryptoAddModel>): RecyclerVi
             .placeholder(R.drawable.usd_coin_usdc_1)
             .fit()
             .into(holder.itemView.image_Coin)
+        holder.clickCallback = clickCallback
+        holder.bind(item)
     }
 
     override fun getItemCount(): Int {

@@ -9,6 +9,7 @@ import androidx.annotation.Nullable
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.weather_crypto_app.data.HelpGenerateApi
 import com.example.weather_crypto_app.presentation.ui.adapters.MainMenuAdapter
 import com.example.weather_crypto_app.models.MainMenuModel
 import com.example.weather_crypto_app.models.MainMenuModules
@@ -27,6 +28,7 @@ class MainMenu : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val textMap = arguments?.getString("CityMap")
         val textWeather = arguments?.getString("CityWeather")
+        val helpGenerateApi: HelpGenerateApi = HelpGenerateApi()
         val adapter = MainMenuAdapter(addMenuItems(textMap, textWeather))
         adapter.clickCallback = { type ->
             when (type) {
@@ -38,6 +40,7 @@ class MainMenu : Fragment() {
         recyclerView = view.findViewById(R.id.rv_main_menu)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
+        if(!textWeather.isNullOrBlank()) helpGenerateApi.helpGenerateApi(textWeather.toString())
     }
 
     private fun addMenuItems(textMap: String?, textWeather: String?): List<MainMenuModel> {

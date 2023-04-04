@@ -16,7 +16,7 @@ class HelpGenerateApi {
         val cordsApi = retrofit.create(CordsWeatherApi::class.java)
         CoroutineScope(Dispatchers.IO).launch {
             val cords = cordsApi.getCordsWeather(city)
-            val getlatloncords = getLatLonCords(cords)
+            val getlatloncords = getLatLonCords(cords[0])
             val managerWeatherApi = ManagerWeatherApi()
             val lat = getlatloncords.latGenerate()
             val lon = getlatloncords.lonGenerate()

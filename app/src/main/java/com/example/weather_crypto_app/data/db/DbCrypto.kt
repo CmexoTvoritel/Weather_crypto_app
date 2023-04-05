@@ -4,9 +4,11 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "crypto_table")
 data class DbCrypto(
-    @PrimaryKey val uid: Int,
-    @ColumnInfo(name = "name_coin") val nameCoin: String,
-    @ColumnInfo(name = "cost_coin") val costCoin: Double,
+    @PrimaryKey(autoGenerate = true)
+    val uid: Int,
+    val nameCoin: String,
+    val image: String,
+    val costCoin: Double,
 )

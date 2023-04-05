@@ -6,9 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.data.CryptoApi
+import com.example.weather_crypto_app.data.db.CryptoViewModel
+import com.example.weather_crypto_app.data.db.DbCrypto
 import com.example.weather_crypto_app.models.CryptoAddModel
 import com.example.weather_crypto_app.presentation.ui.adapters.CryptoAddAdapter
 import kotlinx.coroutines.CoroutineScope
@@ -22,6 +26,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class Crypto_Add : Fragment() {
 
     lateinit var recyclerView: RecyclerView
+    lateinit var cryptoViewModel: CryptoViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_crypto__add, container, false)
@@ -32,6 +37,7 @@ class Crypto_Add : Fragment() {
 
         val data = arrayListOf<CryptoAddModel>()
         val viewDataCrypto = arrayListOf<String>()
+        cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
         val retrofit = Retrofit.Builder()
              .baseUrl("https://api.coingecko.com/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -50,11 +56,13 @@ class Crypto_Add : Fragment() {
                 adapter.clickCallback = {type ->
                     if(type.enableCoin) {
                         viewDataCrypto.add(type.nameCoin)
+                        insertDataToCoinDatabase(type)
                         val toastEnable = Toast.makeText(context, "${type.nameCoin} is enabled", Toast.LENGTH_SHORT)
                         toastEnable.show()
                     }
                     else {
                         viewDataCrypto.remove(type.nameCoin)
+                        deleteDataOfCoinDatabase(type)
                         val toastDisable = Toast.makeText(context, "${type.nameCoin} is disabled", Toast.LENGTH_SHORT)
                         toastDisable.show()
                     }
@@ -68,6 +76,24 @@ class Crypto_Add : Fragment() {
 
 
 
+    }
+
+    private fun deleteDataOfCoinDatabase(data: CryptoAddModel) {
+        val name = data.nameCoin
+        val image = data.image
+        val cost = 0.00
+        val coinData = DbCrypto(0, name, image, cost)
+        cryptoViewModel.deleteCoins(coinData)
+        Toast.makeText(requireContext(), "Success delete", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun insertDataToCoinDatabase(data: CryptoAddModel) {
+        val name = data.nameCoin
+        val cost = 0.00
+        val image = data.image
+        val coinData = DbCrypto(0, name, image, cost)
+        cryptoViewModel.addCoins(coinData)
+        Toast.makeText(requireContext(), "Success u know?", Toast.LENGTH_SHORT).show()
     }
 
     private fun testAddCrypto(): List<CryptoAddModel> {

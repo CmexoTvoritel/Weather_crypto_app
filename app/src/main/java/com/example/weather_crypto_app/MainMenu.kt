@@ -6,21 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.Nullable
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import com.example.weather_crypto_app.data.CordsWeatherApi
-import com.example.weather_crypto_app.data.HelpGenerateApi
 import com.example.weather_crypto_app.data.WeatherApi
-import com.example.weather_crypto_app.data.db.CryptoDataBase
-import com.example.weather_crypto_app.data.db.DbCrypto
+import com.example.weather_crypto_app.data.db.dbCrypto.CryptoViewModel
+import com.example.weather_crypto_app.data.db.dbCrypto.DbCrypto
 import com.example.weather_crypto_app.presentation.ui.adapters.MainMenuAdapter
 import com.example.weather_crypto_app.models.MainMenuModel
 import com.example.weather_crypto_app.models.MainMenuModules
-import com.example.weather_crypto_app.models.weather.info.weatherInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,6 +28,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MainMenu : Fragment() {
 
     lateinit var recyclerView: RecyclerView
+    lateinit var cryptoViewModel: CryptoViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?{
         val view = inflater.inflate(R.layout.fragment_main_menu, container, false)
@@ -42,6 +39,8 @@ class MainMenu : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val textMap = arguments?.getString("CityMap")
         var textWeather = arguments?.getString("CityWeather")
+        val coinsInfo = arrayListOf<DbCrypto>()
+        cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
         if(!textWeather.isNullOrBlank()) {
             val infoToast = Toast.makeText(context, "${textWeather}", Toast.LENGTH_SHORT)
             infoToast.show()
@@ -59,11 +58,13 @@ class MainMenu : Fragment() {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             val infoWeatherApi = retrofitInfo.create(WeatherApi::class.java)
-            lifecycleScope.launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 val coordsWeather = infoWeatherCoords.getCordsWeather(textWeather)
-                val infoWeather = infoWeatherApi.getWeather(coordsWeather[0].lat.toString(), coordsWeather[0].lon.toString(), "22c2b837bf6f65a956144d42d02343bb")
+                val infoWeather = infoWeatherApi.getWeather(coordsWeather[0].lat.toString(), coordsWeather[0].lon.toString())
                 withContext(Dispatchers.Main) {
                     textWeather = infoWeather.name
+                    val weatherToast = Toast.makeText(context, "${infoWeather.weather[0].description}", Toast.LENGTH_SHORT)
+                    weatherToast.show()
                     val adapter = MainMenuAdapter(addMenuItems(textMap, textWeather))
                     adapter.clickCallback = { type ->
                         when (type) {
@@ -113,11 +114,11 @@ class MainMenu : Fragment() {
 
     private fun addMenuItems(textMap: String?, textWeather: String?): List<MainMenuModel> {
         val items = mutableListOf<MainMenuModel>()
-        if(!textMap.isNullOrBlank()) items.add(MainMenuModel(textMap, "Выбрать", type = MainMenuModules.MAP))
-        else items.add(MainMenuModel("Карта", "Выбрать", type = MainMenuModules.MAP))
-        if(!textWeather.isNullOrBlank()) items.add(MainMenuModel(textWeather, "Выбрать", type = MainMenuModules.WEATHER))
-        else items.add(MainMenuModel("Погода", "Выбрать", type = MainMenuModules.WEATHER))
-        items.add(MainMenuModel("Курс криптовалют", "Выбрать", type = MainMenuModules.COINS))
+        if(!textMap.isNullOrBlank()) items.add(MainMenuModel(textMap, "Выбрать", false, type = MainMenuModules.MAP))
+        else items.add(MainMenuModel("Карта", "Выбрать", false, type = MainMenuModules.MAP))
+        if(!textWeather.isNullOrBlank()) items.add(MainMenuModel(textWeather, "Выбрать", false, type = MainMenuModules.WEATHER))
+        else items.add(MainMenuModel("Погода", "Выбрать", false, type = MainMenuModules.WEATHER))
+        items.add(MainMenuModel("Курс криптовалют", "Выбрать", false, type = MainMenuModules.COINS))
         return items
     }
 
@@ -148,7 +149,7 @@ private class HelpGenerateWeatherApi() {
             .build()
         val infoWeatherApi = retrofit.create(WeatherApi::class.java)
         CoroutineScope(Dispatchers.IO).launch {
-            val infoWeather = infoWeatherApi.getWeather(lat.toString(), lon.toString(), "22c2b837bf6f65a956144d42d02343bb")
+            val infoWeather = infoWeatherApi.getWeather(lat.toString(), lon.toString())
         }
     }
 }

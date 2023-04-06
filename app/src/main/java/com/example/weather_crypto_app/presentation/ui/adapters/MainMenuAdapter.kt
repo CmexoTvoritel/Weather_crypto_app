@@ -1,7 +1,10 @@
 package com.example.weather_crypto_app.presentation.ui.adapters
 
+import android.content.ContentProvider
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.R
 import com.example.weather_crypto_app.models.MainMenuModel
@@ -21,6 +24,9 @@ class MainMenuAdapter(private val mainMenuList: List<MainMenuModel>): RecyclerVi
     override fun onBindViewHolder(holder: MainMenuViewHolder, position: Int) {
         holder.itemView.name_menu.text = mainMenuList[position].nameMenu
         val item = mainMenuList[position]
+        if(mainMenuList[position].nameMenu == "Курс криптовалют" && mainMenuList[position].status) {
+            //TODO отображение RV horizontal и сокрытие button add
+        }
         holder.clickCallback = clickCallback
         holder.bind(item)
     }

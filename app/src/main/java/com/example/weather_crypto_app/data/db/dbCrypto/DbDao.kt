@@ -1,4 +1,4 @@
-package com.example.weather_crypto_app.data.db
+package com.example.weather_crypto_app.data.db.dbCrypto
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao

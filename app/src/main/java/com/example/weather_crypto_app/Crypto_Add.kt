@@ -6,13 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.data.CryptoApi
-import com.example.weather_crypto_app.data.db.CryptoViewModel
-import com.example.weather_crypto_app.data.db.DbCrypto
+import com.example.weather_crypto_app.data.db.dbCrypto.CryptoViewModel
+import com.example.weather_crypto_app.data.db.dbCrypto.DbCrypto
 import com.example.weather_crypto_app.models.CryptoAddModel
 import com.example.weather_crypto_app.presentation.ui.adapters.CryptoAddAdapter
 import kotlinx.coroutines.CoroutineScope
@@ -93,7 +92,7 @@ class Crypto_Add : Fragment() {
         val image = data.image
         val coinData = DbCrypto(0, name, image, cost)
         cryptoViewModel.addCoins(coinData)
-        Toast.makeText(requireContext(), "Success u know?", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "Success add", Toast.LENGTH_SHORT).show()
     }
 
     private fun testAddCrypto(): List<CryptoAddModel> {

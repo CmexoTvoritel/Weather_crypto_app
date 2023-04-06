@@ -1,4 +1,4 @@
-package com.example.weather_crypto_app.data.db
+package com.example.weather_crypto_app.data.db.dbCrypto
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

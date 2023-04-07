@@ -16,6 +16,7 @@ import com.example.weather_crypto_app.data.WeatherApi
 import com.example.weather_crypto_app.data.db.dbCrypto.CryptoViewModel
 import com.example.weather_crypto_app.data.db.dbCrypto.DbCrypto
 import com.example.weather_crypto_app.data.db.dbMap.DbMap
+import com.example.weather_crypto_app.data.db.dbMap.DbMapDao
 import com.example.weather_crypto_app.data.db.dbMap.MapViewModel
 import com.example.weather_crypto_app.data.db.dbWeather.DbWeather
 import com.example.weather_crypto_app.data.db.dbWeather.WeatherViewModel
@@ -37,6 +38,7 @@ class MainMenu : Fragment() {
     private lateinit var mapViewModel: MapViewModel
     private lateinit var weatherViewModel: WeatherViewModel
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?{
         val view = inflater.inflate(R.layout.fragment_main_menu, container, false)
         return view
@@ -44,28 +46,57 @@ class MainMenu : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val textMap = arguments?.getString("CityMap")
+        var textMap = arguments?.getString("CityMap")
         var textWeather = arguments?.getString("CityWeather")
 
         mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
         weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
-        if(!textMap.isNullOrBlank()) {
-            mapViewModel.readAllData.observe(viewLifecycleOwner, Observer { it ->
-            if(it.isNotEmpty()) mapViewModel.updateMap(DbMap(1, textMap.toString()))
-            else mapViewModel.addCity(DbMap(0, textMap.toString()))
-        })}
 
-        if(!textWeather.isNullOrBlank()) {
-            weatherViewModel.readAllData.observe(viewLifecycleOwner, Observer { it ->
-                if(it.isNotEmpty()) weatherViewModel.updateCity(DbWeather(1, textWeather.toString()))
-                else weatherViewModel.addCity(DbWeather(0, textWeather.toString()))
-            })}
+        mapViewModel.readAllData.observe(viewLifecycleOwner, Observer { map ->
+            if(map.isNotEmpty()) textMap = map[0].CityName
+            weatherViewModel.readAllData.observe(viewLifecycleOwner, Observer { weather ->
+                if(weather.isNotEmpty()) textWeather = weather[0].CityName
+                creatingRV(textMap.toString(), textWeather.toString(), view)
+            })
+        })
 
         val coinsInfo = arrayListOf<DbCrypto>()
         cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
-        if(!textWeather.isNullOrBlank()) {
-            val infoToast = Toast.makeText(context, "${textWeather}", Toast.LENGTH_SHORT)
+
+        //if(!textWeather.isNullOrBlank()) helpGenerateApi.helpGenerateApi(textWeather.toString())
+        //TODO
+        /*
+        val dbCrypto = context?.let {
+            Room.databaseBuilder(
+                it, CryptoDataBase::class.java, "crypto-data-base"
+            ).build()
+        }
+
+        val dbDao = dbCrypto?.dbDao()
+        val coins: List<DbCrypto>? = dbDao?.getAll()
+        coins?.forEach {
+            val infoToast = Toast.makeText(context, "${it.uid} ${it.nameCoin} ${it.costCoin}", Toast.LENGTH_SHORT)
             infoToast.show()
+        } */
+        //TODO
+    }
+
+    private fun addMenuItems(textMap: String?, textWeather: String?): List<MainMenuModel> {
+        val items = mutableListOf<MainMenuModel>()
+        if(!textMap.isNullOrBlank()) items.add(MainMenuModel(textMap, "Выбрать", false, type = MainMenuModules.MAP))
+        else items.add(MainMenuModel("Карта", "Выбрать", false, type = MainMenuModules.MAP))
+        if(!textWeather.isNullOrBlank()) items.add(MainMenuModel(textWeather, "Выбрать", false, type = MainMenuModules.WEATHER))
+        else items.add(MainMenuModel("Погода", "Выбрать", false, type = MainMenuModules.WEATHER))
+        items.add(MainMenuModel("Курс криптовалют", "Выбрать", false, type = MainMenuModules.COINS))
+        return items
+    }
+
+    private fun creatingRV(Map: String, Weather: String, view: View) {
+        var textWeather = Weather
+        var textMap = Map
+        if(!textWeather.isNullOrBlank()) {
+            //val infoToast = Toast.makeText(context, "${textWeather}", Toast.LENGTH_SHORT)
+            //infoToast.show()
             val retrofitCords = Retrofit.Builder()
                 .baseUrl("https://api.openweathermap.org/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -82,8 +113,8 @@ class MainMenu : Fragment() {
                 val infoWeather = infoWeatherApi.getWeather(coordsWeather[0].lat.toString(), coordsWeather[0].lon.toString())
                 withContext(Dispatchers.Main) {
                     textWeather = infoWeather.name
-                    val weatherToast = Toast.makeText(context, "${infoWeather.weather[0].description}", Toast.LENGTH_SHORT)
-                    weatherToast.show()
+                    //val weatherToast = Toast.makeText(context, "${infoWeather.weather[0].description}", Toast.LENGTH_SHORT)
+                    //weatherToast.show()
                     val adapter = MainMenuAdapter(addMenuItems(textMap, textWeather))
                     adapter.clickCallback = { type ->
                         when (type) {
@@ -112,33 +143,6 @@ class MainMenu : Fragment() {
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
             recyclerView.adapter = adapter
         }
-
-        //if(!textWeather.isNullOrBlank()) helpGenerateApi.helpGenerateApi(textWeather.toString())
-        //TODO
-        /*
-        val dbCrypto = context?.let {
-            Room.databaseBuilder(
-                it, CryptoDataBase::class.java, "crypto-data-base"
-            ).build()
-        }
-
-        val dbDao = dbCrypto?.dbDao()
-        val coins: List<DbCrypto>? = dbDao?.getAll()
-        coins?.forEach {
-            val infoToast = Toast.makeText(context, "${it.uid} ${it.nameCoin} ${it.costCoin}", Toast.LENGTH_SHORT)
-            infoToast.show()
-        } */
-        //TODO
-    }
-
-    private fun addMenuItems(textMap: String?, textWeather: String?): List<MainMenuModel> {
-        val items = mutableListOf<MainMenuModel>()
-        if(!textMap.isNullOrBlank()) items.add(MainMenuModel(textMap, "Выбрать", false, type = MainMenuModules.MAP))
-        else items.add(MainMenuModel("Карта", "Выбрать", false, type = MainMenuModules.MAP))
-        if(!textWeather.isNullOrBlank()) items.add(MainMenuModel(textWeather, "Выбрать", false, type = MainMenuModules.WEATHER))
-        else items.add(MainMenuModel("Погода", "Выбрать", false, type = MainMenuModules.WEATHER))
-        items.add(MainMenuModel("Курс криптовалют", "Выбрать", false, type = MainMenuModules.COINS))
-        return items
     }
 
     companion object {

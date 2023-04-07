@@ -35,6 +35,7 @@ class City_Map : Fragment() {
         mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
 
         adapter.clickCallback = { type->
+            mapViewModel.updateMap(DbMap(1, type.nameApiCity))
             bundle.putString("CityMap", type.nameApiCity)
             findNavController().navigate(R.id.mainMenu, bundle) }
 

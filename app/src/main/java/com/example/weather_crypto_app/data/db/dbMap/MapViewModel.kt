@@ -23,6 +23,12 @@ class MapViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
+    fun updateMap(dbMap: DbMap) {
+        viewModelScope.launch(Dispatchers.IO) {
+            mapRepository.updateMap(dbMap)
+        }
+    }
+
     fun deleteCity(dbMap: DbMap) {
         viewModelScope.launch(Dispatchers.IO) {
             mapRepository.deleteCity(dbMap)

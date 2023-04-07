@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +15,10 @@ import com.example.weather_crypto_app.data.CordsWeatherApi
 import com.example.weather_crypto_app.data.WeatherApi
 import com.example.weather_crypto_app.data.db.dbCrypto.CryptoViewModel
 import com.example.weather_crypto_app.data.db.dbCrypto.DbCrypto
+import com.example.weather_crypto_app.data.db.dbMap.DbMap
+import com.example.weather_crypto_app.data.db.dbMap.MapViewModel
+import com.example.weather_crypto_app.data.db.dbWeather.DbWeather
+import com.example.weather_crypto_app.data.db.dbWeather.WeatherViewModel
 import com.example.weather_crypto_app.presentation.ui.adapters.MainMenuAdapter
 import com.example.weather_crypto_app.models.MainMenuModel
 import com.example.weather_crypto_app.models.MainMenuModules
@@ -29,6 +34,8 @@ class MainMenu : Fragment() {
 
     lateinit var recyclerView: RecyclerView
     lateinit var cryptoViewModel: CryptoViewModel
+    private lateinit var mapViewModel: MapViewModel
+    private lateinit var weatherViewModel: WeatherViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?{
         val view = inflater.inflate(R.layout.fragment_main_menu, container, false)
@@ -39,14 +46,26 @@ class MainMenu : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val textMap = arguments?.getString("CityMap")
         var textWeather = arguments?.getString("CityWeather")
+
+        mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
+        weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
+        if(!textMap.isNullOrBlank()) {
+            mapViewModel.readAllData.observe(viewLifecycleOwner, Observer { it ->
+            if(it.isNotEmpty()) mapViewModel.updateMap(DbMap(1, textMap.toString()))
+            else mapViewModel.addCity(DbMap(0, textMap.toString()))
+        })}
+
+        if(!textWeather.isNullOrBlank()) {
+            weatherViewModel.readAllData.observe(viewLifecycleOwner, Observer { it ->
+                if(it.isNotEmpty()) weatherViewModel.updateCity(DbWeather(1, textWeather.toString()))
+                else weatherViewModel.addCity(DbWeather(0, textWeather.toString()))
+            })}
+
         val coinsInfo = arrayListOf<DbCrypto>()
         cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
         if(!textWeather.isNullOrBlank()) {
             val infoToast = Toast.makeText(context, "${textWeather}", Toast.LENGTH_SHORT)
             infoToast.show()
-            //val helpGenerateWeatherApi: HelpGenerateWeatherApi = HelpGenerateWeatherApi()
-            //helpGenerateWeatherApi.generateApiWeather(textWeather)
-            //val data = helpGenerateWeatherApi.getDataWeatherApi(55.7504461, 37.6174943)
             val retrofitCords = Retrofit.Builder()
                 .baseUrl("https://api.openweathermap.org/")
                 .addConverterFactory(GsonConverterFactory.create())

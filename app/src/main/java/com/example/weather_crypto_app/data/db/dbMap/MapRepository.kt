@@ -9,6 +9,10 @@ class MapRepository(private val dbMapDao: DbMapDao) {
         dbMapDao.insertMap(dbMap)
     }
 
+    suspend fun updateMap(dbMap: DbMap) {
+        dbMapDao.updateMap(dbMap)
+    }
+
     suspend fun deleteCity(dbMap: DbMap) {
         dbMapDao.deleteMap(dbMap)
     }

@@ -15,5 +15,5 @@ interface DbDao {
     suspend fun insertCoin(vararg dbCrypto: DbCrypto)
 
     @Delete
-    fun delete(dbCrypto: DbCrypto)
+    suspend fun delete(dbCrypto: DbCrypto)
 }

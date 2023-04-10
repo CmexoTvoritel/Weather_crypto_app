@@ -48,44 +48,30 @@ class MainMenu : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         var textMap = arguments?.getString("CityMap")
         var textWeather = arguments?.getString("CityWeather")
+        val coinsInfo = arrayListOf<DbCrypto>()
 
         mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
         weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
+        cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
 
         mapViewModel.readAllData.observe(viewLifecycleOwner, Observer { map ->
             if(map.isNotEmpty()) textMap = map[0].CityName
             weatherViewModel.readAllData.observe(viewLifecycleOwner, Observer { weather ->
                 if(weather.isNotEmpty()) textWeather = weather[0].CityName
-                creatingRV(textMap.toString(), textWeather.toString(), view)
+                cryptoViewModel.readAllData.observe(viewLifecycleOwner, Observer { coins ->
+                    coins.forEach { coinsInfo.add(it) }
+                    Toast.makeText(context, coinsInfo[0].nameCoin, Toast.LENGTH_SHORT).show()
+                    creatingRV(textMap.toString(), textWeather.toString(), view)
+                })
             })
         })
-
-        val coinsInfo = arrayListOf<DbCrypto>()
-        cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
-
-        //if(!textWeather.isNullOrBlank()) helpGenerateApi.helpGenerateApi(textWeather.toString())
-        //TODO
-        /*
-        val dbCrypto = context?.let {
-            Room.databaseBuilder(
-                it, CryptoDataBase::class.java, "crypto-data-base"
-            ).build()
-        }
-
-        val dbDao = dbCrypto?.dbDao()
-        val coins: List<DbCrypto>? = dbDao?.getAll()
-        coins?.forEach {
-            val infoToast = Toast.makeText(context, "${it.uid} ${it.nameCoin} ${it.costCoin}", Toast.LENGTH_SHORT)
-            infoToast.show()
-        } */
-        //TODO
     }
 
     private fun addMenuItems(textMap: String?, textWeather: String?): List<MainMenuModel> {
         val items = mutableListOf<MainMenuModel>()
-        if(!textMap.isNullOrBlank()) items.add(MainMenuModel(textMap, "Выбрать", false, type = MainMenuModules.MAP))
+        if(!textMap.isNullOrBlank()) items.add(MainMenuModel(textMap, "Выбрать", true, type = MainMenuModules.MAP))
         else items.add(MainMenuModel("Карта", "Выбрать", false, type = MainMenuModules.MAP))
-        if(!textWeather.isNullOrBlank()) items.add(MainMenuModel(textWeather, "Выбрать", false, type = MainMenuModules.WEATHER))
+        if(!textWeather.isNullOrBlank()) items.add(MainMenuModel(textWeather, "Выбрать", true, type = MainMenuModules.WEATHER))
         else items.add(MainMenuModel("Погода", "Выбрать", false, type = MainMenuModules.WEATHER))
         items.add(MainMenuModel("Курс криптовалют", "Выбрать", false, type = MainMenuModules.COINS))
         return items

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,19 +35,51 @@ class Crypto_Add : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val dbCoinsList = arrayListOf<DbCrypto>()
+        cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
+        cryptoViewModel.readAllData.observe(viewLifecycleOwner, Observer { coin ->
+            coin.forEach { dbCoinsList.add(it) }
+            showRV(dbCoinsList, view)
+        })
+    }
+
+    private fun deleteDataOfCoinDatabase(data: CryptoAddModel) {
+        val name = data.nameCoin
+        val image = data.image
+        val cost = 0.00
+        val coinData = DbCrypto(0, name, image, cost)
+        cryptoViewModel.deleteCoins(coinData)
+        Toast.makeText(requireContext(), "Success delete", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun insertDataToCoinDatabase(data: CryptoAddModel) {
+        val name = data.nameCoin
+        val cost = 0.00
+        val image = data.image
+        val coinData = DbCrypto(0, name, image, cost)
+        cryptoViewModel.addCoins(coinData)
+        Toast.makeText(requireContext(), "Success add", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showRV(dbCoins: List<DbCrypto>, view: View) {
         val data = arrayListOf<CryptoAddModel>()
         val viewDataCrypto = arrayListOf<String>()
-        cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
+        var check = true
         val retrofit = Retrofit.Builder()
-             .baseUrl("https://api.coingecko.com/")
+            .baseUrl("https://api.coingecko.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val cryptoApi = retrofit.create(CryptoApi::class.java)
         CoroutineScope(Dispatchers.IO).launch {
             val infoCrypto = cryptoApi.getCrypto()
             withContext(Dispatchers.Main) {
+                dbCoins.forEach { data.add(CryptoAddModel(it.image, it.nameCoin, true)) }
                 for (coin in infoCrypto) {
-                    data.add(CryptoAddModel(coin.image, coin.name, false))
+                    for(dbCoin in dbCoins) {
+                        if(coin.name == dbCoin.nameCoin) check = false
+                    }
+                    if(check) data.add(CryptoAddModel(coin.image, coin.name, false))
+                    check = true
                 }
                 val adapter = CryptoAddAdapter(data)
                 recyclerView = view.findViewById(R.id.rv_crypto_add)
@@ -72,27 +105,6 @@ class Crypto_Add : Fragment() {
                 }
             }
         }
-
-
-
-    }
-
-    private fun deleteDataOfCoinDatabase(data: CryptoAddModel) {
-        val name = data.nameCoin
-        val image = data.image
-        val cost = 0.00
-        val coinData = DbCrypto(0, name, image, cost)
-        cryptoViewModel.deleteCoins(coinData)
-        Toast.makeText(requireContext(), "Success delete", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun insertDataToCoinDatabase(data: CryptoAddModel) {
-        val name = data.nameCoin
-        val cost = 0.00
-        val image = data.image
-        val coinData = DbCrypto(0, name, image, cost)
-        cryptoViewModel.addCoins(coinData)
-        Toast.makeText(requireContext(), "Success add", Toast.LENGTH_SHORT).show()
     }
 
     private fun testAddCrypto(): List<CryptoAddModel> {

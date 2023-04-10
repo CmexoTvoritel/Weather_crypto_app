@@ -25,6 +25,7 @@ class CryptoAddAdapter(private val cryptoList: List<CryptoAddModel>): RecyclerVi
             .placeholder(R.drawable.usd_coin_usdc_1)
             .fit()
             .into(holder.itemView.image_Coin)
+        holder.itemView.check_Enable_Coin.isChecked = cryptoList[position].enableCoin
         holder.clickCallback = clickCallback
         holder.bind(item)
     }

@@ -39,15 +39,15 @@ class Crypto_Add : Fragment() {
         cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
         cryptoViewModel.readAllData.observe(viewLifecycleOwner, Observer { coin ->
             coin.forEach { dbCoinsList.add(it) }
-            showRV(dbCoinsList, view)
         })
+        showRV(dbCoinsList, view)
     }
 
     private fun deleteDataOfCoinDatabase(data: CryptoAddModel) {
         val name = data.nameCoin
         val image = data.image
         val cost = 0.00
-        val coinData = DbCrypto(0, name, image, cost)
+        val coinData = DbCrypto(data.uid, name, image, cost)
         cryptoViewModel.deleteCoins(coinData)
         Toast.makeText(requireContext(), "Success delete", Toast.LENGTH_SHORT).show()
     }
@@ -64,7 +64,7 @@ class Crypto_Add : Fragment() {
     private fun showRV(dbCoins: List<DbCrypto>, view: View) {
         val data = arrayListOf<CryptoAddModel>()
         val viewDataCrypto = arrayListOf<String>()
-        var check = true
+        var check: Boolean
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.coingecko.com/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -73,13 +73,13 @@ class Crypto_Add : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             val infoCrypto = cryptoApi.getCrypto()
             withContext(Dispatchers.Main) {
-                dbCoins.forEach { data.add(CryptoAddModel(it.image, it.nameCoin, true)) }
+                dbCoins.forEach { data.add(CryptoAddModel(it.uid, it.image, it.nameCoin, true)) }
                 for (coin in infoCrypto) {
+                    check = true
                     for(dbCoin in dbCoins) {
                         if(coin.name == dbCoin.nameCoin) check = false
                     }
-                    if(check) data.add(CryptoAddModel(coin.image, coin.name, false))
-                    check = true
+                    if(check) data.add(CryptoAddModel(0, coin.image, coin.name, false))
                 }
                 val adapter = CryptoAddAdapter(data)
                 recyclerView = view.findViewById(R.id.rv_crypto_add)
@@ -109,7 +109,7 @@ class Crypto_Add : Fragment() {
 
     private fun testAddCrypto(): List<CryptoAddModel> {
         val items = mutableListOf<CryptoAddModel>()
-        items.add(CryptoAddModel("", "Bitcoin", false))
+        items.add(CryptoAddModel(0, "", "Bitcoin", false))
         return items
     }
 }

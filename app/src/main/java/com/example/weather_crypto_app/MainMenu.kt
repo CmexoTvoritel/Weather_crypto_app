@@ -60,7 +60,7 @@ class MainMenu : Fragment() {
                 if(weather.isNotEmpty()) textWeather = weather[0].CityName
                 cryptoViewModel.readAllData.observe(viewLifecycleOwner, Observer { coins ->
                     coins.forEach { coinsInfo.add(it) }
-                    Toast.makeText(context, coinsInfo[0].nameCoin, Toast.LENGTH_SHORT).show()
+                    if(coins.isNotEmpty()) Toast.makeText(context, coinsInfo[0].nameCoin, Toast.LENGTH_SHORT).show()
                     creatingRV(textMap.toString(), textWeather.toString(), view)
                 })
             })

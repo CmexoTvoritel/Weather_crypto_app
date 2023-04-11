@@ -21,7 +21,7 @@ class ManagerCryptoApi {
         CoroutineScope(Dispatchers.IO).launch {
             val infoCrypto = cryptoApi.getCrypto()
             infoCrypto.forEach {
-                data.add(CryptoAddModel(it.image, it.name, false))
+                data.add(CryptoAddModel(0, it.image, it.name, false))
             }
         }
         return data

@@ -12,8 +12,8 @@ interface DbDao {
     fun getAll(): LiveData<List<DbCrypto>>
 
     @Insert
-    suspend fun insertCoin(vararg dbCrypto: DbCrypto)
+    fun insertCoin(vararg dbCrypto: DbCrypto)
 
     @Delete
-    suspend fun delete(dbCrypto: DbCrypto)
+    fun delete(dbCrypto: DbCrypto)
 }

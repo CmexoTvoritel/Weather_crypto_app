@@ -30,6 +30,11 @@ class CryptoAddAdapter(private val cryptoList: List<CryptoAddModel>): RecyclerVi
         holder.bind(item)
     }
 
+    override fun onViewRecycled(holder: CryptoAddViewHolder) {
+        holder.unbind()
+        super.onViewRecycled(holder)
+    }
+
     override fun getItemCount(): Int {
         return cryptoList.size
     }

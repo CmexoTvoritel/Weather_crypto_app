@@ -73,7 +73,8 @@ class Crypto_Add : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             val infoCrypto = cryptoApi.getCrypto()
             withContext(Dispatchers.Main) {
-                dbCoins.forEach { data.add(CryptoAddModel(it.uid, it.image, it.nameCoin, true)) }
+                dbCoins.forEach { data.add(CryptoAddModel(it.uid, it.image, it.nameCoin, true))
+                viewDataCrypto.add(it.nameCoin)}
                 for (coin in infoCrypto) {
                     check = true
                     for(dbCoin in dbCoins) {
@@ -87,16 +88,21 @@ class Crypto_Add : Fragment() {
                 recyclerView.adapter = adapter
                 adapter.clickCallback = {type ->
                     if(type.enableCoin) {
+                        type.uid = viewDataCrypto.size + 1
                         viewDataCrypto.add(type.nameCoin)
                         insertDataToCoinDatabase(type)
-                        val toastEnable = Toast.makeText(context, "${type.nameCoin} is enabled", Toast.LENGTH_SHORT)
-                        toastEnable.show()
+                        type.enableCoin = true
+                        //val toastEnable = Toast.makeText(context, "${type.nameCoin} is enabled", Toast.LENGTH_SHORT)
+                        //toastEnable.show()
+                        Toast.makeText(context, "${type.enableCoin}", Toast.LENGTH_SHORT).show()
                     }
                     else {
                         viewDataCrypto.remove(type.nameCoin)
                         deleteDataOfCoinDatabase(type)
-                        val toastDisable = Toast.makeText(context, "${type.nameCoin} is disabled", Toast.LENGTH_SHORT)
-                        toastDisable.show()
+                        type.enableCoin = false
+                        //val toastDisable = Toast.makeText(context, "${type.nameCoin} is disabled", Toast.LENGTH_SHORT)
+                        //toastDisable.show()
+                        Toast.makeText(context, "${type.enableCoin}", Toast.LENGTH_SHORT).show()
                     }
                     if(viewDataCrypto.size >= 3) {
                         val warningText = Toast.makeText(context, "Вы можете выбрать не более 3 криптовалют", Toast.LENGTH_LONG)

@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -34,16 +35,29 @@ class MainActivity : AppCompatActivity() {
         findViewById<Toolbar>(R.id.toolbar)
             .setupWithNavController(navController, appBarConfiguration)
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            if(destination.id == R.id.mainMenu
-                || destination.id == R.id.editMenu) {
-                searchItem.setVisible(false)
-                editItem.setVisible(true)
-            }
-            else if(destination.id == R.id.city_Map
-                || destination.id == R.id.city_Weather
-                || destination.id == R.id.crypto_Add) {
-                searchItem.setVisible(true)
-                editItem.setVisible(false)
+            when (destination.id) {
+                R.id.mainMenu -> {
+                    editItem.title = "Править"
+                    searchItem.setVisible(false)
+                    editItem.setVisible(true)
+                    editItem.setOnMenuItemClickListener {
+                        navController.navigate(R.id.editMenu)
+                        return@setOnMenuItemClickListener true
+                    }
+                }
+                R.id.city_Map, R.id.city_Weather, R.id.crypto_Add -> {
+                    searchItem.setVisible(true)
+                    editItem.setVisible(false)
+                }
+                R.id.editMenu -> {
+                    editItem.title = "Готово"
+                    editItem.setVisible(true)
+                    searchItem.setVisible(false)
+                    editItem.setOnMenuItemClickListener {
+                        navController.navigate(R.id.mainMenu)
+                        return@setOnMenuItemClickListener true
+                    }
+                }
             }
         }
     }

@@ -1,10 +1,9 @@
 package com.example.weather_crypto_app
 
 import android.os.Bundle
+import android.view.*
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,6 +20,7 @@ class City_Map : Fragment() {
 
     lateinit var recyclerView: RecyclerView
     private lateinit var mapViewModel: MapViewModel
+    lateinit var adapter: CityMapAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_city__map, container, false)
@@ -31,7 +31,7 @@ class City_Map : Fragment() {
         val bundle = Bundle()
         var nameCity: String
 
-        val adapter = CityMapAdapter(addMapItems())
+        adapter = CityMapAdapter(addMapItems())
 
         mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
 
@@ -46,6 +46,23 @@ class City_Map : Fragment() {
         recyclerView = view.findViewById(R.id.rv_city_map)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_toolbar_menu, menu)
+        val searchItem = menu.findItem(R.id.search_info)
+        val searchView = searchItem.actionView as SearchView
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter.filter.filter(newText)
+                return true
+            }
+        })
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     private fun addMapItems(): List<CityMapModel> {

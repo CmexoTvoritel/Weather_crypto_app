@@ -1,11 +1,10 @@
 package com.example.weather_crypto_app
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -49,6 +48,9 @@ class MainMenu : Fragment() {
         var textMap = arguments?.getString("CityMap")
         var textWeather = arguments?.getString("CityWeather")
         val coinsInfo = arrayListOf<DbCrypto>()
+        //val toolbar: Toolbar = view.findViewById(R.id.toolbar)
+        //val menu: Menu = toolbar.menu
+        //val editItem: MenuItem = menu.findItem(R.id.edit_button)
 
         mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
         weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
@@ -64,6 +66,11 @@ class MainMenu : Fragment() {
                 })
             })
         })
+
+        //editItem.setOnMenuItemClickListener {
+           // findNavController().navigate(R.id.editMenu)
+           // return@setOnMenuItemClickListener true
+       // }
     }
 
     private fun addMenuItems(textMap: String?, textWeather: String?): List<MainMenuModel> {

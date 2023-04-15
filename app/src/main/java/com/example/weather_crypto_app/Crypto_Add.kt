@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +18,7 @@ import com.example.weather_crypto_app.data.db.dbCrypto.CryptoViewModel
 import com.example.weather_crypto_app.data.db.dbCrypto.DbCrypto
 import com.example.weather_crypto_app.models.CryptoAddModel
 import com.example.weather_crypto_app.presentation.ui.adapters.CryptoAddAdapter
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,6 +31,9 @@ class Crypto_Add : Fragment() {
 
     lateinit var recyclerView: RecyclerView
     lateinit var cryptoViewModel: CryptoViewModel
+    private lateinit var adapter: CryptoAddAdapter
+    private lateinit var toolbar: Toolbar
+    private lateinit var searchView: SearchView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_crypto__add, container, false)
@@ -34,6 +41,20 @@ class Crypto_Add : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        toolbar = (activity as AppCompatActivity).findViewById(R.id.toolbar)
+        searchView = (activity as AppCompatActivity).toolbar.menu.findItem(R.id.search_info).actionView as SearchView
+
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter.filter.filter(newText)
+                return true
+            }
+        })
 
         val dbCoinsList = arrayListOf<DbCrypto>()
         cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
@@ -82,7 +103,7 @@ class Crypto_Add : Fragment() {
                     }
                     if(check) data.add(CryptoAddModel(0, coin.image, coin.name, false))
                 }
-                val adapter = CryptoAddAdapter(data)
+                adapter = CryptoAddAdapter(data)
                 recyclerView = view.findViewById(R.id.rv_crypto_add)
                 recyclerView.layoutManager = LinearLayoutManager(requireContext())
                 recyclerView.adapter = adapter
@@ -92,16 +113,12 @@ class Crypto_Add : Fragment() {
                         viewDataCrypto.add(type.nameCoin)
                         insertDataToCoinDatabase(type)
                         type.enableCoin = true
-                        //val toastEnable = Toast.makeText(context, "${type.nameCoin} is enabled", Toast.LENGTH_SHORT)
-                        //toastEnable.show()
                         Toast.makeText(context, "${type.enableCoin}", Toast.LENGTH_SHORT).show()
                     }
                     else {
                         viewDataCrypto.remove(type.nameCoin)
                         deleteDataOfCoinDatabase(type)
                         type.enableCoin = false
-                        //val toastDisable = Toast.makeText(context, "${type.nameCoin} is disabled", Toast.LENGTH_SHORT)
-                        //toastDisable.show()
                         Toast.makeText(context, "${type.enableCoin}", Toast.LENGTH_SHORT).show()
                     }
                     if(viewDataCrypto.size >= 3) {
@@ -111,11 +128,5 @@ class Crypto_Add : Fragment() {
                 }
             }
         }
-    }
-
-    private fun testAddCrypto(): List<CryptoAddModel> {
-        val items = mutableListOf<CryptoAddModel>()
-        items.add(CryptoAddModel(0, "", "Bitcoin", false))
-        return items
     }
 }

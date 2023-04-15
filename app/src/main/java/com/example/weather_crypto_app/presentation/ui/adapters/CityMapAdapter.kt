@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
-import androidx.compose.ui.text.toLowerCase
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.R
 import com.example.weather_crypto_app.models.CityMapModel

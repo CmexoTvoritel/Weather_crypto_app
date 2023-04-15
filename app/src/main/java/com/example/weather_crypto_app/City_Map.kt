@@ -3,9 +3,7 @@ package com.example.weather_crypto_app
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
-import android.widget.SearchView.OnQueryTextListener
 import androidx.fragment.app.Fragment
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
@@ -32,33 +30,13 @@ class City_Map : Fragment() {
         return inflater.inflate(R.layout.fragment_city__map, container, false)
     }
 
-    /*override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.main_toolbar_menu, menu)
-        val searchItem = menu.findItem(R.id.search_info)
-        searchView = searchItem.actionView as SearchView
-        searchView.setOnQueryTextListener(object: OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                adapter.filter.filter(newText)
-                return true
-            }
-        })
-        super.onCreateOptionsMenu(menu, inflater)
-    } */
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val bundle = Bundle()
-        var nameCity: String
 
         toolbar = (activity as AppCompatActivity).findViewById(R.id.toolbar)
 
         recyclerView = view.findViewById(R.id.rv_city_map)
-
-        //(activity as AppCompatActivity).setSupportActionBar(toolbar)
 
         searchView = (activity as AppCompatActivity).toolbar.menu.findItem(R.id.search_info).actionView as SearchView
 

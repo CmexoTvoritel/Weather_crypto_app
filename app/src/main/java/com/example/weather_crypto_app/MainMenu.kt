@@ -48,9 +48,6 @@ class MainMenu : Fragment() {
         var textMap = arguments?.getString("CityMap")
         var textWeather = arguments?.getString("CityWeather")
         val coinsInfo = arrayListOf<DbCrypto>()
-        //val toolbar: Toolbar = view.findViewById(R.id.toolbar)
-        //val menu: Menu = toolbar.menu
-        //val editItem: MenuItem = menu.findItem(R.id.edit_button)
 
         mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
         weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]

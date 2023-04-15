@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import androidx.navigation.ui.AppBarConfiguration
+import com.example.weather_crypto_app.presentation.ui.adapters.CityMapAdapter
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,8 +25,8 @@ class MainActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         val menu: Menu = toolbar.menu
         val searchItem: MenuItem = menu.findItem(R.id.search_info)
+        val searchView: SearchView = searchItem.actionView as SearchView
         val editItem: MenuItem = menu.findItem(R.id.edit_button)
-
 
         val navHostFragment = supportFragmentManager.findFragmentById(
             R.id.mainHostNavActivity

@@ -5,15 +5,15 @@ import androidx.lifecycle.LiveData
 class MenuRepository(private val dbMenuDao: DbMenuDao) {
     val readAllData: LiveData<List<DbMenu>> = dbMenuDao.getAll()
 
-    suspend fun addMenu(dbMenu: DbMenu) {
+    fun addMenu(dbMenu: DbMenu) {
         dbMenuDao.insertMenu(dbMenu)
     }
 
-    suspend fun updateMenu(dbMenu: DbMenu) {
+    fun updateMenu(dbMenu: DbMenu) {
         dbMenuDao.updateMenu(dbMenu)
     }
 
-    suspend fun deleteMenu(dbMenu: DbMenu) {
+    fun deleteMenu(dbMenu: DbMenu) {
         dbMenuDao.deleteMenu(dbMenu)
     }
 }

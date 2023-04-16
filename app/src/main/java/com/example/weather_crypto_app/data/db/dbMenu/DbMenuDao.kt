@@ -9,11 +9,11 @@ interface DbMenuDao {
     fun getAll(): LiveData<List<DbMenu>>
 
     @Insert
-    suspend fun insertMenu(dbMenu: DbMenu)
+    fun insertMenu(dbMenu: DbMenu)
 
     @Update
-    suspend fun updateMenu(dbMenu: DbMenu)
+    fun updateMenu(dbMenu: DbMenu)
 
     @Delete
-    suspend fun deleteMenu(dbMenu: DbMenu)
+    fun deleteMenu(dbMenu: DbMenu)
 }

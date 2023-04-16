@@ -55,10 +55,6 @@ class MainActivity : AppCompatActivity() {
                     editItem.title = "Готово"
                     editItem.setVisible(true)
                     searchItem.setVisible(false)
-                    editItem.setOnMenuItemClickListener {
-                        navController.navigate(R.id.mainMenu)
-                        return@setOnMenuItemClickListener true
-                    }
                 }
             }
         }

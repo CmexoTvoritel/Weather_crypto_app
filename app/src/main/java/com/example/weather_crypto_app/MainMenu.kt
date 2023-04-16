@@ -17,6 +17,8 @@ import com.example.weather_crypto_app.data.db.dbCrypto.DbCrypto
 import com.example.weather_crypto_app.data.db.dbMap.DbMap
 import com.example.weather_crypto_app.data.db.dbMap.DbMapDao
 import com.example.weather_crypto_app.data.db.dbMap.MapViewModel
+import com.example.weather_crypto_app.data.db.dbMenu.DbMenu
+import com.example.weather_crypto_app.data.db.dbMenu.MenuViewModel
 import com.example.weather_crypto_app.data.db.dbWeather.DbWeather
 import com.example.weather_crypto_app.data.db.dbWeather.WeatherViewModel
 import com.example.weather_crypto_app.presentation.ui.adapters.MainMenuAdapter
@@ -33,9 +35,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MainMenu : Fragment() {
 
     lateinit var recyclerView: RecyclerView
-    lateinit var cryptoViewModel: CryptoViewModel
+    private lateinit var cryptoViewModel: CryptoViewModel
     private lateinit var mapViewModel: MapViewModel
     private lateinit var weatherViewModel: WeatherViewModel
+    private lateinit var menuViewModel: MenuViewModel
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?{
@@ -48,10 +51,13 @@ class MainMenu : Fragment() {
         var textMap = arguments?.getString("CityMap")
         var textWeather = arguments?.getString("CityWeather")
         val coinsInfo = arrayListOf<DbCrypto>()
+        val menuInfo = arrayListOf<DbMenu>()
 
         mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
         weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
+        menuViewModel = ViewModelProvider(this)[MenuViewModel::class.java]
+
 
         mapViewModel.readAllData.observe(viewLifecycleOwner, Observer { map ->
             if(map.isNotEmpty()) textMap = map[0].CityName
@@ -59,28 +65,41 @@ class MainMenu : Fragment() {
                 if(weather.isNotEmpty()) textWeather = weather[0].CityName
                 cryptoViewModel.readAllData.observe(viewLifecycleOwner, Observer { coins ->
                     coins.forEach { coinsInfo.add(it) }
-                    creatingRV(textMap.toString(), textWeather.toString(), coinsInfo, view)
+                    menuViewModel.readAllData.observe(viewLifecycleOwner, Observer { menu ->
+                        if(menu.isNotEmpty()) menu.forEach { menuInfo.add(it) }
+                        else {
+                            menuViewModel.addMenu(DbMenu(0, "Карта"))
+                            menuViewModel.addMenu(DbMenu(0, "Погода"))
+                            menuViewModel.addMenu(DbMenu(0, "Курс криптовалют"))
+                        }
+                        creatingRV(textMap.toString(), textWeather.toString(), coinsInfo, menuInfo, view)
+                    })
                 })
             })
         })
-
-        //editItem.setOnMenuItemClickListener {
-           // findNavController().navigate(R.id.editMenu)
-           // return@setOnMenuItemClickListener true
-       // }
     }
 
-    private fun addMenuItems(textMap: String?, textWeather: String?): List<MainMenuModel> {
+    private fun addMenuItems(textMap: String?, textWeather: String?, menuList: List<DbMenu>): List<MainMenuModel> {
         val items = mutableListOf<MainMenuModel>()
-        if(!textMap.isNullOrBlank()) items.add(MainMenuModel(textMap, "Выбрать", true, type = MainMenuModules.MAP))
-        else items.add(MainMenuModel("Карта", "Выбрать", false, type = MainMenuModules.MAP))
-        if(!textWeather.isNullOrBlank()) items.add(MainMenuModel(textWeather, "Выбрать", true, type = MainMenuModules.WEATHER))
-        else items.add(MainMenuModel("Погода", "Выбрать", false, type = MainMenuModules.WEATHER))
-        items.add(MainMenuModel("Курс криптовалют", "Выбрать", false, type = MainMenuModules.COINS))
+        menuList.forEach { menu ->
+            when (menu.MenuName) {
+                "Карта" -> {
+                    if(!textMap.isNullOrBlank()) items.add(MainMenuModel(textMap, "Выбрать", true, type = MainMenuModules.MAP))
+                    else items.add(MainMenuModel(menu.MenuName, "Выбрать", false, type = MainMenuModules.MAP))
+                }
+                "Погода" -> {
+                    if(!textWeather.isNullOrBlank()) items.add(MainMenuModel(textWeather, "Выбрать", true, type = MainMenuModules.WEATHER))
+                    else items.add(MainMenuModel(menu.MenuName, "Выбрать", false, type = MainMenuModules.WEATHER))
+                }
+                "Курс криптовалют" -> {
+                    items.add(MainMenuModel(menu.MenuName, "Выбрать", false, type = MainMenuModules.COINS))
+                }
+            }
+        }
         return items
     }
 
-    private fun creatingRV(Map: String, Weather: String, coinsInfo: List<DbCrypto>, view: View) {
+    private fun creatingRV(Map: String, Weather: String, coinsInfo: List<DbCrypto>, menuList: List<DbMenu>, view: View) {
         var textWeather = Weather
         var textMap = Map
         if(!textWeather.isNullOrBlank()) {
@@ -104,7 +123,7 @@ class MainMenu : Fragment() {
                     textWeather = infoWeather.name
                     //val weatherToast = Toast.makeText(context, "${infoWeather.weather[0].description}", Toast.LENGTH_SHORT)
                     //weatherToast.show()
-                    val adapter = MainMenuAdapter(addMenuItems(textMap, textWeather))
+                    val adapter = MainMenuAdapter(addMenuItems(textMap, textWeather, menuList))
                     adapter.clickCallback = { type ->
                         when (type) {
                             MainMenuModules.MAP -> findNavController().navigate(R.id.city_Map)
@@ -120,7 +139,7 @@ class MainMenu : Fragment() {
 
         }
         else {
-            val adapter = MainMenuAdapter(addMenuItems(textMap, textWeather))
+            val adapter = MainMenuAdapter(addMenuItems(textMap, textWeather, menuList))
             adapter.clickCallback = { type ->
                 when (type) {
                     MainMenuModules.MAP -> findNavController().navigate(R.id.city_Map)

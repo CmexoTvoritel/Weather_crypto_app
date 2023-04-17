@@ -88,16 +88,16 @@ class MainMenu : Fragment() {
         menuList.forEach { menu ->
             when (menu.MenuName) {
                 "Карта" -> {
-                    if(!textMap.isNullOrBlank()) items.add(MainMenuModel(menu.MenuName, "Выбрать", true, type = MainMenuModules.MAP))
-                    else items.add(MainMenuModel(menu.MenuName, "Выбрать", false, type = MainMenuModules.MAP))
+                    if(!textMap.isNullOrBlank()) items.add(MainMenuModel(menu.MenuName, "Выбрать", true, type = MainMenuModules.MAP, coinsInfo))
+                    else items.add(MainMenuModel(menu.MenuName, "Выбрать", false, type = MainMenuModules.MAP, coinsInfo))
                 }
                 "Погода" -> {
-                    if(!textWeather.isNullOrBlank()) items.add(MainMenuModel(menu.MenuName, "Выбрать", true, type = MainMenuModules.WEATHER))
-                    else items.add(MainMenuModel(menu.MenuName, "Выбрать", false, type = MainMenuModules.WEATHER))
+                    if(!textWeather.isNullOrBlank()) items.add(MainMenuModel(menu.MenuName, "Выбрать", true, type = MainMenuModules.WEATHER, coinsInfo))
+                    else items.add(MainMenuModel(menu.MenuName, "Выбрать", false, type = MainMenuModules.WEATHER, coinsInfo))
                 }
                 "Курс криптовалют" -> {
-                    if(!coinsInfo.isEmpty()) items.add(MainMenuModel(menu.MenuName, "Выбрать", true, type = MainMenuModules.COINS))
-                    else items.add(MainMenuModel(menu.MenuName, "Выбрать", false, type = MainMenuModules.COINS))
+                    if(!coinsInfo.isEmpty()) items.add(MainMenuModel(menu.MenuName, "Выбрать", true, type = MainMenuModules.COINS, coinsInfo))
+                    else items.add(MainMenuModel(menu.MenuName, "Выбрать", false, type = MainMenuModules.COINS, coinsInfo))
                 }
             }
         }

@@ -7,8 +7,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.R
+import com.example.weather_crypto_app.data.db.dbCrypto.CryptoViewModel
+import com.example.weather_crypto_app.data.db.dbCrypto.DbCrypto
 import com.example.weather_crypto_app.models.MainMenuModel
 import com.example.weather_crypto_app.models.MainMenuModules
 import com.example.weather_crypto_app.presentation.ui.viewholders.CryptoMenuViewHolder
@@ -16,6 +20,8 @@ import com.example.weather_crypto_app.presentation.ui.viewholders.MainMenuViewHo
 import kotlinx.android.synthetic.main.main_menu_item_layout.view.*
 
 class MainMenuAdapter(private val mainMenuList: List<MainMenuModel>): RecyclerView.Adapter<MainMenuViewHolder>() {
+
+    private lateinit var recyclerView: RecyclerView
 
     var clickCallback: ((type: MainMenuModules) -> Unit)? = null
 
@@ -32,6 +38,11 @@ class MainMenuAdapter(private val mainMenuList: List<MainMenuModel>): RecyclerVi
             holder.itemView.name_button.visibility = View.INVISIBLE
             holder.itemView.settings_butt.visibility = View.VISIBLE
             holder.itemView.rv_coin_info.visibility = View.VISIBLE
+            val adapter = CryptoMenuAdapter(mainMenuList[position].cryptoList)
+            recyclerView = holder.itemView.rv_coin_info
+            recyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
+            recyclerView.adapter = adapter
+
             //TODO отображение RV horizontal
         }
         else if(mainMenuList[position].nameMenu == "Карта" && mainMenuList[position].status) {

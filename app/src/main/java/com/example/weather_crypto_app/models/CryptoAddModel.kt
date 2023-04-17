@@ -4,5 +4,6 @@ data class CryptoAddModel (
         var uid: Int,
         val image: String,
         val nameCoin: String,
+        val cost: Double,
         var enableCoin: Boolean,
 )

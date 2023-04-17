@@ -67,7 +67,7 @@ class Crypto_Add : Fragment() {
     private fun deleteDataOfCoinDatabase(data: CryptoAddModel) {
         val name = data.nameCoin
         val image = data.image
-        val cost = 0.00
+        val cost = data.cost
         val coinData = DbCrypto(data.uid, name, image, cost)
         cryptoViewModel.deleteCoins(coinData)
         Toast.makeText(requireContext(), "Success delete", Toast.LENGTH_SHORT).show()
@@ -75,7 +75,7 @@ class Crypto_Add : Fragment() {
 
     private fun insertDataToCoinDatabase(data: CryptoAddModel) {
         val name = data.nameCoin
-        val cost = 0.00
+        val cost = data.cost
         val image = data.image
         val coinData = DbCrypto(0, name, image, cost)
         cryptoViewModel.addCoins(coinData)
@@ -94,14 +94,14 @@ class Crypto_Add : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             val infoCrypto = cryptoApi.getCrypto()
             withContext(Dispatchers.Main) {
-                dbCoins.forEach { data.add(CryptoAddModel(it.uid, it.image, it.nameCoin, true))
+                dbCoins.forEach { data.add(CryptoAddModel(it.uid, it.image, it.nameCoin, it.costCoin, true))
                 viewDataCrypto.add(it.nameCoin)}
                 for (coin in infoCrypto) {
                     check = true
                     for(dbCoin in dbCoins) {
                         if(coin.name == dbCoin.nameCoin) check = false
                     }
-                    if(check) data.add(CryptoAddModel(0, coin.image, coin.name, false))
+                    if(check) data.add(CryptoAddModel(0, coin.image, coin.name, coin.current_price, false))
                 }
                 adapter = CryptoAddAdapter(data)
                 recyclerView = view.findViewById(R.id.rv_crypto_add)

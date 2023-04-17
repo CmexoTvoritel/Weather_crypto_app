@@ -40,7 +40,7 @@ class MainMenuAdapter(private val mainMenuList: List<MainMenuModel>): RecyclerVi
             holder.itemView.rv_coin_info.visibility = View.VISIBLE
             val adapter = CryptoMenuAdapter(mainMenuList[position].cryptoList)
             recyclerView = holder.itemView.rv_coin_info
-            recyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
+            recyclerView.layoutManager = LinearLayoutManager(holder.itemView.context, LinearLayoutManager.HORIZONTAL, false)
             recyclerView.adapter = adapter
 
             //TODO отображение RV horizontal

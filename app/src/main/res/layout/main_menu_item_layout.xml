@@ -41,17 +41,29 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_coin_info"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="invisible"
             android:orientation="horizontal"
-            android:visibility="gone"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:itemCount="3"
-            tools:listitem="@layout/crypto_main_item_layout"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/name_menu" />
+            app:layout_constraintTop_toBottomOf="@+id/name_menu"
+            tools:itemCount="3"
+            tools:listitem="@layout/crypto_main_item_layout" />
+
+        <ImageView
+            android:id="@+id/settings_butt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="180dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/name_menu"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_settings_24" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

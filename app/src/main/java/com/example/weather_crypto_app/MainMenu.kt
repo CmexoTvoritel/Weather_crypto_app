@@ -24,6 +24,9 @@ import com.example.weather_crypto_app.data.db.dbWeather.WeatherViewModel
 import com.example.weather_crypto_app.presentation.ui.adapters.MainMenuAdapter
 import com.example.weather_crypto_app.models.MainMenuModel
 import com.example.weather_crypto_app.models.MainMenuModules
+import com.example.weather_crypto_app.presentation.ui.adapters.CryptoMenuAdapter
+import com.example.weather_crypto_app.presentation.ui.viewholders.MainMenuViewHolder
+import kotlinx.android.synthetic.main.main_menu_item_layout.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,11 +38,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MainMenu : Fragment() {
 
     lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerViewCoin: RecyclerView.ViewHolder
     private lateinit var cryptoViewModel: CryptoViewModel
     private lateinit var mapViewModel: MapViewModel
     private lateinit var weatherViewModel: WeatherViewModel
     private lateinit var menuViewModel: MenuViewModel
-
+    private lateinit var adapterCrypto: CryptoMenuAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?{
         val view = inflater.inflate(R.layout.fragment_main_menu, container, false)
@@ -79,20 +83,21 @@ class MainMenu : Fragment() {
         })
     }
 
-    private fun addMenuItems(textMap: String?, textWeather: String?, menuList: List<DbMenu>): List<MainMenuModel> {
+    private fun addMenuItems(textMap: String?, textWeather: String?, coinsInfo: List<DbCrypto>, menuList: List<DbMenu>): List<MainMenuModel> {
         val items = mutableListOf<MainMenuModel>()
         menuList.forEach { menu ->
             when (menu.MenuName) {
                 "Карта" -> {
-                    if(!textMap.isNullOrBlank()) items.add(MainMenuModel(textMap, "Выбрать", true, type = MainMenuModules.MAP))
+                    if(!textMap.isNullOrBlank()) items.add(MainMenuModel(menu.MenuName, "Выбрать", true, type = MainMenuModules.MAP))
                     else items.add(MainMenuModel(menu.MenuName, "Выбрать", false, type = MainMenuModules.MAP))
                 }
                 "Погода" -> {
-                    if(!textWeather.isNullOrBlank()) items.add(MainMenuModel(textWeather, "Выбрать", true, type = MainMenuModules.WEATHER))
+                    if(!textWeather.isNullOrBlank()) items.add(MainMenuModel(menu.MenuName, "Выбрать", true, type = MainMenuModules.WEATHER))
                     else items.add(MainMenuModel(menu.MenuName, "Выбрать", false, type = MainMenuModules.WEATHER))
                 }
                 "Курс криптовалют" -> {
-                    items.add(MainMenuModel(menu.MenuName, "Выбрать", false, type = MainMenuModules.COINS))
+                    if(!coinsInfo.isEmpty()) items.add(MainMenuModel(menu.MenuName, "Выбрать", true, type = MainMenuModules.COINS))
+                    else items.add(MainMenuModel(menu.MenuName, "Выбрать", false, type = MainMenuModules.COINS))
                 }
             }
         }
@@ -123,7 +128,7 @@ class MainMenu : Fragment() {
                     textWeather = infoWeather.name
                     //val weatherToast = Toast.makeText(context, "${infoWeather.weather[0].description}", Toast.LENGTH_SHORT)
                     //weatherToast.show()
-                    val adapter = MainMenuAdapter(addMenuItems(textMap, textWeather, menuList))
+                    val adapter = MainMenuAdapter(addMenuItems(textMap, textWeather, coinsInfo, menuList))
                     adapter.clickCallback = { type ->
                         when (type) {
                             MainMenuModules.MAP -> findNavController().navigate(R.id.city_Map)
@@ -139,7 +144,7 @@ class MainMenu : Fragment() {
 
         }
         else {
-            val adapter = MainMenuAdapter(addMenuItems(textMap, textWeather, menuList))
+            val adapter = MainMenuAdapter(addMenuItems(textMap, textWeather, coinsInfo, menuList))
             adapter.clickCallback = { type ->
                 when (type) {
                     MainMenuModules.MAP -> findNavController().navigate(R.id.city_Map)

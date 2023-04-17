@@ -2,13 +2,16 @@ package com.example.weather_crypto_app.presentation.ui.adapters
 
 import android.content.ContentProvider
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.R
 import com.example.weather_crypto_app.models.MainMenuModel
 import com.example.weather_crypto_app.models.MainMenuModules
+import com.example.weather_crypto_app.presentation.ui.viewholders.CryptoMenuViewHolder
 import com.example.weather_crypto_app.presentation.ui.viewholders.MainMenuViewHolder
 import kotlinx.android.synthetic.main.main_menu_item_layout.view.*
 
@@ -24,8 +27,24 @@ class MainMenuAdapter(private val mainMenuList: List<MainMenuModel>): RecyclerVi
     override fun onBindViewHolder(holder: MainMenuViewHolder, position: Int) {
         holder.itemView.name_menu.text = mainMenuList[position].nameMenu
         val item = mainMenuList[position]
+        holder.itemView.rv_coin_info.visibility = View.INVISIBLE
         if(mainMenuList[position].nameMenu == "Курс криптовалют" && mainMenuList[position].status) {
-            //TODO отображение RV horizontal и сокрытие button add
+            holder.itemView.name_button.visibility = View.INVISIBLE
+            holder.itemView.settings_butt.visibility = View.VISIBLE
+            holder.itemView.rv_coin_info.visibility = View.VISIBLE
+            //TODO отображение RV horizontal
+        }
+        else if(mainMenuList[position].nameMenu == "Карта" && mainMenuList[position].status) {
+            holder.itemView.name_button.visibility = View.INVISIBLE
+            holder.itemView.settings_butt.visibility = View.VISIBLE
+        }
+        else if(mainMenuList[position].nameMenu == "Погода" && mainMenuList[position].status) {
+            holder.itemView.name_button.visibility = View.INVISIBLE
+            holder.itemView.settings_butt.visibility = View.VISIBLE
+        }
+        else {
+            holder.itemView.name_button.visibility = View.VISIBLE
+            holder.itemView.settings_butt.visibility = View.INVISIBLE
         }
         holder.clickCallback = clickCallback
         holder.bind(item)

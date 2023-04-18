@@ -10,6 +10,6 @@ data class DbCrypto(
     val uid: Int,
     val nameCoin: String,
     val image: String,
-    val costCoin: Double,
-    val price_change: Double,
+    var costCoin: Double,
+    var price_change: Double,
 )

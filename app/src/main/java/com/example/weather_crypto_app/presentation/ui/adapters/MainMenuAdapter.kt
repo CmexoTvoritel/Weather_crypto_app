@@ -17,7 +17,9 @@ import com.example.weather_crypto_app.models.MainMenuModel
 import com.example.weather_crypto_app.models.MainMenuModules
 import com.example.weather_crypto_app.presentation.ui.viewholders.CryptoMenuViewHolder
 import com.example.weather_crypto_app.presentation.ui.viewholders.MainMenuViewHolder
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.main_menu_item_layout.view.*
+import kotlin.math.floor
 
 class MainMenuAdapter(private val mainMenuList: List<MainMenuModel>): RecyclerView.Adapter<MainMenuViewHolder>() {
 
@@ -34,6 +36,7 @@ class MainMenuAdapter(private val mainMenuList: List<MainMenuModel>): RecyclerVi
         holder.itemView.name_menu.text = mainMenuList[position].nameMenu
         val item = mainMenuList[position]
         holder.itemView.rv_coin_info.visibility = View.INVISIBLE
+        holder.itemView.card_weather.visibility = View.INVISIBLE
         if(mainMenuList[position].nameMenu == "Курс криптовалют" && mainMenuList[position].status) {
             holder.itemView.name_button.visibility = View.INVISIBLE
             holder.itemView.settings_butt.visibility = View.VISIBLE
@@ -52,6 +55,23 @@ class MainMenuAdapter(private val mainMenuList: List<MainMenuModel>): RecyclerVi
         else if(mainMenuList[position].nameMenu == "Погода" && mainMenuList[position].status) {
             holder.itemView.name_button.visibility = View.INVISIBLE
             holder.itemView.settings_butt.visibility = View.VISIBLE
+            holder.itemView.card_weather.visibility = View.VISIBLE
+            holder.itemView.name_city_weather.text = mainMenuList[position].weatherList.name_city
+            holder.itemView.id_weather.text = mainMenuList[position].weatherList.name_weather
+            holder.itemView.current_temp.text = mainMenuList[position].weatherList.temp.toString() + "°C"
+            Picasso.get()
+                .load("https://openweathermap.org/img/wn/${mainMenuList[position].weatherList.icon}@2x.png")
+                .placeholder(R.drawable.usd_coin_usdc_1)
+                .fit()
+                .into(holder.itemView.weather_image)
+            holder.itemView.temp_feel.text = mainMenuList[position].weatherList.feel_temp.toString() + "°C"
+            holder.itemView.wind_info.text = mainMenuList[position].weatherList.wind.toString() + " м/с"
+            holder.itemView.pressure_weather.text = (floor((mainMenuList[position].weatherList.pressure * 0.750063755419211) * 100)/100).toString() + "мм"
+            holder.itemView.wetness_weather.text = mainMenuList[position].weatherList.wetness.toString() + " %"
+            holder.itemView.cloud_weather.text = mainMenuList[position].weatherList.cloud.toString() + " %"
+            holder.itemView.visibility_weather.text = (floor((mainMenuList[position].weatherList.visibility_weather / 1000) * 100) / 100).toString() + " км"
+            holder.itemView.low_temp.text = mainMenuList[position].weatherList.min_temp.toString() + "°"
+            holder.itemView.high_temp.text = mainMenuList[position].weatherList.max_temp.toString() + "°"
         }
         else {
             holder.itemView.name_button.visibility = View.VISIBLE

@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import kotlin.math.floor
 
 
 class Crypto_Add : Fragment() {
@@ -68,18 +69,18 @@ class Crypto_Add : Fragment() {
         val name = data.nameCoin
         val image = data.image
         val cost = data.cost
-        val coinData = DbCrypto(data.uid, name, image, cost)
+        val change_cost = data.price_change
+        val coinData = DbCrypto(data.uid, name, image, cost, change_cost)
         cryptoViewModel.deleteCoins(coinData)
-        Toast.makeText(requireContext(), "Success delete", Toast.LENGTH_SHORT).show()
     }
 
     private fun insertDataToCoinDatabase(data: CryptoAddModel) {
         val name = data.nameCoin
         val cost = data.cost
         val image = data.image
-        val coinData = DbCrypto(0, name, image, cost)
+        val change_cost = data.price_change
+        val coinData = DbCrypto(0, name, image, cost, change_cost)
         cryptoViewModel.addCoins(coinData)
-        Toast.makeText(requireContext(), "Success add", Toast.LENGTH_SHORT).show()
     }
 
     private fun showRV(dbCoins: List<DbCrypto>, view: View) {
@@ -94,14 +95,14 @@ class Crypto_Add : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             val infoCrypto = cryptoApi.getCrypto()
             withContext(Dispatchers.Main) {
-                dbCoins.forEach { data.add(CryptoAddModel(it.uid, it.image, it.nameCoin, it.costCoin, true))
+                dbCoins.forEach { data.add(CryptoAddModel(it.uid, it.image, it.nameCoin, it.costCoin, it.price_change, true))
                 viewDataCrypto.add(it.nameCoin)}
                 for (coin in infoCrypto) {
                     check = true
                     for(dbCoin in dbCoins) {
                         if(coin.name == dbCoin.nameCoin) check = false
                     }
-                    if(check) data.add(CryptoAddModel(0, coin.image, coin.name, coin.current_price, false))
+                    if(check) data.add(CryptoAddModel(0, coin.image, coin.name, floor(coin.current_price * 100)/100, floor(coin.price_change_24h * 100)/100, false))
                 }
                 adapter = CryptoAddAdapter(data)
                 recyclerView = view.findViewById(R.id.rv_crypto_add)
@@ -113,13 +114,11 @@ class Crypto_Add : Fragment() {
                         viewDataCrypto.add(type.nameCoin)
                         insertDataToCoinDatabase(type)
                         type.enableCoin = true
-                        Toast.makeText(context, "${type.enableCoin}", Toast.LENGTH_SHORT).show()
                     }
                     else {
                         viewDataCrypto.remove(type.nameCoin)
                         deleteDataOfCoinDatabase(type)
                         type.enableCoin = false
-                        Toast.makeText(context, "${type.enableCoin}", Toast.LENGTH_SHORT).show()
                     }
                     if(viewDataCrypto.size >= 3) {
                         val warningText = Toast.makeText(context, "Вы можете выбрать не более 3 криптовалют", Toast.LENGTH_LONG)

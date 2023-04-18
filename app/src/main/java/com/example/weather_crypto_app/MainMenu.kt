@@ -38,12 +38,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MainMenu : Fragment() {
 
     lateinit var recyclerView: RecyclerView
-    private lateinit var recyclerViewCoin: RecyclerView.ViewHolder
     private lateinit var cryptoViewModel: CryptoViewModel
     private lateinit var mapViewModel: MapViewModel
     private lateinit var weatherViewModel: WeatherViewModel
     private lateinit var menuViewModel: MenuViewModel
-    private lateinit var adapterCrypto: CryptoMenuAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?{
         val view = inflater.inflate(R.layout.fragment_main_menu, container, false)
@@ -52,8 +50,8 @@ class MainMenu : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var textMap = arguments?.getString("CityMap")
-        var textWeather = arguments?.getString("CityWeather")
+        var textMap = "Карта"
+        var textWeather = "Погода"
         val coinsInfo = arrayListOf<DbCrypto>()
         val menuInfo = arrayListOf<DbMenu>()
 
@@ -88,11 +86,11 @@ class MainMenu : Fragment() {
         menuList.forEach { menu ->
             when (menu.MenuName) {
                 "Карта" -> {
-                    if(!textMap.isNullOrBlank()) items.add(MainMenuModel(menu.MenuName, "Выбрать", true, type = MainMenuModules.MAP, coinsInfo))
+                    if(textMap != "Карта") items.add(MainMenuModel(menu.MenuName, "Выбрать", true, type = MainMenuModules.MAP, coinsInfo))
                     else items.add(MainMenuModel(menu.MenuName, "Выбрать", false, type = MainMenuModules.MAP, coinsInfo))
                 }
                 "Погода" -> {
-                    if(!textWeather.isNullOrBlank()) items.add(MainMenuModel(menu.MenuName, "Выбрать", true, type = MainMenuModules.WEATHER, coinsInfo))
+                    if(textWeather != "Погода") items.add(MainMenuModel(menu.MenuName, "Выбрать", true, type = MainMenuModules.WEATHER, coinsInfo))
                     else items.add(MainMenuModel(menu.MenuName, "Выбрать", false, type = MainMenuModules.WEATHER, coinsInfo))
                 }
                 "Курс криптовалют" -> {
@@ -107,9 +105,7 @@ class MainMenu : Fragment() {
     private fun creatingRV(Map: String, Weather: String, coinsInfo: List<DbCrypto>, menuList: List<DbMenu>, view: View) {
         var textWeather = Weather
         var textMap = Map
-        if(!textWeather.isNullOrBlank()) {
-            //val infoToast = Toast.makeText(context, "${textWeather}", Toast.LENGTH_SHORT)
-            //infoToast.show()
+        if(textWeather != "Погода") {
             val retrofitCords = Retrofit.Builder()
                 .baseUrl("https://api.openweathermap.org/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -126,8 +122,6 @@ class MainMenu : Fragment() {
                 val infoWeather = infoWeatherApi.getWeather(coordsWeather[0].lat.toString(), coordsWeather[0].lon.toString())
                 withContext(Dispatchers.Main) {
                     textWeather = infoWeather.name
-                    //val weatherToast = Toast.makeText(context, "${infoWeather.weather[0].description}", Toast.LENGTH_SHORT)
-                    //weatherToast.show()
                     val adapter = MainMenuAdapter(addMenuItems(textMap, textWeather, coinsInfo, menuList))
                     adapter.clickCallback = { type ->
                         when (type) {
@@ -139,6 +133,7 @@ class MainMenu : Fragment() {
                     recyclerView = view.findViewById(R.id.rv_main_menu)
                     recyclerView.layoutManager = LinearLayoutManager(requireContext())
                     recyclerView.adapter = adapter
+                    recyclerView.getAdapter()?.notifyDataSetChanged()
                 }
             }
 
@@ -162,30 +157,4 @@ class MainMenu : Fragment() {
         fun newInstance() = MainMenu()
     }
 
-}
-
-private class HelpGenerateWeatherApi() {
-    fun generateApiWeather(city: String?) {
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val cordsApi = retrofit.create(CordsWeatherApi::class.java)
-        CoroutineScope(Dispatchers.IO).launch {
-            val cords = cordsApi.getCordsWeather(city)
-            val lat = cords[0].lat
-            val lon = cords[0].lon
-        }
-    }
-
-    fun getDataWeatherApi(lat: Double, lon: Double) {
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val infoWeatherApi = retrofit.create(WeatherApi::class.java)
-        CoroutineScope(Dispatchers.IO).launch {
-            val infoWeather = infoWeatherApi.getWeather(lat.toString(), lon.toString())
-        }
-    }
 }

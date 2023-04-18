@@ -1,7 +1,9 @@
 package com.example.weather_crypto_app.presentation.ui.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.graphics.Color
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.R
 import com.example.weather_crypto_app.data.db.dbCrypto.DbCrypto
@@ -23,8 +25,20 @@ class CryptoMenuAdapter(private val cryptoList: List<DbCrypto>): RecyclerView.Ad
             .placeholder(R.drawable.usd_coin_usdc_1)
             .fit()
             .into(holder.itemView.image_of_coin)
-        holder.itemView.total_cost.text = cryptoList[position].costCoin.toString()
         holder.itemView.image_of_coin
+        holder.itemView.total_cost.text = cryptoList[position].costCoin.toString() + " $"
+        holder.itemView.up_cost.visibility = View.INVISIBLE
+        holder.itemView.down_cost.visibility = View.INVISIBLE
+        if(cryptoList[position].price_change > 0) {
+            holder.itemView.changes_cost.text = "+" + cryptoList[position].price_change.toString()
+            holder.itemView.up_cost.visibility = View.VISIBLE
+            holder.itemView.changes_cost.setTextColor(Color.parseColor("#36DD0D"))
+        }
+        else {
+            holder.itemView.changes_cost.text = cryptoList[position].price_change.toString()
+            holder.itemView.down_cost.visibility = View.VISIBLE
+            holder.itemView.changes_cost.setTextColor(Color.parseColor("#FF2727"))
+        }
     }
 
     override fun getItemCount(): Int {

@@ -66,8 +66,10 @@ class MainMenu : Fragment() {
             weatherViewModel.readAllData.observe(viewLifecycleOwner, Observer { weather ->
                 if(weather.isNotEmpty()) textWeather = weather[0].CityName
                 cryptoViewModel.readAllData.observe(viewLifecycleOwner, Observer { coins ->
+                    coinsInfo.clear()
                     coins.forEach { coinsInfo.add(it) }
                     menuViewModel.readAllData.observe(viewLifecycleOwner, Observer { menu ->
+                        menuInfo.clear()
                         if(menu.isNotEmpty()) menu.forEach { menuInfo.add(it) }
                         else {
                             menuViewModel.addMenu(DbMenu(0, "Карта"))
@@ -133,7 +135,8 @@ class MainMenu : Fragment() {
                     recyclerView = view.findViewById(R.id.rv_main_menu)
                     recyclerView.layoutManager = LinearLayoutManager(requireContext())
                     recyclerView.adapter = adapter
-                    recyclerView.getAdapter()?.notifyDataSetChanged()
+                    Toast.makeText(context, "HEEE", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(context, "${coinsInfo[2].nameCoin}", Toast.LENGTH_SHORT).show()
                 }
             }
 

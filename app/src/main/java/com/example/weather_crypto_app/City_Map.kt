@@ -58,8 +58,8 @@ class City_Map : Fragment() {
 
         adapter.clickCallback = { type->
             mapViewModel.readAllData.observe(viewLifecycleOwner, Observer { it  ->
-                if(it.isNotEmpty()) mapViewModel.updateMap(DbMap(1, type.nameApiCity))
-                else mapViewModel.addCity(DbMap(0, type.nameApiCity))
+                if(it.isNotEmpty()) mapViewModel.updateMap(DbMap(1, type.nameApiCity, type.pointCity.lan, type.pointCity.lon))
+                else mapViewModel.addCity(DbMap(0, type.nameApiCity, type.pointCity.lan, type.pointCity.lon))
                 bundle.putString("CityMap", type.nameApiCity)
                 findNavController().navigate(R.id.mainMenu, bundle)
             })

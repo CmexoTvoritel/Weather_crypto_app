@@ -13,6 +13,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import androidx.navigation.ui.AppBarConfiguration
 import com.example.weather_crypto_app.presentation.ui.adapters.CityMapAdapter
+import com.yandex.mapkit.MapKitFactory
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,6 +22,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MapKitFactory.setApiKey("2eb5effa-b61b-4f6e-8294-8a3cbac2b5ce")
+        MapKitFactory.initialize(this)
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         val menu: Menu = toolbar.menu
@@ -58,6 +61,16 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        MapKitFactory.getInstance().onStart();
+    }
+
+    override fun onStop() {
+        MapKitFactory.getInstance().onStop();
+        super.onStop()
     }
 
     override fun onSupportNavigateUp(): Boolean {

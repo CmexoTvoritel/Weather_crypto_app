@@ -25,11 +25,14 @@
         <argument
             android:name="CityWeather"
             app:argType="string"
-            android:defaultValue="Погода" />
+            android:defaultValue="" />
         <argument
             android:name="CryptoAdd"
             app:argType="string"
             android:defaultValue="Курс криптовалют" />
+        <action
+            android:id="@+id/action_mainMenu_to_editMenu"
+            app:destination="@id/editMenu" />
     </fragment>
     <fragment
         android:id="@+id/city_Weather"
@@ -58,4 +61,13 @@
         android:name="com.example.weather_crypto_app.Crypto_Add"
         android:label="Выбор криптовалюты"
         tools:layout="@layout/fragment_crypto__add" />
+    <fragment
+        android:id="@+id/editMenu"
+        android:name="com.example.weather_crypto_app.EditMenu"
+        android:label="Главный экран"
+        tools:layout="@layout/fragment_edit_menu" >
+        <action
+            android:id="@+id/action_editMenu_to_mainMenu"
+            app:destination="@id/mainMenu" />
+    </fragment>
 </navigation>

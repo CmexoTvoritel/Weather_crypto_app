@@ -5,16 +5,28 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.weather_crypto_app.data.db.dbWeather.DbWeather
+import com.example.weather_crypto_app.data.db.dbWeather.WeatherViewModel
 import com.example.weather_crypto_app.data.names.city.CityNamesWeather
 import com.example.weather_crypto_app.models.CityWeatherModel
 import com.example.weather_crypto_app.presentation.ui.adapters.CityWeatherAdapter
+import kotlinx.android.synthetic.main.activity_main.*
 
 class City_Weather : Fragment() {
 
     lateinit var recyclerView: RecyclerView
+    private lateinit var weatherViewModel: WeatherViewModel
+    private lateinit var adapter: CityWeatherAdapter
+    private lateinit var toolbar: Toolbar
+    private lateinit var searchView: SearchView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_city__weather, container, false)
@@ -23,14 +35,36 @@ class City_Weather : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val bundle = Bundle()
+        recyclerView = view.findViewById(R.id.rv_city_weather)
+        toolbar = (activity as AppCompatActivity).findViewById(R.id.toolbar)
+        searchView = (activity as AppCompatActivity).toolbar.menu.findItem(R.id.search_info).actionView as SearchView
 
-        val adapter = CityWeatherAdapter(addWeatherItems())
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter.filter.filter(newText)
+                return true
+            }
+
+        })
+
+        adapter = CityWeatherAdapter(addWeatherItems())
+
+        weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
 
         adapter.clickCallback = {type ->
-            bundle.putString("CityWeather", type.nameApiCity)
-            findNavController().navigate(R.id.mainMenu, bundle)}
+            weatherViewModel.readAllData.observe(viewLifecycleOwner, Observer { it ->
+                if(it.isNotEmpty()) weatherViewModel.updateCity(DbWeather(1, type.nameApiCity))
+                else weatherViewModel.addCity(DbWeather(0, type.nameApiCity))
+                bundle.putString("CityWeather", type.nameApiCity)
+                findNavController().navigate(R.id.mainMenu, bundle)
+            })
+        }
 
-        recyclerView = view.findViewById(R.id.rv_city_weather)
+
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
     }

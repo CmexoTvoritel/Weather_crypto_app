@@ -1,18 +1,15 @@
 package com.example.weather_crypto_app
 
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.example.weather_crypto_app.data.CordsWeatherApi
 import com.example.weather_crypto_app.data.CryptoApi
 import com.example.weather_crypto_app.data.WeatherApi
@@ -27,20 +24,13 @@ import com.example.weather_crypto_app.models.MainMenuModel
 import com.example.weather_crypto_app.models.MainMenuModules
 import com.example.weather_crypto_app.models.weather.WeatherMenuModel
 import com.example.weather_crypto_app.presentation.ui.adapters.MainMenuAdapter
-import com.yandex.mapkit.Animation
-import com.yandex.mapkit.MapKitFactory
-import com.yandex.mapkit.geometry.Point
-import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.mapview.MapView
-import com.yandex.runtime.image.ImageProvider
-import kotlinx.android.synthetic.main.main_menu_item_layout.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
 import kotlin.math.floor
 
 
@@ -52,7 +42,6 @@ class MainMenu : Fragment() {
     private lateinit var weatherViewModel: WeatherViewModel
     private lateinit var menuViewModel: MenuViewModel
     private lateinit var adapter: MainMenuAdapter
-    lateinit var mapView: MapView
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?{

@@ -4,9 +4,9 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/main_blue</item>
         <item name="colorPrimaryVariant">@color/main_blue</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/main_blue</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/white</item>
+        <item name="colorSecondary">@color/main_blue</item>
         <item name="colorSecondaryVariant">@color/white</item>
         <item name="colorOnSecondary">@color/white</item>
         <item name="windowActionBar">false</item>

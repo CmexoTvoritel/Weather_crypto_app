@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red_cost">#FF2727</color>
     <color name="green_cost">#36DD0D</color>
+    <color name="main_blue">#46A4CC</color>
 </resources>

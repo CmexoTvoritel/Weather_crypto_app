@@ -1,8 +1,14 @@
 package com.example.weather_crypto_app.presentation.ui.adapters
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.VectorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.R
@@ -11,24 +17,20 @@ import com.example.weather_crypto_app.models.MainMenuModules
 import com.example.weather_crypto_app.presentation.ui.viewholders.MainMenuViewHolder
 import com.squareup.picasso.Picasso
 import com.yandex.mapkit.Animation
-import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
-import com.yandex.mapkit.map.CameraPosition
-import com.yandex.mapkit.mapview.MapView
+import com.yandex.mapkit.map.*
+import com.yandex.runtime.image.ImageProvider
 import kotlinx.android.synthetic.main.main_menu_item_layout.view.*
 import kotlin.math.floor
 
-class MainMenuAdapter(private val mainMenuList: List<MainMenuModel>): RecyclerView.Adapter<MainMenuViewHolder>() {
+class MainMenuAdapter(private val context: Context, private val mainMenuList: List<MainMenuModel>): RecyclerView.Adapter<MainMenuViewHolder>() {
 
-    private lateinit var mapView: MapView
     private lateinit var recyclerView: RecyclerView
 
     var clickCallback: ((type: MainMenuModules) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainMenuViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.main_menu_item_layout, parent, false)
-        //MapKitFactory.setApiKey("2eb5effa-b61b-4f6e-8294-8a3cbac2b5ce")
-        //MapKitFactory.initialize(parent.context)
         return MainMenuViewHolder(view)
     }
 
@@ -42,33 +44,37 @@ class MainMenuAdapter(private val mainMenuList: List<MainMenuModel>): RecyclerVi
             holder.itemView.name_button.visibility = View.INVISIBLE
             holder.itemView.settings_butt.visibility = View.VISIBLE
             holder.itemView.rv_coin_info.visibility = View.VISIBLE
-            val adapter = CryptoMenuAdapter(mainMenuList[position].cryptoList)
+            val adapterCrypto = CryptoMenuAdapter(mainMenuList[position].cryptoList)
             recyclerView = holder.itemView.rv_coin_info
             recyclerView.layoutManager = LinearLayoutManager(holder.itemView.context, LinearLayoutManager.HORIZONTAL, false)
-            recyclerView.adapter = adapter
+            recyclerView.adapter = adapterCrypto
+            adapterCrypto.notifyDataSetChanged()
 
-            //TODO отображение RV horizontal
         }
         else if(mainMenuList[position].nameMenu == "Карта" && mainMenuList[position].status) {
             holder.itemView.name_button.visibility = View.INVISIBLE
             holder.itemView.settings_butt.visibility = View.VISIBLE
-            holder.itemView.map_view.visibility = View.VISIBLE
-            mapView = holder.itemView.findViewById(R.id.map_view) as MapView
+            holder.mapView.visibility = View.VISIBLE
 
-            mapView.map.move(
-                CameraPosition(Point(mainMenuList[position].needPoint.lan, mainMenuList[position].needPoint.lon), 8.0f, 0.0f, 0.0f)
+            holder.mapView.map.move(
+                CameraPosition(Point(mainMenuList[position].needPoint.lan, mainMenuList[position].needPoint.lon), 8.0f, 0.0f, 0.0f),
+                Animation(Animation.Type.SMOOTH, 3f), null
             )
-            val mapObjectCollection = mapView.map.mapObjects.addCollection()
-            mapObjectCollection.addPlacemark(Point(mainMenuList[position].needPoint.lan, mainMenuList[position].needPoint.lon))
-            //holder.itemView.map_view.visibility = View.VISIBLE
-            //val point = Point(55.755814, 37.617635)
-            //val mapObjectCollection = holder.mapView.map.mapObjects.addCollection()
-            //mapObjectCollection.addPlacemark(point)
-            //holder.mapView.map.move(CameraPosition(point, 16.0f, 0.0f, 0.0f))
-            //mapView.map.move(CameraPosition(Point(55.755814, 37.617635), 11.0f, 0.0f, 0.0f),
-            //Animation(Animation.Type.SMOOTH, 300f), null)
+            val vectorDrawable = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_baseline_location_on_24, null) as VectorDrawable
+            val bitmap = Bitmap.createBitmap(vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
+            vectorDrawable.draw(canvas)
+            val imagePoint = ImageProvider.fromBitmap(bitmap)
 
 
+            val mapObjectCollection = holder.mapView.map.mapObjects.addCollection()
+            mapObjectCollection.addPlacemark(
+                Point(
+                    mainMenuList[position].needPoint.lan,
+                    mainMenuList[position].needPoint.lon
+                ),imagePoint
+            )
         }
         else if(mainMenuList[position].nameMenu == "Погода" && mainMenuList[position].status) {
             holder.itemView.name_button.visibility = View.INVISIBLE
@@ -97,6 +103,11 @@ class MainMenuAdapter(private val mainMenuList: List<MainMenuModel>): RecyclerVi
         }
         holder.clickCallback = clickCallback
         holder.bind(item)
+    }
+
+    override fun onViewRecycled(holder: MainMenuViewHolder) {
+        holder.unbind()
+        super.onViewRecycled(holder)
     }
 
     override fun getItemCount(): Int {

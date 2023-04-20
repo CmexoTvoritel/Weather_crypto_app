@@ -1,15 +1,18 @@
 package com.example.weather_crypto_app
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.example.weather_crypto_app.data.CordsWeatherApi
 import com.example.weather_crypto_app.data.CryptoApi
 import com.example.weather_crypto_app.data.WeatherApi
@@ -29,6 +32,7 @@ import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.mapview.MapView
+import com.yandex.runtime.image.ImageProvider
 import kotlinx.android.synthetic.main.main_menu_item_layout.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -65,13 +69,6 @@ class MainMenu : Fragment() {
         val menuInfo = arrayListOf<DbMenu>()
 
 
-        //MapKitFactory.initialize(activity?.applicationContext)
-        //mapView = view.findViewById(R.id.Map_View) as MapView
-        //mapView.getMap().move(
-        //    CameraPosition(Point(55.751574, 37.573856), 11.0f, 0.0f, 0.0f)
-        //)
-
-
         mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
         weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
@@ -96,26 +93,12 @@ class MainMenu : Fragment() {
                             menuViewModel.addMenu(DbMenu(0, "Погода"))
                             menuViewModel.addMenu(DbMenu(0, "Курс криптовалют"))
                         }
-                        creatingRV(textMap.toString(), textWeather.toString(), coinsInfo, menuInfo, needPoint, view)
+                        creatingRV(textMap, textWeather, coinsInfo, menuInfo, needPoint, view)
                     })
                 })
             })
         })
     }
-
-    //override fun onStart() {
-    //    super.onStart()
-    //    MapKitFactory.getInstance().onStart();
-    //    //mapView.onStart();
-    //}
-
-    //override fun onStop() {
-    //    //mapView.onStop();
-    //    MapKitFactory.getInstance().onStop();
-    //    super.onStop()
-    //}
-
-
 
     private fun addMenuItems(textMap: String?, textWeather: String?, coinsInfo: List<DbCrypto>, menuList: List<DbMenu>, needPoint: PointCity, weatherInfo: WeatherMenuModel): List<MainMenuModel> {
         val items = mutableListOf<MainMenuModel>()
@@ -175,7 +158,7 @@ class MainMenu : Fragment() {
                     weatherInfo.min_temp = infoWeather.main.temp_min
                     weatherInfo.max_temp = infoWeather.main.temp_max
 
-                    adapter = MainMenuAdapter(addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo))
+                    adapter = MainMenuAdapter(requireContext(), addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo))
                     adapter.clickCallback = { type ->
                         when (type) {
                             MainMenuModules.MAP -> findNavController().navigate(R.id.city_Map)
@@ -184,6 +167,7 @@ class MainMenu : Fragment() {
                         }
                     }
                     recyclerView = view.findViewById(R.id.rv_main_menu)
+                    recyclerView.setHasFixedSize(true)
                     recyclerView.layoutManager = LinearLayoutManager(requireContext())
                     recyclerView.adapter = adapter
                     if(coinsInfo.isNotEmpty()) {
@@ -209,6 +193,7 @@ class MainMenu : Fragment() {
                                             }
                                         }
                                         adapter = MainMenuAdapter(
+                                            requireContext(),
                                             addMenuItems(
                                                 textMap,
                                                 textWeather,
@@ -218,8 +203,9 @@ class MainMenu : Fragment() {
                                                 weatherInfo
                                             )
                                         )
-                                        recyclerView.adapter = adapter
-                                        adapter.notifyDataSetChanged()
+                                        adapter = recyclerView.adapter as MainMenuAdapter
+                                        val position = menuList.indexOfFirst{ it.MenuName == "Курс криптовалют" }
+                                        adapter.notifyItemChanged(position)
                                     }
                                 }
                                 handler.postDelayed(this, 20000)
@@ -232,7 +218,7 @@ class MainMenu : Fragment() {
 
         }
         else {
-            val adapter = MainMenuAdapter(addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo))
+            val adapter = MainMenuAdapter(requireContext(), addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo))
             adapter.clickCallback = { type ->
                 when (type) {
                     MainMenuModules.MAP -> findNavController().navigate(R.id.city_Map)
@@ -241,6 +227,7 @@ class MainMenu : Fragment() {
                 }
             }
             recyclerView = view.findViewById(R.id.rv_main_menu)
+            recyclerView.setHasFixedSize(true)
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
             recyclerView.adapter = adapter
         }

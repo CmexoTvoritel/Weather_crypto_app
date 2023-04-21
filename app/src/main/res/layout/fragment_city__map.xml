@@ -10,10 +10,32 @@
         android:id="@+id/rv_city_map"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chosen_city"
+        android:overScrollMode="never"
+        tools:itemCount="10"
+        tools:listitem="@layout/city_map_item_layout" />
+
+    <TextView
+        android:id="@+id/chosen_city"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@color/main_blue"
+        android:gravity="start"
+        android:paddingStart="10dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:text="Не выбрано"
+        android:textColor="@color/white"
+        android:textSize="23sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/city_map_item_layout"
-        tools:itemCount="10"/>
+        tools:ignore="TextContrastCheck" />
 </androidx.constraintlayout.widget.ConstraintLayout>

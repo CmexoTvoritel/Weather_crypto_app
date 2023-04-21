@@ -2,6 +2,7 @@ package com.example.weather_crypto_app
 
 import android.os.Bundle
 import android.view.*
+import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
@@ -34,6 +35,14 @@ class City_Map : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val bundle = Bundle()
 
+        val chosenCity = view.findViewById<TextView>(R.id.chosen_city)
+
+        mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
+        mapViewModel.readAllData.observe(viewLifecycleOwner, Observer { it ->
+            if(it.isNotEmpty()) chosenCity.text = "Выбран город: ${it[0].ruCityName}"
+            else chosenCity.text = "Не выбрано"
+        })
+
         toolbar = (activity as AppCompatActivity).findViewById(R.id.toolbar)
 
         recyclerView = view.findViewById(R.id.rv_city_map)
@@ -54,12 +63,12 @@ class City_Map : Fragment() {
 
         adapter = CityMapAdapter(addMapItems())
 
-        mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
+
 
         adapter.clickCallback = { type->
             mapViewModel.readAllData.observe(viewLifecycleOwner, Observer { it  ->
-                if(it.isNotEmpty()) mapViewModel.updateMap(DbMap(1, type.nameApiCity, type.pointCity.lan, type.pointCity.lon))
-                else mapViewModel.addCity(DbMap(0, type.nameApiCity, type.pointCity.lan, type.pointCity.lon))
+                if(it.isNotEmpty()) mapViewModel.updateMap(DbMap(1, type.nameApiCity, type.fullNameCity, type.pointCity.lan, type.pointCity.lon))
+                else mapViewModel.addCity(DbMap(0, type.nameApiCity, type.fullNameCity, type.pointCity.lan, type.pointCity.lon))
                 bundle.putString("CityMap", type.nameApiCity)
                 findNavController().navigate(R.id.mainMenu, bundle)
             })

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -35,9 +36,16 @@ class City_Weather : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val bundle = Bundle()
+        weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         recyclerView = view.findViewById(R.id.rv_city_weather)
         toolbar = (activity as AppCompatActivity).findViewById(R.id.toolbar)
         searchView = (activity as AppCompatActivity).toolbar.menu.findItem(R.id.search_info).actionView as SearchView
+
+        val textChosen = view.findViewById<TextView>(R.id.chosen_city)
+        weatherViewModel.readAllData.observe(viewLifecycleOwner, Observer { it ->
+            if(it.isNotEmpty()) textChosen.text = "Выбран город: ${it[0].ruCityName}"
+            else textChosen.text = "Не выбрано"
+        })
 
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -52,13 +60,10 @@ class City_Weather : Fragment() {
         })
 
         adapter = CityWeatherAdapter(addWeatherItems())
-
-        weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
-
         adapter.clickCallback = {type ->
             weatherViewModel.readAllData.observe(viewLifecycleOwner, Observer { it ->
-                if(it.isNotEmpty()) weatherViewModel.updateCity(DbWeather(1, type.nameApiCity))
-                else weatherViewModel.addCity(DbWeather(0, type.nameApiCity))
+                if(it.isNotEmpty()) weatherViewModel.updateCity(DbWeather(1, type.nameApiCity, type.fullNameCity))
+                else weatherViewModel.addCity(DbWeather(0, type.nameApiCity, type.fullNameCity))
                 bundle.putString("CityWeather", type.nameApiCity)
                 findNavController().navigate(R.id.mainMenu, bundle)
             })

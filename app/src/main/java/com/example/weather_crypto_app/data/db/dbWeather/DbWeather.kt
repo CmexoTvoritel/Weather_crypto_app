@@ -8,4 +8,5 @@ data class DbWeather(
     @PrimaryKey(autoGenerate = true)
     val uid: Int,
     val CityName: String,
+    val ruCityName: String,
 )

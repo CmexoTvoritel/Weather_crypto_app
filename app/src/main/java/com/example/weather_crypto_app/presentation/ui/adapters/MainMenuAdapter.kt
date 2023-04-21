@@ -49,7 +49,6 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
             recyclerView.layoutManager = LinearLayoutManager(holder.itemView.context, LinearLayoutManager.HORIZONTAL, false)
             recyclerView.adapter = adapterCrypto
             adapterCrypto.notifyDataSetChanged()
-
         }
         else if(mainMenuList[position].nameMenu == "Карта" && mainMenuList[position].status) {
             holder.itemView.name_button.visibility = View.INVISIBLE

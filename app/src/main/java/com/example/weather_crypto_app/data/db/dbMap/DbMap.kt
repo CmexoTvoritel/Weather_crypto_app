@@ -9,6 +9,7 @@ data class DbMap(
     @PrimaryKey(autoGenerate = true)
     val uid: Int,
     val CityName: String,
+    val ruCityName: String,
     val lan: Double,
     val lon: Double,
 )

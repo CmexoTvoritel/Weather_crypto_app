@@ -1,5 +1,6 @@
 package com.example.weather_crypto_app
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -83,9 +84,10 @@ class Crypto_Add : Fragment() {
         cryptoViewModel.addCoins(coinData)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun showRV(dbCoins: List<DbCrypto>, view: View) {
-        val data = arrayListOf<CryptoAddModel>()
-        val viewDataCrypto = arrayListOf<String>()
+        var data = mutableListOf<CryptoAddModel>()
+        val viewDataCrypto = arrayListOf<CryptoAddModel>()
         var check: Boolean
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.coingecko.com/")
@@ -96,7 +98,7 @@ class Crypto_Add : Fragment() {
             val infoCrypto = cryptoApi.getCrypto()
             withContext(Dispatchers.Main) {
                 dbCoins.forEach { data.add(CryptoAddModel(it.uid, it.image, it.nameCoin, it.costCoin, it.price_change, true))
-                viewDataCrypto.add(it.nameCoin)}
+                viewDataCrypto.add(CryptoAddModel(it.uid, it.image, it.nameCoin, it.costCoin, it.price_change, true))}
                 for (coin in infoCrypto) {
                     check = true
                     for(dbCoin in dbCoins) {
@@ -111,19 +113,42 @@ class Crypto_Add : Fragment() {
                 adapter.clickCallback = {type ->
                     if(type.enableCoin) {
                         type.uid = viewDataCrypto.size + 1
-                        viewDataCrypto.add(type.nameCoin)
-                        insertDataToCoinDatabase(type)
                         type.enableCoin = true
+                        viewDataCrypto.add(type)
+                        insertDataToCoinDatabase(type)
+                        if(viewDataCrypto.size > 3) {
+                            deleteDataOfCoinDatabase(viewDataCrypto[0])
+                            viewDataCrypto.removeAt(0)
+                        }
+                        data.clear()
+                        viewDataCrypto.forEach { data.add(it) }
+                        for(coin in infoCrypto) {
+                            check = true
+                            for(dbCoin in viewDataCrypto) {
+                                if(coin.name == dbCoin.nameCoin) check = false
+                            }
+                            if(check) data.add(CryptoAddModel(0, coin.image, coin.name, floor(coin.current_price * 100)/100, floor(coin.price_change_24h * 100)/100, false))
+                        }
                     }
                     else {
-                        viewDataCrypto.remove(type.nameCoin)
+                        viewDataCrypto.remove(type)
                         deleteDataOfCoinDatabase(type)
                         type.enableCoin = false
+                        data.clear()
+                        viewDataCrypto.forEach { data.add(it) }
+                        for(coin in infoCrypto) {
+                            check = true
+                            for(dbCoin in viewDataCrypto) {
+                                if(coin.name == dbCoin.nameCoin) check = false
+                            }
+                            if(check) data.add(CryptoAddModel(0, coin.image, coin.name, floor(coin.current_price * 100)/100, floor(coin.price_change_24h * 100)/100, false))
+                        }
                     }
                     if(viewDataCrypto.size >= 3) {
                         val warningText = Toast.makeText(context, "Вы можете выбрать не более 3 криптовалют", Toast.LENGTH_LONG)
                         warningText.show()
                     }
+                    adapter.notifyDataSetChanged()
                 }
             }
         }

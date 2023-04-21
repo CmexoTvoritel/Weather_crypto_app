@@ -29,7 +29,7 @@ class CryptoMenuAdapter(private val cryptoList: List<DbCrypto>): RecyclerView.Ad
         holder.itemView.total_cost.text = cryptoList[position].costCoin.toString() + " $"
         holder.itemView.up_cost.visibility = View.INVISIBLE
         holder.itemView.down_cost.visibility = View.INVISIBLE
-        if(cryptoList[position].price_change > 0) {
+        if(cryptoList[position].price_change >= 0) {
             holder.itemView.changes_cost.text = "+" + cryptoList[position].price_change.toString()
             holder.itemView.up_cost.visibility = View.VISIBLE
             holder.itemView.changes_cost.setTextColor(Color.parseColor("#36DD0D"))

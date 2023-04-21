@@ -75,6 +75,8 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
                     mainMenuList[position].needPoint.lon
                 ),imagePoint
             )
+            holder.mapView.map.isScrollGesturesEnabled = false
+            holder.mapView.map.isZoomGesturesEnabled = false
         }
         else if(mainMenuList[position].nameMenu == "Погода" && mainMenuList[position].status) {
             holder.itemView.name_button.visibility = View.INVISIBLE

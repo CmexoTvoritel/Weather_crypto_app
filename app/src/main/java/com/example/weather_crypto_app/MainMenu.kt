@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -22,6 +23,7 @@ import com.example.weather_crypto_app.data.db.dbWeather.WeatherViewModel
 import com.example.weather_crypto_app.data.names.city.PointCity
 import com.example.weather_crypto_app.models.MainMenuModel
 import com.example.weather_crypto_app.models.MainMenuModules
+import com.example.weather_crypto_app.models.crypto.cryptoRepItem
 import com.example.weather_crypto_app.models.weather.WeatherMenuModel
 import com.example.weather_crypto_app.presentation.ui.adapters.MainMenuAdapter
 import com.yandex.mapkit.mapview.MapView
@@ -29,6 +31,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import kotlin.math.floor

@@ -10,7 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class ManagerCryptoApi {
-
+/*
     fun GetDataApi(): List<CryptoAddModel>{
         val data = arrayListOf<CryptoAddModel>()
         val retrofit = Retrofit.Builder()
@@ -25,5 +25,5 @@ class ManagerCryptoApi {
             }
         }
         return data
-    }
+    } */
 }

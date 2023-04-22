@@ -8,10 +8,10 @@
         android:icon="@drawable/ic_baseline_search_24"
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
+
     <item
         android:id="@+id/edit_button"
-        android:title="Править"
-        app:showAsAction="ifRoom|collapseActionView"
-        />
+        app:showAsAction="always"
+        android:title="Править" />
 
 </menu>

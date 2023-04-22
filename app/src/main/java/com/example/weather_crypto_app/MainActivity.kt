@@ -6,10 +6,14 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import com.google.android.material.appbar.MaterialToolbar
 import com.yandex.mapkit.MapKitFactory
 
 class MainActivity : AppCompatActivity() {
@@ -19,10 +23,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.navigationBarColor = ColorUtils.setAlphaComponent(
+            ContextCompat.getColor(this, R.color.white), 0
+        )
         MapKitFactory.setApiKey("2eb5effa-b61b-4f6e-8294-8a3cbac2b5ce")
         MapKitFactory.initialize(this)
         setContentView(R.layout.activity_main)
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        val toolbar: MaterialToolbar = findViewById(R.id.toolbar)
         val menu: Menu = toolbar.menu
         val searchItem: MenuItem = menu.findItem(R.id.search_info)
         val searchView: SearchView = searchItem.actionView as SearchView
@@ -32,13 +39,12 @@ class MainActivity : AppCompatActivity() {
             R.id.mainHostNavActivity
         ) as NavHostFragment
         navController = navHostFragment.navController
-
         appBarConfiguration = AppBarConfiguration(navController.graph)
-        findViewById<Toolbar>(R.id.toolbar)
-            .setupWithNavController(navController, appBarConfiguration)
+        //toolbar.setupWithNavController(navController, appBarConfiguration)
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             when (destination.id) {
                 R.id.mainMenu -> {
+                    toolbar.title = "Главное меню"
                     editItem.title = "Править"
                     searchItem.setVisible(false)
                     editItem.setVisible(true)
@@ -48,10 +54,19 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 R.id.city_Map, R.id.city_Weather, R.id.crypto_Add -> {
+                    when(destination.id) {
+                        R.id.city_Map, R.id.city_Weather -> {
+                            toolbar.title = "Выбор города"
+                        }
+                        R.id.crypto_Add -> {
+                            toolbar.title = "Выбор криптовалюты"
+                        }
+                    }
                     searchItem.setVisible(true)
                     editItem.setVisible(false)
                 }
                 R.id.editMenu -> {
+                    toolbar.title = "Главное меню"
                     editItem.title = "Готово"
                     editItem.setVisible(true)
                     searchItem.setVisible(false)
@@ -60,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
+    /*override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp()
-    }
+    } */
 }

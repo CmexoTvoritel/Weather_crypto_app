@@ -41,6 +41,10 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
         holder.itemView.card_weather.visibility = View.INVISIBLE
         holder.itemView.map_view.visibility = View.GONE
         holder.itemView.map_card.visibility = View.INVISIBLE
+        holder.itemView.no_map.visibility = View.INVISIBLE
+        holder.itemView.no_coin_1.visibility = View.INVISIBLE
+        holder.itemView.no_coin_2.visibility = View.INVISIBLE
+        holder.itemView.no_coin_3.visibility = View.INVISIBLE
         if(mainMenuList[position].nameMenu == "Курс криптовалют" && mainMenuList[position].status) {
             holder.itemView.name_button.visibility = View.INVISIBLE
             holder.itemView.settings_butt.visibility = View.VISIBLE
@@ -99,6 +103,20 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
             holder.itemView.visibility_weather.text = (floor((mainMenuList[position].weatherList.visibility_weather / 1000) * 100) / 100).toString() + " км"
             holder.itemView.low_temp.text = mainMenuList[position].weatherList.min_temp.toString() + "°"
             holder.itemView.high_temp.text = mainMenuList[position].weatherList.max_temp.toString() + "°"
+        }
+        else if(mainMenuList[position].nameMenu == "Карта" && !mainMenuList[position].status) {
+            holder.itemView.no_map.visibility = View.VISIBLE
+            holder.itemView.settings_butt.visibility = View.INVISIBLE
+        }
+        else if(mainMenuList[position].nameMenu == "Погода" && !mainMenuList[position].status) {
+            holder.itemView.no_weather.visibility = View.VISIBLE
+            holder.itemView.settings_butt.visibility = View.INVISIBLE
+        }
+        else if(mainMenuList[position].nameMenu == "Курс криптовалют" && !mainMenuList[position].status) {
+            holder.itemView.no_coin_1.visibility = View.VISIBLE
+            holder.itemView.no_coin_2.visibility = View.VISIBLE
+            holder.itemView.no_coin_3.visibility = View.VISIBLE
+            holder.itemView.settings_butt.visibility = View.INVISIBLE
         }
         else {
             holder.itemView.name_button.visibility = View.VISIBLE

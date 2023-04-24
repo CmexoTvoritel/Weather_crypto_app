@@ -135,9 +135,4 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
         return mainMenuList.size
     }
 
-
-    interface Listener {
-        fun onCLick(mainMenuModel: MainMenuModel)
-    }
-
 }

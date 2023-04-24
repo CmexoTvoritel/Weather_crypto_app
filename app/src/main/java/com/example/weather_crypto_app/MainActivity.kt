@@ -5,14 +5,12 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
 import com.google.android.material.appbar.MaterialToolbar
 import com.yandex.mapkit.MapKitFactory
 
@@ -40,11 +38,10 @@ class MainActivity : AppCompatActivity() {
         ) as NavHostFragment
         navController = navHostFragment.navController
         appBarConfiguration = AppBarConfiguration(navController.graph)
-        //toolbar.setupWithNavController(navController, appBarConfiguration)
+        toolbar.setupWithNavController(navController, appBarConfiguration)
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             when (destination.id) {
                 R.id.mainMenu -> {
-                    toolbar.title = "Главное меню"
                     editItem.title = "Править"
                     searchItem.setVisible(false)
                     editItem.setVisible(true)
@@ -54,19 +51,10 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 R.id.city_Map, R.id.city_Weather, R.id.crypto_Add -> {
-                    when(destination.id) {
-                        R.id.city_Map, R.id.city_Weather -> {
-                            toolbar.title = "Выбор города"
-                        }
-                        R.id.crypto_Add -> {
-                            toolbar.title = "Выбор криптовалюты"
-                        }
-                    }
                     searchItem.setVisible(true)
                     editItem.setVisible(false)
                 }
                 R.id.editMenu -> {
-                    toolbar.title = "Главное меню"
                     editItem.title = "Готово"
                     editItem.setVisible(true)
                     searchItem.setVisible(false)
@@ -75,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /*override fun onSupportNavigateUp(): Boolean {
+    override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp()
-    } */
+    }
 }

@@ -16,6 +16,9 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <item name="actionMenuTextColor">@color/white</item>
         <item name="colorControlNormal">@color/white</item>
+        <item name="colorButtonNormal">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="fontFamily">@font/roboto</item>
         <!-- Customize your theme here. -->
     </style>
     <style name="ButtonStyle" parent="Widget.AppCompat.Button">

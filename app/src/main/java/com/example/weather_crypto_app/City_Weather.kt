@@ -41,12 +41,6 @@ class City_Weather : Fragment() {
         toolbar = (activity as AppCompatActivity).findViewById(R.id.toolbar)
         searchView = (activity as AppCompatActivity).toolbar.menu.findItem(R.id.search_info).actionView as SearchView
 
-        val textChosen = view.findViewById<TextView>(R.id.chosen_city)
-        weatherViewModel.readAllData.observe(viewLifecycleOwner, Observer { it ->
-            if(it.isNotEmpty()) textChosen.text = "Выбран город: ${it[0].ruCityName}"
-            else textChosen.text = "Не выбрано"
-        })
-
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false

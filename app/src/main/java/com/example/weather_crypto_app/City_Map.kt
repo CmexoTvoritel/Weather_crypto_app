@@ -35,13 +35,7 @@ class City_Map : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val bundle = Bundle()
 
-        val chosenCity = view.findViewById<TextView>(R.id.chosen_city)
-
         mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
-        mapViewModel.readAllData.observe(viewLifecycleOwner, Observer { it ->
-            if(it.isNotEmpty()) chosenCity.text = "Выбран город: ${it[0].ruCityName}"
-            else chosenCity.text = "Не выбрано"
-        })
 
         toolbar = (activity as AppCompatActivity).findViewById(R.id.toolbar)
 

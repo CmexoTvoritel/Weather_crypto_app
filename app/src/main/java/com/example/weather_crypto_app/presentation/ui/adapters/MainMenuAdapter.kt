@@ -40,6 +40,7 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
         holder.itemView.rv_coin_info.visibility = View.INVISIBLE
         holder.itemView.card_weather.visibility = View.INVISIBLE
         holder.itemView.map_view.visibility = View.GONE
+        holder.itemView.map_card.visibility = View.INVISIBLE
         if(mainMenuList[position].nameMenu == "Курс криптовалют" && mainMenuList[position].status) {
             holder.itemView.name_button.visibility = View.INVISIBLE
             holder.itemView.settings_butt.visibility = View.VISIBLE
@@ -53,6 +54,7 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
         else if(mainMenuList[position].nameMenu == "Карта" && mainMenuList[position].status) {
             holder.itemView.name_button.visibility = View.INVISIBLE
             holder.itemView.settings_butt.visibility = View.VISIBLE
+            holder.itemView.map_card.visibility = View.VISIBLE
             holder.mapView.visibility = View.VISIBLE
 
             holder.mapView.map.move(

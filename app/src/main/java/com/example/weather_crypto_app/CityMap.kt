@@ -1,44 +1,45 @@
 package com.example.weather_crypto_app
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.weather_crypto_app.data.db.dbWeather.DbWeather
-import com.example.weather_crypto_app.data.db.dbWeather.WeatherViewModel
-import com.example.weather_crypto_app.data.names.city.CityNamesWeather
-import com.example.weather_crypto_app.models.CityWeatherModel
-import com.example.weather_crypto_app.presentation.ui.adapters.CityWeatherAdapter
+import com.example.weather_crypto_app.data.db.dbMap.DbMap
+import com.example.weather_crypto_app.data.db.dbMap.MapViewModel
+import com.example.weather_crypto_app.data.names.city.CityNamesMap
+import com.example.weather_crypto_app.models.CityMapModel
+import com.example.weather_crypto_app.presentation.ui.adapters.CityMapAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
-class City_Weather : Fragment() {
+class CityMap : Fragment() {
 
     lateinit var recyclerView: RecyclerView
-    private lateinit var weatherViewModel: WeatherViewModel
-    private lateinit var adapter: CityWeatherAdapter
+    private lateinit var mapViewModel: MapViewModel
     private lateinit var toolbar: Toolbar
     private lateinit var searchView: SearchView
+    lateinit var adapter: CityMapAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_city__weather, container, false)
+        return inflater.inflate(R.layout.fragment_city__map, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val bundle = Bundle()
-        weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
-        recyclerView = view.findViewById(R.id.rv_city_weather)
+
+        mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
+
         toolbar = (activity as AppCompatActivity).findViewById(R.id.toolbar)
+
+        recyclerView = view.findViewById(R.id.rv_city_map)
+
         searchView = (activity as AppCompatActivity).toolbar.menu.findItem(R.id.search_info).actionView as SearchView
 
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
@@ -53,25 +54,28 @@ class City_Weather : Fragment() {
 
         })
 
-        adapter = CityWeatherAdapter(addWeatherItems())
-        adapter.clickCallback = {type ->
-            weatherViewModel.readAllData.observe(viewLifecycleOwner, Observer { it ->
-                if(it.isNotEmpty()) weatherViewModel.updateCity(DbWeather(1, type.nameApiCity, type.fullNameCity))
-                else weatherViewModel.addCity(DbWeather(0, type.nameApiCity, type.fullNameCity))
-                bundle.putString("CityWeather", type.nameApiCity)
+        adapter = CityMapAdapter(addMapItems())
+
+
+
+        adapter.clickCallback = { type->
+            mapViewModel.readAllData.observe(viewLifecycleOwner, Observer { it  ->
+                if(it.isNotEmpty()) mapViewModel.updateMap(DbMap(1, type.nameApiCity, type.fullNameCity, type.pointCity.lan, type.pointCity.lon))
+                else mapViewModel.addCity(DbMap(0, type.nameApiCity, type.fullNameCity, type.pointCity.lan, type.pointCity.lon))
+                bundle.putString("CityMap", type.nameApiCity)
                 findNavController().navigate(R.id.mainMenu, bundle)
             })
         }
-
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
     }
 
-    private fun addWeatherItems(): List<CityWeatherModel> {
-        val items = mutableListOf<CityWeatherModel>()
-        val cityName: CityNamesWeather = CityNamesWeather()
-        cityName.cityNames.forEach {
+
+    private fun addMapItems(): List<CityMapModel> {
+        val items = mutableListOf<CityMapModel>()
+        val cityNamesMap: CityNamesMap = CityNamesMap()
+        cityNamesMap.cityNames.forEach {
             items.add(it)
         }
         return items

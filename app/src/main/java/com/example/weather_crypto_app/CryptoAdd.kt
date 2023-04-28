@@ -18,22 +18,18 @@ import com.example.weather_crypto_app.data.CryptoApi
 import com.example.weather_crypto_app.data.db.dbCrypto.CryptoViewModel
 import com.example.weather_crypto_app.data.db.dbCrypto.DbCrypto
 import com.example.weather_crypto_app.models.CryptoAddModel
-import com.example.weather_crypto_app.models.crypto.cryptoRepItem
 import com.example.weather_crypto_app.presentation.ui.adapters.CryptoAddAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import kotlin.math.floor
 
 
-class Crypto_Add : Fragment() {
+class CryptoAdd : Fragment() {
 
     lateinit var recyclerView: RecyclerView
     lateinit var cryptoViewModel: CryptoViewModel

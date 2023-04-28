@@ -1,6 +1,6 @@
 package com.example.weather_crypto_app.models.crypto
 
-data class cryptoRepItem(
+data class CryptoRepItem(
     val ath: Double,
     val ath_change_percentage: Double,
     val ath_date: String,

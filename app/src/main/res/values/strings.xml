@@ -1,5 +1,18 @@
 <resources>
     <string name="app_name">Weather_crypto_app</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="toolbar_title_name_search">Search</string>
+    <string name="toolbar_title_name_edit">Править</string>
+    <string name="toolbar_title_name_submit">Готово</string>
+    <string name="main_menu_title">Главный экран</string>
+    <string name="crypto_add_title">Выбор криптовалюты</string>
+    <string name="weather_map_add_title">Выбор города</string>
+    <string name="text_choose_button">Выбрать</string>
+    <string name="name_of_item_menu">Имя карточки</string>
+    <string name="short_name_of_city">RU</string>
+    <string name="full_name_of_city">Москва</string>
+    <string name="name_of_coin">Sample Coin</string>
+    <string name="name_of_edit_menu">Меню</string>
+    <string name="name_of_crypto">BitCoin</string>
+    <string name="total_course_of_coin">15600.71 $</string>
+    <string name="total_dynamic_of_coin">-100.3</string>
 </resources>

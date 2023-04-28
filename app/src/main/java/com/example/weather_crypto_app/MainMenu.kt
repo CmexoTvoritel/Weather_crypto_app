@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -23,17 +22,14 @@ import com.example.weather_crypto_app.data.db.dbWeather.WeatherViewModel
 import com.example.weather_crypto_app.data.names.city.PointCity
 import com.example.weather_crypto_app.models.MainMenuModel
 import com.example.weather_crypto_app.models.MainMenuModules
-import com.example.weather_crypto_app.models.crypto.cryptoRepItem
+import com.example.weather_crypto_app.models.crypto.CryptoRepItem
 import com.example.weather_crypto_app.models.weather.WeatherMenuModel
+import com.example.weather_crypto_app.models.weather.info.WeatherInfo
 import com.example.weather_crypto_app.presentation.ui.adapters.MainMenuAdapter
-import com.yandex.mapkit.mapview.MapView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import kotlin.math.floor
@@ -58,16 +54,11 @@ class MainMenu : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         var textMap = "Карта"
         var textWeather = "Погода"
-        var needPoint: PointCity = PointCity(0.0, 0.0)
+        var needPoint = PointCity(0.0, 0.0)
         val coinsInfo = arrayListOf<DbCrypto>()
         val menuInfo = arrayListOf<DbMenu>()
 
-
-        mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
-        weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
-        cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
-        menuViewModel = ViewModelProvider(this)[MenuViewModel::class.java]
-
+        openDataBases()
 
         mapViewModel.readAllData.observe(viewLifecycleOwner, Observer { map ->
             if(map.isNotEmpty()) {
@@ -116,6 +107,7 @@ class MainMenu : Fragment() {
     }
 
     private fun creatingRV(Map: String, Weather: String, coinsInfo: List<DbCrypto>, menuList: List<DbMenu>, needPoint: PointCity, view: View) {
+        var adapterItems = listOf<MainMenuModel>()
         var textWeather = Weather
         var textMap = Map
         var weatherInfo: WeatherMenuModel = WeatherMenuModel("",0.00, 0.00,
@@ -138,21 +130,10 @@ class MainMenu : Fragment() {
                     "22c2b837bf6f65a956144d42d02343bb", "ru", "metric")
                 withContext(Dispatchers.Main) {
                     textWeather = infoWeather.name
+                    weatherInfo = setWeatherInfo(infoWeather)
 
-                    weatherInfo.name_city = infoWeather.name
-                    weatherInfo.temp = infoWeather.main.temp
-                    weatherInfo.feel_temp = infoWeather.main.feels_like
-                    weatherInfo.name_weather = infoWeather.weather[0].description
-                    weatherInfo.icon = infoWeather.weather[0].icon
-                    weatherInfo.wind = infoWeather.wind.speed
-                    weatherInfo.pressure = infoWeather.main.pressure.toDouble()
-                    weatherInfo.wetness = infoWeather.main.humidity
-                    weatherInfo.cloud = infoWeather.clouds.all
-                    weatherInfo.visibility_weather = infoWeather.visibility.toDouble()
-                    weatherInfo.min_temp = infoWeather.main.temp_min
-                    weatherInfo.max_temp = infoWeather.main.temp_max
-
-                    adapter = MainMenuAdapter(requireContext(), addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo))
+                    adapterItems = addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
+                    adapter = MainMenuAdapter(requireContext(), adapterItems)
                     adapter.clickCallback = { type ->
                         when (type) {
                             MainMenuModules.MAP -> findNavController().navigate(R.id.city_Map)
@@ -176,30 +157,9 @@ class MainMenu : Fragment() {
                                 CoroutineScope(Dispatchers.IO).launch {
                                     val infoCrypto = cryptoApi.getCrypto()
                                     withContext(Dispatchers.Main) {
-                                        for (coin in infoCrypto) {
-                                            for (dbCoin in coinsInfo) {
-                                                if (dbCoin.nameCoin == coin.name) {
-                                                    dbCoin.costCoin =
-                                                        floor(coin.current_price * 100) / 100
-                                                    dbCoin.price_change =
-                                                        floor(coin.price_change_24h * 100) / 100
-                                                }
-                                            }
-                                        }
-                                        adapter = MainMenuAdapter(
-                                            requireContext(),
-                                            addMenuItems(
-                                                textMap,
-                                                textWeather,
-                                                coinsInfo,
-                                                menuList,
-                                                needPoint,
-                                                weatherInfo
-                                            )
-                                        )
-                                        adapter = recyclerView.adapter as MainMenuAdapter
-                                        val position = menuList.indexOfFirst{ it.MenuName == "Курс криптовалют" }
-                                        adapter.notifyItemChanged(position)
+
+                                        updateCoinsInfo(infoCrypto, coinsInfo, textMap, textWeather, menuList, needPoint, weatherInfo)
+
                                     }
                                 }
                                 handler.postDelayed(this, 20000)
@@ -229,6 +189,54 @@ class MainMenu : Fragment() {
 
     companion object {
         fun newInstance() = MainMenu()
+    }
+
+    fun updateCoinsInfo(infoCrypto: List<CryptoRepItem>, coinsInfo: List<DbCrypto>, textMap: String?,
+                        textWeather: String?, menuList: List<DbMenu>, needPoint: PointCity,
+                        weatherInfo: WeatherMenuModel) {
+        var adapterItems = listOf<MainMenuModel>()
+        for (coin in infoCrypto) {
+            for (dbCoin in coinsInfo) {
+                if (dbCoin.nameCoin == coin.name) {
+                    dbCoin.costCoin =
+                        floor(coin.current_price * 100) / 100
+                    dbCoin.price_change =
+                        floor(coin.price_change_24h * 100) / 100
+                }
+            }
+        }
+        adapterItems = addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
+        adapter = MainMenuAdapter(
+            requireContext(),
+            adapterItems
+        )
+        adapter = recyclerView.adapter as MainMenuAdapter
+        val position = menuList.indexOfFirst{ it.MenuName == "Курс криптовалют" }
+        adapter.notifyItemChanged(position)
+    }
+
+    fun setWeatherInfo(infoWeather: WeatherInfo): WeatherMenuModel {
+        val weatherInfo = WeatherMenuModel()
+        weatherInfo.name_city = infoWeather.name
+        weatherInfo.temp = infoWeather.main.temp
+        weatherInfo.feel_temp = infoWeather.main.feels_like
+        weatherInfo.name_weather = infoWeather.weather[0].description
+        weatherInfo.icon = infoWeather.weather[0].icon
+        weatherInfo.wind = infoWeather.wind.speed
+        weatherInfo.pressure = infoWeather.main.pressure.toDouble()
+        weatherInfo.wetness = infoWeather.main.humidity
+        weatherInfo.cloud = infoWeather.clouds.all
+        weatherInfo.visibility_weather = infoWeather.visibility.toDouble()
+        weatherInfo.min_temp = infoWeather.main.temp_min
+        weatherInfo.max_temp = infoWeather.main.temp_max
+        return weatherInfo
+    }
+
+    fun openDataBases() {
+        mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
+        weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
+        cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
+        menuViewModel = ViewModelProvider(this)[MenuViewModel::class.java]
     }
 
 }

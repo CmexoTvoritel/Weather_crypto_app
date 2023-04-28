@@ -1,6 +1,6 @@
 package com.example.weather_crypto_app.models.weather.info
 
-data class weatherInfo(
+data class WeatherInfo(
     val base: String,
     val clouds: Clouds,
     val cod: Int,

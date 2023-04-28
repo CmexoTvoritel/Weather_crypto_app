@@ -4,14 +4,14 @@
 
     <item
         android:id="@+id/search_info"
-        android:title="Search"
+        android:title="@string/toolbar_title_name_search"
         android:icon="@drawable/ic_baseline_search_24"
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
     <item
         android:id="@+id/edit_button"
-        android:title="Править"
+        android:title="@string/toolbar_title_name_edit"
         android:visible="true"
         app:showAsAction="always|withText" />
 

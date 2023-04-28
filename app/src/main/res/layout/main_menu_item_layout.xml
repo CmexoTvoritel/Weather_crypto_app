@@ -32,7 +32,7 @@
             android:layout_marginTop="5dp"
             android:fontFamily="@font/roboto"
             android:gravity="start|left"
-            android:text="Edit menu item"
+            android:text="@string/name_of_item_menu"
             android:textColor="@color/main_menu_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -127,7 +127,7 @@
             android:background="@drawable/button_style"
             android:paddingHorizontal="42dp"
             android:paddingVertical="0dp"
-            android:text="Выбрать"
+            android:text="@string/text_choose_button"
             android:fontFamily="@font/roboto"
             android:elevation="20dp"
             android:textSize="16sp"

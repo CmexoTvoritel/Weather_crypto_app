@@ -7,6 +7,7 @@ import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.R
+import com.example.weather_crypto_app.databinding.CryptoAddItemLayoutBinding
 import com.example.weather_crypto_app.models.CryptoAddModel
 import com.example.weather_crypto_app.presentation.ui.viewholders.CryptoAddViewHolder
 import com.squareup.picasso.Picasso
@@ -19,21 +20,25 @@ class CryptoAddAdapter(private val cryptoList: List<CryptoAddModel>): RecyclerVi
     private var dataFiltered: List<CryptoAddModel> = cryptoList
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CryptoAddViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.crypto_add_item_layout, parent, false)
-        return CryptoAddViewHolder(view)
+        val binding = CryptoAddItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return CryptoAddViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: CryptoAddViewHolder, position: Int) {
-        val item = dataFiltered[position]
-        holder.itemView.name_Coin.text = dataFiltered[position].nameCoin
-        Picasso.get()
-            .load(dataFiltered[position].image)
-            .placeholder(R.drawable.usd_coin_usdc_1)
-            .fit()
-            .into(holder.itemView.image_Coin)
-        holder.itemView.check_Enable_Coin.isChecked = dataFiltered[position].enableCoin
-        holder.clickCallback = clickCallback
-        holder.bind(item)
+
+        with(holder) {
+            with(dataFiltered[position]) {
+                binding.nameCoin.text = this.nameCoin
+                Picasso.get()
+                    .load(this.image)
+                    .placeholder(R.drawable.usd_coin_usdc_1)
+                    .fit()
+                    .into(binding.imageCoin)
+                binding.checkEnableCoin.isChecked = this.enableCoin
+                holder.clickCallback = clickCallback
+                holder.bind(this)
+            }
+        }
     }
 
     override fun onViewRecycled(holder: CryptoAddViewHolder) {

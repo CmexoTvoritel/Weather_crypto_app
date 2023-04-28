@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
-import com.example.weather_crypto_app.R
+import com.example.weather_crypto_app.databinding.CityMapItemLayoutBinding
 import com.example.weather_crypto_app.models.CityMapModel
 import com.example.weather_crypto_app.presentation.ui.viewholders.CityMapViewHolder
 import kotlinx.android.synthetic.main.city_map_item_layout.view.*
@@ -19,16 +19,20 @@ class CityMapAdapter(private val cityList: List<CityMapModel>): RecyclerView.Ada
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityMapViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.city_map_item_layout, parent, false)
-        return CityMapViewHolder(view)
+        val binding = CityMapItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return CityMapViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: CityMapViewHolder, position: Int) {
-        val item = dataFiltered[position]
-        holder.itemView.city_short_name.text = dataFiltered[position].shortName
-        holder.itemView.city_full_name.text = dataFiltered[position].fullNameCity
-        holder.clickCallback = clickCallback
-        holder.bind(item)
+
+        with(holder) {
+            with(dataFiltered[position]) {
+                binding.cityShortName.text = this.shortName
+                binding.cityFullName.text = this.fullNameCity
+                holder.clickCallback = clickCallback
+                holder.bind(this)
+            }
+        }
     }
 
     override fun getItemCount(): Int {

@@ -110,7 +110,7 @@ class MainMenu : Fragment() {
         var adapterItems = listOf<MainMenuModel>()
         var textWeather = Weather
         var textMap = Map
-        var weatherInfo: WeatherMenuModel = WeatherMenuModel("",0.00, 0.00,
+        var weatherInfo = WeatherMenuModel("",0.00, 0.00,
             "", "", 0.00, 0.00, 0, 0, 0.00, 0.00, 0.00)
         if(textWeather != "Погода") {
             val retrofitCords = Retrofit.Builder()
@@ -141,10 +141,7 @@ class MainMenu : Fragment() {
                             MainMenuModules.COINS -> findNavController().navigate(R.id.crypto_Add)
                         }
                     }
-                    recyclerView = view.findViewById(R.id.rv_main_menu)
-                    recyclerView.setHasFixedSize(true)
-                    recyclerView.layoutManager = LinearLayoutManager(requireContext())
-                    recyclerView.adapter = adapter
+                    showRv(view)
                     if(coinsInfo.isNotEmpty()) {
                         val handler = Handler(Looper.getMainLooper())
                         val runnable = object : Runnable {
@@ -172,7 +169,7 @@ class MainMenu : Fragment() {
 
         }
         else {
-            val adapter = MainMenuAdapter(requireContext(), addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo))
+            adapter = MainMenuAdapter(requireContext(), addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo))
             adapter.clickCallback = { type ->
                 when (type) {
                     MainMenuModules.MAP -> findNavController().navigate(R.id.city_Map)
@@ -180,10 +177,7 @@ class MainMenu : Fragment() {
                     MainMenuModules.COINS -> findNavController().navigate(R.id.crypto_Add)
                 }
             }
-            recyclerView = view.findViewById(R.id.rv_main_menu)
-            recyclerView.setHasFixedSize(true)
-            recyclerView.layoutManager = LinearLayoutManager(requireContext())
-            recyclerView.adapter = adapter
+            showRv(view)
         }
     }
 
@@ -237,6 +231,13 @@ class MainMenu : Fragment() {
         weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
         menuViewModel = ViewModelProvider(this)[MenuViewModel::class.java]
+    }
+
+    fun showRv(view: View) {
+        recyclerView = view.findViewById(R.id.rv_main_menu)
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = adapter
     }
 
 }

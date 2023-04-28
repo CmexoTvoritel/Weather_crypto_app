@@ -12,6 +12,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.R
+import com.example.weather_crypto_app.databinding.MainMenuItemLayoutBinding
 import com.example.weather_crypto_app.models.MainMenuModel
 import com.example.weather_crypto_app.models.MainMenuModules
 import com.example.weather_crypto_app.presentation.ui.viewholders.MainMenuViewHolder
@@ -30,11 +31,89 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
     var clickCallback: ((type: MainMenuModules) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainMenuViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.main_menu_item_layout, parent, false)
-        return MainMenuViewHolder(view)
+        val binding = MainMenuItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return MainMenuViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: MainMenuViewHolder, position: Int) {
+
+        /*with(holder) {
+            with(mainMenuList[position]) {
+                binding.rvCoinInfo.visibility = View.INVISIBLE
+                binding.cardWeather.visibility = View.INVISIBLE
+                binding.mapCard.visibility = View.INVISIBLE
+                binding.noMap.visibility = View.INVISIBLE
+                binding.noWeather.visibility = View.INVISIBLE
+                binding.noCoin1.visibility = View.INVISIBLE
+                binding.noCoin2.visibility = View.INVISIBLE
+                binding.noCoin3.visibility = View.INVISIBLE
+                binding.nameButton.visibility = View.INVISIBLE
+                binding.settingsButt.visibility = View.INVISIBLE
+
+                when(this.status) {
+                    true -> {
+                        when(this.nameMenu) {
+                            "Курс криптовалют" -> {
+                                binding.settingsButt.visibility = View.VISIBLE
+                                binding.rvCoinInfo.visibility = View.VISIBLE
+                                val adapterCrypto = CryptoMenuAdapter(this.cryptoList)
+                                recyclerView = binding.rvCoinInfo
+                                recyclerView.layoutManager = LinearLayoutManager(holder.itemView.context, LinearLayoutManager.HORIZONTAL, false)
+                                recyclerView.adapter = adapterCrypto
+                                adapterCrypto.notifyDataSetChanged()
+                            }
+                            "Карта" -> {
+                                binding.settingsButt.visibility = View.VISIBLE
+                                binding.mapCard.visibility = View.VISIBLE
+                                binding.mapView.map.move(
+                                    CameraPosition(Point(mainMenuList[position].needPoint.lan, mainMenuList[position].needPoint.lon), 8.0f, 0.0f, 0.0f),
+                                    Animation(Animation.Type.SMOOTH, 3f), null
+                                )
+                                val vectorDrawable = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_baseline_location_on_24, null) as VectorDrawable
+                                val bitmap = Bitmap.createBitmap(vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+                                val canvas = Canvas(bitmap)
+                                vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
+                                vectorDrawable.draw(canvas)
+                                val imagePoint = ImageProvider.fromBitmap(bitmap)
+
+                                val mapObjectCollection = binding.mapView.map.mapObjects.addCollection()
+                                mapObjectCollection.addPlacemark(
+                                    Point(
+                                        this.needPoint.lan,
+                                        this.needPoint.lon
+                                    ),imagePoint
+                                )
+                                binding.mapView.map.isScrollGesturesEnabled = false
+                                binding.mapView.map.isZoomGesturesEnabled = false
+                            }
+                            "Погода" -> {
+                                binding.settingsButt.visibility = View.VISIBLE
+
+                            }
+                        }
+                    }
+                    false -> {
+                        when(this.nameMenu) {
+                            "Курс криптовалют" -> {
+                                binding.nameButton.visibility = View.VISIBLE
+
+                            }
+                            "Карта" -> {
+                                binding.nameButton.visibility = View.VISIBLE
+
+                            }
+                            "Погода" -> {
+                                binding.nameButton.visibility = View.VISIBLE
+
+                            }
+                        }
+                    }
+                }
+            }
+        } */
+
+
+
         holder.itemView.name_menu.text = mainMenuList[position].nameMenu
         val item = mainMenuList[position]
         holder.itemView.rv_coin_info.visibility = View.INVISIBLE

@@ -1,17 +1,20 @@
 package com.example.weather_crypto_app.presentation.ui.viewholders
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.example.weather_crypto_app.databinding.CityMapItemLayoutBinding
 import com.example.weather_crypto_app.models.CityMapModel
 import kotlinx.android.synthetic.main.city_map_item_layout.view.*
 
-class CityMapViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+class CityMapViewHolder(val binding: CityMapItemLayoutBinding): RecyclerView.ViewHolder(binding.root) {
 
     var clickCallback: ((type: CityMapModel) -> Unit)? = null
 
     fun bind(item: CityMapModel) {
-        itemView.city_card.setOnClickListener {
+        binding.cityCard.setOnClickListener {
             clickCallback?.invoke(item)
         }
+//        itemView.city_card.setOnClickListener {
+//            clickCallback?.invoke(item)
+//        }
     }
 }

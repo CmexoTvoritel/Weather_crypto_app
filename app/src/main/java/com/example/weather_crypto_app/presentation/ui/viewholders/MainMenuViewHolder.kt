@@ -3,6 +3,7 @@ package com.example.weather_crypto_app.presentation.ui.viewholders
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.R
+import com.example.weather_crypto_app.databinding.MainMenuItemLayoutBinding
 import com.example.weather_crypto_app.models.MainMenuModel
 import com.example.weather_crypto_app.models.MainMenuModules
 import com.yandex.mapkit.MapKitFactory
@@ -10,9 +11,10 @@ import com.yandex.mapkit.map.MapType
 import com.yandex.mapkit.mapview.MapView
 import kotlinx.android.synthetic.main.main_menu_item_layout.view.*
 
-class MainMenuViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+class MainMenuViewHolder(val binding: MainMenuItemLayoutBinding): RecyclerView.ViewHolder(binding.root) {
 
-    val mapView: MapView = itemView.findViewById(R.id.map_view)
+    //val mapView: MapView = itemView.findViewById(R.id.map_view)
+    val mapView: MapView = binding.mapView
 
     init {
         mapView.map.mapType = MapType.MAP

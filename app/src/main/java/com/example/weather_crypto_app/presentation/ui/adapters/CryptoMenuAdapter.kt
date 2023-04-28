@@ -10,7 +10,6 @@ import com.example.weather_crypto_app.data.db.dbCrypto.DbCrypto
 import com.example.weather_crypto_app.databinding.CryptoMainItemLayoutBinding
 import com.example.weather_crypto_app.presentation.ui.viewholders.CryptoMenuViewHolder
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.crypto_main_item_layout.view.*
 
 class CryptoMenuAdapter(private val cryptoList: List<DbCrypto>): RecyclerView.Adapter<CryptoMenuViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CryptoMenuViewHolder {

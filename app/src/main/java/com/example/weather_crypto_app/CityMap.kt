@@ -14,25 +14,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.data.db.dbMap.DbMap
 import com.example.weather_crypto_app.data.db.dbMap.MapViewModel
 import com.example.weather_crypto_app.data.names.city.CityNamesMap
+import com.example.weather_crypto_app.databinding.FragmentCityMapBinding
 import com.example.weather_crypto_app.models.CityMapModel
 import com.example.weather_crypto_app.presentation.ui.adapters.CityMapAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
 class CityMap : Fragment() {
 
-    lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: RecyclerView
     private lateinit var mapViewModel: MapViewModel
     private lateinit var toolbar: Toolbar
     private lateinit var searchView: SearchView
-    lateinit var adapter: CityMapAdapter
-
+    private lateinit var adapter: CityMapAdapter
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_city__map, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val bundle = Bundle()
 
         mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
 
@@ -41,7 +40,11 @@ class CityMap : Fragment() {
         recyclerView = view.findViewById(R.id.rv_city_map)
 
         searchView = (activity as AppCompatActivity).toolbar.menu.findItem(R.id.search_info).actionView as SearchView
+        addSearchQuery()
+        createRV()
+    }
 
+    private fun addSearchQuery() {
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
@@ -53,31 +56,28 @@ class CityMap : Fragment() {
             }
 
         })
-
-        adapter = CityMapAdapter(addMapItems())
-
-
-
-        adapter.clickCallback = { type->
-            mapViewModel.readAllData.observe(viewLifecycleOwner, Observer { it  ->
-                if(it.isNotEmpty()) mapViewModel.updateMap(DbMap(1, type.nameApiCity, type.fullNameCity, type.pointCity.lan, type.pointCity.lon))
-                else mapViewModel.addCity(DbMap(0, type.nameApiCity, type.fullNameCity, type.pointCity.lan, type.pointCity.lon))
-                bundle.putString("CityMap", type.nameApiCity)
-                findNavController().navigate(R.id.mainMenu, bundle)
-            })
-        }
-
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = adapter
     }
-
 
     private fun addMapItems(): List<CityMapModel> {
         val items = mutableListOf<CityMapModel>()
-        val cityNamesMap: CityNamesMap = CityNamesMap()
+        val cityNamesMap = CityNamesMap()
         cityNamesMap.cityNames.forEach {
             items.add(it)
         }
         return items
+    }
+
+    private fun createRV() {
+        adapter = CityMapAdapter(addMapItems())
+        adapter.clickCallback = { type->
+            mapViewModel.readAllData.observe(viewLifecycleOwner, Observer { it  ->
+                if(it.isNotEmpty()) mapViewModel.updateMap(DbMap(1, type.nameApiCity, type.fullNameCity, type.pointCity.lan, type.pointCity.lon))
+                else mapViewModel.addCity(DbMap(0, type.nameApiCity, type.fullNameCity, type.pointCity.lan, type.pointCity.lon))
+                //bundle.putString("CityMap", type.nameApiCity)
+                findNavController().navigate(R.id.mainMenu)
+            })
+        }
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = adapter
     }
 }

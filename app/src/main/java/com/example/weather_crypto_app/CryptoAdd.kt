@@ -46,7 +46,17 @@ class CryptoAdd : Fragment() {
 
         toolbar = (activity as AppCompatActivity).findViewById(R.id.toolbar)
         searchView = (activity as AppCompatActivity).toolbar.menu.findItem(R.id.search_info).actionView as SearchView
+        addSearchQuery()
 
+        val dbCoinsList = arrayListOf<DbCrypto>()
+        cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
+        cryptoViewModel.readAllData.observe(viewLifecycleOwner, Observer { coin ->
+            coin.forEach { dbCoinsList.add(it) }
+        })
+        showRV(dbCoinsList, view)
+    }
+
+    private fun addSearchQuery() {
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
@@ -57,13 +67,6 @@ class CryptoAdd : Fragment() {
                 return true
             }
         })
-
-        val dbCoinsList = arrayListOf<DbCrypto>()
-        cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
-        cryptoViewModel.readAllData.observe(viewLifecycleOwner, Observer { coin ->
-            coin.forEach { dbCoinsList.add(it) }
-        })
-        showRV(dbCoinsList, view)
     }
 
     private fun deleteDataOfCoinDatabase(data: CryptoAddModel) {

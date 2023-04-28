@@ -37,7 +37,7 @@ import kotlin.math.floor
 
 class MainMenu : Fragment() {
 
-    lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: RecyclerView
     private lateinit var cryptoViewModel: CryptoViewModel
     private lateinit var mapViewModel: MapViewModel
     private lateinit var weatherViewModel: WeatherViewModel
@@ -107,23 +107,14 @@ class MainMenu : Fragment() {
     }
 
     private fun creatingRV(Map: String, Weather: String, coinsInfo: List<DbCrypto>, menuList: List<DbMenu>, needPoint: PointCity, view: View) {
-        var adapterItems = listOf<MainMenuModel>()
+        var adapterItems: List<MainMenuModel>
         var textWeather = Weather
         var textMap = Map
         var weatherInfo = WeatherMenuModel("",0.00, 0.00,
             "", "", 0.00, 0.00, 0, 0, 0.00, 0.00, 0.00)
         if(textWeather != "Погода") {
-            val retrofitCords = Retrofit.Builder()
-                .baseUrl("https://api.openweathermap.org/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-            val infoWeatherCoords = retrofitCords.create(CordsWeatherApi::class.java)
-
-            val retrofitInfo = Retrofit.Builder()
-                .baseUrl("https://api.openweathermap.org/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-            val infoWeatherApi = retrofitInfo.create(WeatherApi::class.java)
+            val infoWeatherCoords = generateRequestToApiCords()
+            val infoWeatherApi = generateRequestToApiWeather()
             CoroutineScope(Dispatchers.IO).launch {
                 val coordsWeather = infoWeatherCoords.getCordsWeather(textWeather)
                 val infoWeather = infoWeatherApi.getWeather(coordsWeather[0].lat.toString(), coordsWeather[0].lon.toString(),
@@ -131,32 +122,18 @@ class MainMenu : Fragment() {
                 withContext(Dispatchers.Main) {
                     textWeather = infoWeather.name
                     weatherInfo = setWeatherInfo(infoWeather)
-
                     adapterItems = addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
                     adapter = MainMenuAdapter(requireContext(), adapterItems)
-                    adapter.clickCallback = { type ->
-                        when (type) {
-                            MainMenuModules.MAP -> findNavController().navigate(R.id.city_Map)
-                            MainMenuModules.WEATHER -> findNavController().navigate(R.id.city_Weather)
-                            MainMenuModules.COINS -> findNavController().navigate(R.id.crypto_Add)
-                        }
-                    }
                     showRv(view)
                     if(coinsInfo.isNotEmpty()) {
                         val handler = Handler(Looper.getMainLooper())
                         val runnable = object : Runnable {
                             override fun run() {
-                                val retrofit = Retrofit.Builder()
-                                    .baseUrl("https://api.coingecko.com/")
-                                    .addConverterFactory(GsonConverterFactory.create())
-                                    .build()
-                                val cryptoApi = retrofit.create(CryptoApi::class.java)
+                                val cryptoApi = generateRequestToApiCoins()
                                 CoroutineScope(Dispatchers.IO).launch {
                                     val infoCrypto = cryptoApi.getCrypto()
                                     withContext(Dispatchers.Main) {
-
                                         updateCoinsInfo(infoCrypto, coinsInfo, textMap, textWeather, menuList, needPoint, weatherInfo)
-
                                     }
                                 }
                                 handler.postDelayed(this, 20000)
@@ -170,13 +147,6 @@ class MainMenu : Fragment() {
         }
         else {
             adapter = MainMenuAdapter(requireContext(), addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo))
-            adapter.clickCallback = { type ->
-                when (type) {
-                    MainMenuModules.MAP -> findNavController().navigate(R.id.city_Map)
-                    MainMenuModules.WEATHER -> findNavController().navigate(R.id.city_Weather)
-                    MainMenuModules.COINS -> findNavController().navigate(R.id.crypto_Add)
-                }
-            }
             showRv(view)
         }
     }
@@ -185,7 +155,7 @@ class MainMenu : Fragment() {
         fun newInstance() = MainMenu()
     }
 
-    fun updateCoinsInfo(infoCrypto: List<CryptoRepItem>, coinsInfo: List<DbCrypto>, textMap: String?,
+    private fun updateCoinsInfo(infoCrypto: List<CryptoRepItem>, coinsInfo: List<DbCrypto>, textMap: String?,
                         textWeather: String?, menuList: List<DbMenu>, needPoint: PointCity,
                         weatherInfo: WeatherMenuModel) {
         var adapterItems = listOf<MainMenuModel>()
@@ -209,7 +179,7 @@ class MainMenu : Fragment() {
         adapter.notifyItemChanged(position)
     }
 
-    fun setWeatherInfo(infoWeather: WeatherInfo): WeatherMenuModel {
+    private fun setWeatherInfo(infoWeather: WeatherInfo): WeatherMenuModel {
         val weatherInfo = WeatherMenuModel()
         weatherInfo.name_city = infoWeather.name
         weatherInfo.temp = infoWeather.main.temp
@@ -226,18 +196,49 @@ class MainMenu : Fragment() {
         return weatherInfo
     }
 
-    fun openDataBases() {
+    private fun openDataBases() {
         mapViewModel = ViewModelProvider(this)[MapViewModel::class.java]
         weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
         menuViewModel = ViewModelProvider(this)[MenuViewModel::class.java]
     }
 
-    fun showRv(view: View) {
+    private fun showRv(view: View) {
+        adapter.clickCallback = { type ->
+            when (type) {
+                MainMenuModules.MAP -> findNavController().navigate(R.id.city_Map)
+                MainMenuModules.WEATHER -> findNavController().navigate(R.id.city_Weather)
+                MainMenuModules.COINS -> findNavController().navigate(R.id.crypto_Add)
+            }
+        }
         recyclerView = view.findViewById(R.id.rv_main_menu)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
+    }
+
+    private fun generateRequestToApiCords(): CordsWeatherApi {
+        val retrofitCords = Retrofit.Builder()
+            .baseUrl("https://api.openweathermap.org/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        return retrofitCords.create(CordsWeatherApi::class.java)
+    }
+
+    private fun generateRequestToApiWeather(): WeatherApi {
+        val retrofitInfo = Retrofit.Builder()
+            .baseUrl("https://api.openweathermap.org/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        return retrofitInfo.create(WeatherApi::class.java)
+    }
+
+    private fun generateRequestToApiCoins(): CryptoApi {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://api.coingecko.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        return retrofit.create(CryptoApi::class.java)
     }
 
 }

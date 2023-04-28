@@ -34,12 +34,25 @@ class CityWeather : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val bundle = Bundle()
+
         weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         recyclerView = view.findViewById(R.id.rv_city_weather)
         toolbar = (activity as AppCompatActivity).findViewById(R.id.toolbar)
         searchView = (activity as AppCompatActivity).toolbar.menu.findItem(R.id.search_info).actionView as SearchView
+        addSearchQuery()
+        createRV()
+    }
 
+    private fun addWeatherItems(): List<CityWeatherModel> {
+        val items = mutableListOf<CityWeatherModel>()
+        val cityName: CityNamesWeather = CityNamesWeather()
+        cityName.cityNames.forEach {
+            items.add(it)
+        }
+        return items
+    }
+
+    private fun addSearchQuery() {
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
@@ -51,28 +64,19 @@ class CityWeather : Fragment() {
             }
 
         })
+    }
 
+    private fun createRV() {
         adapter = CityWeatherAdapter(addWeatherItems())
         adapter.clickCallback = {type ->
             weatherViewModel.readAllData.observe(viewLifecycleOwner, Observer { it ->
                 if(it.isNotEmpty()) weatherViewModel.updateCity(DbWeather(1, type.nameApiCity, type.fullNameCity))
                 else weatherViewModel.addCity(DbWeather(0, type.nameApiCity, type.fullNameCity))
-                bundle.putString("CityWeather", type.nameApiCity)
-                findNavController().navigate(R.id.mainMenu, bundle)
+                //bundle.putString("CityWeather", type.nameApiCity)
+                findNavController().navigate(R.id.mainMenu)
             })
         }
-
-
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
-    }
-
-    private fun addWeatherItems(): List<CityWeatherModel> {
-        val items = mutableListOf<CityWeatherModel>()
-        val cityName: CityNamesWeather = CityNamesWeather()
-        cityName.cityNames.forEach {
-            items.add(it)
-        }
-        return items
     }
 }

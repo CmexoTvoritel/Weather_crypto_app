@@ -45,7 +45,7 @@ class CityWeather : Fragment() {
 
     private fun addWeatherItems(): List<CityWeatherModel> {
         val items = mutableListOf<CityWeatherModel>()
-        val cityName: CityNamesWeather = CityNamesWeather()
+        val cityName = CityNamesWeather()
         cityName.cityNames.forEach {
             items.add(it)
         }
@@ -72,7 +72,6 @@ class CityWeather : Fragment() {
             weatherViewModel.readAllData.observe(viewLifecycleOwner, Observer { it ->
                 if(it.isNotEmpty()) weatherViewModel.updateCity(DbWeather(1, type.nameApiCity, type.fullNameCity))
                 else weatherViewModel.addCity(DbWeather(0, type.nameApiCity, type.fullNameCity))
-                //bundle.putString("CityWeather", type.nameApiCity)
                 findNavController().navigate(R.id.mainMenu)
             })
         }

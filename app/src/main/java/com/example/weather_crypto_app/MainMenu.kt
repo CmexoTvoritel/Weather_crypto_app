@@ -43,6 +43,10 @@ class MainMenu : Fragment() {
     private lateinit var weatherViewModel: WeatherViewModel
     private lateinit var menuViewModel: MenuViewModel
     private lateinit var adapter: MainMenuAdapter
+    private var menuWeather: String = getString(R.string.menu_name_weather)
+    private var menuMap: String = getString(R.string.menu_name_map)
+    private var menuCoins: String = getString(R.string.menu_name_coins)
+    private var textButton: String = getString(R.string.text_choose_button)
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?{
@@ -52,8 +56,8 @@ class MainMenu : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var textMap = "Карта"
-        var textWeather = "Погода"
+        var textMap = menuMap
+        var textWeather = menuWeather
         var needPoint = PointCity(0.0, 0.0)
         val coinsInfo = arrayListOf<DbCrypto>()
         val menuInfo = arrayListOf<DbMenu>()
@@ -74,9 +78,9 @@ class MainMenu : Fragment() {
                         menuInfo.clear()
                         if(menu.isNotEmpty()) menu.forEach { menuInfo.add(it) }
                         else {
-                            menuViewModel.addMenu(DbMenu(0, "Карта"))
-                            menuViewModel.addMenu(DbMenu(0, "Погода"))
-                            menuViewModel.addMenu(DbMenu(0, "Курс криптовалют"))
+                            menuViewModel.addMenu(DbMenu(0, menuMap))
+                            menuViewModel.addMenu(DbMenu(0, menuWeather))
+                            menuViewModel.addMenu(DbMenu(0, menuCoins))
                         }
                         creatingRV(textMap, textWeather, coinsInfo, menuInfo, needPoint, view)
                     })
@@ -89,17 +93,17 @@ class MainMenu : Fragment() {
         val items = mutableListOf<MainMenuModel>()
         menuList.forEach { menu ->
             when (menu.MenuName) {
-                "Карта" -> {
-                    if(textMap != "Карта") items.add(MainMenuModel(menu.MenuName, "Выбрать", true, type = MainMenuModules.MAP, coinsInfo, weatherInfo, needPoint))
-                    else items.add(MainMenuModel(menu.MenuName, "Выбрать", false, type = MainMenuModules.MAP, coinsInfo, weatherInfo, needPoint))
+                menuMap -> {
+                    if(textMap != menuMap) items.add(MainMenuModel(menu.MenuName, textButton, true, type = MainMenuModules.MAP, coinsInfo, weatherInfo, needPoint))
+                    else items.add(MainMenuModel(menu.MenuName, textButton, false, type = MainMenuModules.MAP, coinsInfo, weatherInfo, needPoint))
                 }
-                "Погода" -> {
-                    if(textWeather != "Погода") items.add(MainMenuModel(menu.MenuName, "Выбрать", true, type = MainMenuModules.WEATHER, coinsInfo, weatherInfo, needPoint))
-                    else items.add(MainMenuModel(menu.MenuName, "Выбрать", false, type = MainMenuModules.WEATHER, coinsInfo, weatherInfo, needPoint))
+                menuWeather -> {
+                    if(textWeather != menuWeather) items.add(MainMenuModel(menu.MenuName, textButton, true, type = MainMenuModules.WEATHER, coinsInfo, weatherInfo, needPoint))
+                    else items.add(MainMenuModel(menu.MenuName, textButton, false, type = MainMenuModules.WEATHER, coinsInfo, weatherInfo, needPoint))
                 }
-                "Курс криптовалют" -> {
-                    if(!coinsInfo.isEmpty()) items.add(MainMenuModel(menu.MenuName, "Выбрать", true, type = MainMenuModules.COINS, coinsInfo, weatherInfo, needPoint))
-                    else items.add(MainMenuModel(menu.MenuName, "Выбрать", false, type = MainMenuModules.COINS, coinsInfo, weatherInfo, needPoint))
+                menuCoins -> {
+                    if(!coinsInfo.isEmpty()) items.add(MainMenuModel(menu.MenuName, textButton, true, type = MainMenuModules.COINS, coinsInfo, weatherInfo, needPoint))
+                    else items.add(MainMenuModel(menu.MenuName, textButton, false, type = MainMenuModules.COINS, coinsInfo, weatherInfo, needPoint))
                 }
             }
         }
@@ -112,7 +116,7 @@ class MainMenu : Fragment() {
         var textMap = Map
         var weatherInfo = WeatherMenuModel("",0.00, 0.00,
             "", "", 0.00, 0.00, 0, 0, 0.00, 0.00, 0.00)
-        if(textWeather != "Погода") {
+        if(textWeather != menuWeather) {
             val infoWeatherCoords = generateRequestToApiCords()
             val infoWeatherApi = generateRequestToApiWeather()
             CoroutineScope(Dispatchers.IO).launch {

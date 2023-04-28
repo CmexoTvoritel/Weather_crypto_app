@@ -15,4 +15,8 @@
     <string name="name_of_crypto">BitCoin</string>
     <string name="total_course_of_coin">15600.71 $</string>
     <string name="total_dynamic_of_coin">-100.3</string>
+    <string name="warning_message_coins">Вы можете выбрать не более 3 криптовалют</string>
+    <string name="menu_name_map">Карта</string>
+    <string name="menu_name_weather">Погода</string>
+    <string name="menu_name_coins">Курс криптовалют</string>
 </resources>

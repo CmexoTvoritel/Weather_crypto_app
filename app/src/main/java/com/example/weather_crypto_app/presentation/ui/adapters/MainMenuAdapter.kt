@@ -8,6 +8,7 @@ import android.graphics.drawable.VectorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -94,19 +95,19 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
                                 binding.cardWeather.visibility = View.VISIBLE
                                 binding.nameCityWeather.text = this.weatherList.name_city
                                 binding.idWeather.text = this.weatherList.name_weather
-                                binding.currentTemp.text = this.weatherList.temp.toString() + "°"
+                                binding.currentTemp.text = this.weatherList.temp.toString()
                                 Picasso.get()
                                     .load("https://openweathermap.org/img/wn/${this.weatherList.icon}@2x.png")
                                     .placeholder(R.drawable.usd_coin_usdc_1)
                                     .fit()
                                     .into(binding.weatherImage)
-                                binding.tempFeel.text = this.weatherList.feel_temp.toString() + "°"
-                                binding.windInfo.text = this.weatherList.wind.toString() + " м/с"
-                                binding.pressureInfo.text = (floor((this.weatherList.pressure * 0.750063755419211) * 100)/100).toString() + "мм"
-                                binding.wetnessInfo.text = this.weatherList.wetness.toString() + " %"
-                                binding.cloudsInfo.text = this.weatherList.cloud.toString() + " %"
-                                binding.lowTemp.text = this.weatherList.min_temp.toString() + "°"
-                                binding.highTemp.text = this.weatherList.max_temp.toString() + "°"
+                                binding.tempFeel.text = this.weatherList.feel_temp.toString()
+                                binding.windInfo.text = this.weatherList.wind.toString()
+                                binding.pressureInfo.text = (floor((this.weatherList.pressure * 0.750063755419211) * 100)/100).toString()
+                                binding.wetnessInfo.text = this.weatherList.wetness.toString()
+                                binding.cloudsInfo.text = this.weatherList.cloud.toString()
+                                binding.lowTemp.text = this.weatherList.min_temp.toString()
+                                binding.highTemp.text = this.weatherList.max_temp.toString()
                             }
                         }
                     }

@@ -19,4 +19,5 @@
     <string name="menu_name_map">Карта</string>
     <string name="menu_name_weather">Погода</string>
     <string name="menu_name_coins">Курс криптовалют</string>
+    <string name="weather_temp">°</string>
 </resources>

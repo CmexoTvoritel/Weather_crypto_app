@@ -20,4 +20,24 @@
     <string name="menu_name_weather">Погода</string>
     <string name="menu_name_coins">Курс криптовалют</string>
     <string name="weather_temp">°</string>
+    <string name="coin_desc">image coin</string>
+    <string name="cost_coin_desc">cost of coin</string>
+    <string name="weather_city_name">Москва</string>
+    <string name="weather_type_name">Солнечно</string>
+    <string name="weather_current_temp">29</string>
+    <string name="weather_feels_like_desc">Ощущается как</string>
+    <string name="weather_feels_like_temp">15</string>
+    <string name="weather_min_temp">10.0</string>
+    <string name="weather_max_temp">11.0</string>
+    <string name="weather_wind_desc">Ветер</string>
+    <string name="weather_wind_info">5</string>
+    <string name="weather_wind_metric">м/с</string>
+    <string name="weather_wetness_desc">Влажность</string>
+    <string name="weather_wetness_info">95</string>
+    <string name="weather_sym_percent">%</string>
+    <string name="weather_clouds_desk">Облачность</string>
+    <string name="weather_clouds_info">99</string>
+    <string name="weather_pressure_desc">Давление</string>
+    <string name="weather_pressure_info">759</string>
+    <string name="weather_pressure_metric">мм</string>
 </resources>

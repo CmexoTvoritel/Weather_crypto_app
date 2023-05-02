@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/baseline_sync_24">
+    <target
+        android:animation="@animator/load_animation"
+        android:name="load_ic"/>
+</animated-vector>

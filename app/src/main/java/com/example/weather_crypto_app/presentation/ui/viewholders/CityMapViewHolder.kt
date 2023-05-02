@@ -3,7 +3,6 @@ package com.example.weather_crypto_app.presentation.ui.viewholders
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.databinding.CityMapItemLayoutBinding
 import com.example.weather_crypto_app.models.CityMapModel
-import kotlinx.android.synthetic.main.city_map_item_layout.view.*
 
 class CityMapViewHolder(val binding: CityMapItemLayoutBinding): RecyclerView.ViewHolder(binding.root) {
 
@@ -13,8 +12,5 @@ class CityMapViewHolder(val binding: CityMapItemLayoutBinding): RecyclerView.Vie
         binding.cityCard.setOnClickListener {
             clickCallback?.invoke(item)
         }
-//        itemView.city_card.setOnClickListener {
-//            clickCallback?.invoke(item)
-//        }
     }
 }

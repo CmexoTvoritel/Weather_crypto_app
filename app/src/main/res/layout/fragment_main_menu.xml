@@ -22,6 +22,17 @@
         android:overScrollMode="never"
         tools:listitem="@layout/main_menu_item_layout" />
 
+    <ImageView
+        android:id="@+id/load_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:srcCompat="@drawable/ic_load_animated"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 
 

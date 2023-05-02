@@ -18,7 +18,6 @@ import com.example.weather_crypto_app.data.db.dbWeather.WeatherViewModel
 import com.example.weather_crypto_app.data.names.city.CityNamesWeather
 import com.example.weather_crypto_app.models.CityWeatherModel
 import com.example.weather_crypto_app.presentation.ui.adapters.CityWeatherAdapter
-import kotlinx.android.synthetic.main.activity_main.*
 
 class CityWeather : Fragment() {
 
@@ -38,7 +37,7 @@ class CityWeather : Fragment() {
         weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         recyclerView = view.findViewById(R.id.rv_city_weather)
         toolbar = (activity as AppCompatActivity).findViewById(R.id.toolbar)
-        searchView = (activity as AppCompatActivity).toolbar.menu.findItem(R.id.search_info).actionView as SearchView
+        searchView = toolbar.menu.findItem(R.id.search_info).actionView as SearchView
         addSearchQuery()
         createRV()
     }

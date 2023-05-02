@@ -12,6 +12,7 @@
     <color name="main_menu_text">#353535</color>
     <color name="primary_color">#3EAEDE</color>
     <color name="toolbar_background_color">#46A4CC</color>
+    <color name="bg_weather_card_end">#1C86B4</color>
     <color name="negative_course">#FF2727</color>
     <color name="positive_course">#36DD0D</color>
     <color name="marker_map_color">#FD2A2A</color>

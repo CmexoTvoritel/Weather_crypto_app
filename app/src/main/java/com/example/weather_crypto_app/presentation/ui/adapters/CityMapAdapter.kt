@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.databinding.CityMapItemLayoutBinding
 import com.example.weather_crypto_app.models.CityMapModel
 import com.example.weather_crypto_app.presentation.ui.viewholders.CityMapViewHolder
-import kotlinx.android.synthetic.main.city_map_item_layout.view.*
 import java.util.*
 
 class CityMapAdapter(private val cityList: List<CityMapModel>): RecyclerView.Adapter<CityMapViewHolder>(), Filterable {
@@ -32,7 +31,7 @@ class CityMapAdapter(private val cityList: List<CityMapModel>): RecyclerView.Ada
             }
         }
         holder.clickCallback = clickCallback
-        holder.bind(cityList[position])
+        holder.bind(dataFiltered[position])
     }
 
     override fun getItemCount(): Int {

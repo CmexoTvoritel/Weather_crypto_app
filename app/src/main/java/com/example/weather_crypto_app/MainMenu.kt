@@ -1,9 +1,12 @@
 package com.example.weather_crypto_app
 
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.*
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -65,6 +68,10 @@ class MainMenu : Fragment() {
         var needPoint = PointCity(0.0, 0.0)
         val coinsInfo = arrayListOf<DbCrypto>()
         val menuInfo = arrayListOf<DbMenu>()
+        val loadingMenu = view.findViewById<ImageView>(R.id.load_menu)
+        loadingMenu.visibility = View.VISIBLE
+        val animDrawable = loadingMenu.drawable as AnimatedVectorDrawable
+        animDrawable.start()
 
         openDataBases()
 
@@ -115,6 +122,7 @@ class MainMenu : Fragment() {
     }
 
     private fun creatingRV(Map: String, Weather: String, coinsInfo: List<DbCrypto>, menuList: List<DbMenu>, needPoint: PointCity, view: View) {
+        val loadingMenu = view.findViewById<ImageView>(R.id.load_menu)
         var adapterItems: List<MainMenuModel>
         var textWeather = Weather
         var textMap = Map
@@ -133,6 +141,7 @@ class MainMenu : Fragment() {
                     adapterItems = addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
                     adapter = MainMenuAdapter(requireContext(), adapterItems)
                     showRv(view)
+                    loadingMenu.visibility = View.INVISIBLE
                     if(coinsInfo.isNotEmpty()) {
                         val handler = Handler(Looper.getMainLooper())
                         val runnable = object : Runnable {
@@ -156,6 +165,7 @@ class MainMenu : Fragment() {
         else {
             adapter = MainMenuAdapter(requireContext(), addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo))
             showRv(view)
+            loadingMenu.visibility = View.INVISIBLE
         }
     }
 

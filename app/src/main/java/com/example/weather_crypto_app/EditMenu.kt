@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.data.db.dbMenu.DbMenu
 import com.example.weather_crypto_app.data.db.dbMenu.MenuViewModel
 import com.example.weather_crypto_app.presentation.ui.adapters.EditMenuAdapter
-import kotlinx.android.synthetic.main.activity_main.*
 
 class EditMenu : Fragment() {
     private lateinit var recyclerView: RecyclerView
@@ -36,7 +35,8 @@ class EditMenu : Fragment() {
         recyclerView = view.findViewById(R.id.rv_edit_menu)
 
         toolbar = (activity as AppCompatActivity).findViewById(R.id.toolbar)
-        val editItem = (activity as AppCompatActivity).toolbar.menu.findItem(R.id.edit_button)
+        val editItem = toolbar.menu.findItem(R.id.edit_button)
+        //val editItem = (activity as AppCompatActivity).toolbar.menu.findItem(R.id.edit_button)
 
         var dbMenuList = mutableListOf<DbMenu>()
         menuViewModel = ViewModelProvider(this)[MenuViewModel::class.java]

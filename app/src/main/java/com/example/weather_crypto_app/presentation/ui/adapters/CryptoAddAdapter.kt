@@ -11,7 +11,6 @@ import com.example.weather_crypto_app.databinding.CryptoAddItemLayoutBinding
 import com.example.weather_crypto_app.models.CryptoAddModel
 import com.example.weather_crypto_app.presentation.ui.viewholders.CryptoAddViewHolder
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.crypto_add_item_layout.view.*
 import java.util.*
 
 class CryptoAddAdapter(private val cryptoList: List<CryptoAddModel>): RecyclerView.Adapter<CryptoAddViewHolder>(), Filterable {
@@ -35,10 +34,10 @@ class CryptoAddAdapter(private val cryptoList: List<CryptoAddModel>): RecyclerVi
                     .fit()
                     .into(binding.imageCoin)
                 binding.checkEnableCoin.isChecked = this.enableCoin
-                holder.clickCallback = clickCallback
-                holder.bind(this)
             }
         }
+        holder.clickCallback = clickCallback
+        holder.bind(dataFiltered[position])
     }
 
     override fun onViewRecycled(holder: CryptoAddViewHolder) {

@@ -6,12 +6,9 @@ import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
-import com.example.weather_crypto_app.R
 import com.example.weather_crypto_app.databinding.CityWeatherItemLayoutBinding
 import com.example.weather_crypto_app.models.CityWeatherModel
 import com.example.weather_crypto_app.presentation.ui.viewholders.CityWeatherViewHolder
-import kotlinx.android.synthetic.main.city_weather_item_layout.view.*
-import kotlinx.coroutines.NonDisposableHandle.parent
 import java.util.*
 
 class CityWeatherAdapter(private val cityList: List<CityWeatherModel>): RecyclerView.Adapter<CityWeatherViewHolder>(), Filterable {
@@ -25,15 +22,14 @@ class CityWeatherAdapter(private val cityList: List<CityWeatherModel>): Recycler
     }
 
     override fun onBindViewHolder(holder: CityWeatherViewHolder, position: Int) {
-
         with(holder) {
             with(dataFiltered[position]) {
                 binding.cityShortName.text = this.shortName
                 binding.cityFullName.text = this.fullNameCity
-                holder.clickCallback = clickCallback
-                holder.bind(this)
             }
         }
+        holder.clickCallback = clickCallback
+        holder.bind(dataFiltered[position])
     }
 
     override fun getItemCount(): Int {

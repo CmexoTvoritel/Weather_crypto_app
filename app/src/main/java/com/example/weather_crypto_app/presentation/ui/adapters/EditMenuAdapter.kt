@@ -6,22 +6,24 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.example.weather_crypto_app.R
 import com.example.weather_crypto_app.data.db.dbMenu.DbMenu
+import com.example.weather_crypto_app.databinding.EditMenuItemLayoutBinding
 import com.example.weather_crypto_app.presentation.ui.viewholders.EditMenuViewHolder
-import kotlinx.android.synthetic.main.edit_menu_item_layout.view.*
 
-class EditMenuAdapter(val menuList: MutableList<DbMenu>): RecyclerView.Adapter<EditMenuViewHolder>() {
+class EditMenuAdapter(private val menuList: MutableList<DbMenu>): RecyclerView.Adapter<EditMenuViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EditMenuViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.edit_menu_item_layout, parent, false)
-        return EditMenuViewHolder(view)
+        val binding = EditMenuItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return EditMenuViewHolder(binding)
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: EditMenuViewHolder, position: Int) {
-        val item = menuList[position]
-        holder.itemView.name_edit_menu.text = menuList[position].MenuName
+        with(holder) {
+            with(menuList[position]) {
+                binding.nameEditMenu.text = this.MenuName
+            }
+        }
         holder.itemView.setOnTouchListener { _, event ->
             if(event.actionMasked == MotionEvent.ACTION_DOWN) {
                 itemTouchHelper?.startDrag(holder)

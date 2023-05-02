@@ -1,11 +1,13 @@
 package com.example.weather_crypto_app
 
 import android.annotation.SuppressLint
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -20,7 +22,6 @@ import com.example.weather_crypto_app.data.db.dbCrypto.DbCrypto
 import com.example.weather_crypto_app.models.CryptoAddModel
 import com.example.weather_crypto_app.models.crypto.CryptoRepItem
 import com.example.weather_crypto_app.presentation.ui.adapters.CryptoAddAdapter
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,9 +45,13 @@ class CryptoAdd : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val loadingCoins = view.findViewById<ImageView>(R.id.load_coins)
+        loadingCoins.visibility = View.VISIBLE
+        val anim = loadingCoins.drawable as AnimatedVectorDrawable
+        anim.start()
 
         toolbar = (activity as AppCompatActivity).findViewById(R.id.toolbar)
-        searchView = (activity as AppCompatActivity).toolbar.menu.findItem(R.id.search_info).actionView as SearchView
+        searchView = toolbar.menu.findItem(R.id.search_info).actionView as SearchView
         addSearchQuery()
 
         val dbCoinsList = arrayListOf<DbCrypto>()
@@ -144,6 +149,7 @@ class CryptoAdd : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun showRV(dbCoins: List<DbCrypto>, view: View) {
+        val load_coin = view.findViewById<ImageView>(R.id.load_coins)
         var data = mutableListOf<CryptoAddModel>()
         val viewDataCrypto = arrayListOf<CryptoAddModel>()
         var check: Boolean
@@ -161,6 +167,7 @@ class CryptoAdd : Fragment() {
                     if(check) data.add(CryptoAddModel(0, coin.image, coin.name, floor(coin.current_price * 100)/100, floor(coin.price_change_24h * 100)/100, false))
                 }
                 createRV(data, viewDataCrypto, infoCrypto, view)
+                load_coin.visibility = View.GONE
             }
         }
     }

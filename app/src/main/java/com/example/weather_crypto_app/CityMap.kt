@@ -17,7 +17,6 @@ import com.example.weather_crypto_app.data.names.city.CityNamesMap
 import com.example.weather_crypto_app.databinding.FragmentCityMapBinding
 import com.example.weather_crypto_app.models.CityMapModel
 import com.example.weather_crypto_app.presentation.ui.adapters.CityMapAdapter
-import kotlinx.android.synthetic.main.activity_main.*
 
 class CityMap : Fragment() {
 
@@ -39,7 +38,7 @@ class CityMap : Fragment() {
 
         recyclerView = view.findViewById(R.id.rv_city_map)
 
-        searchView = (activity as AppCompatActivity).toolbar.menu.findItem(R.id.search_info).actionView as SearchView
+        searchView = toolbar.menu.findItem(R.id.search_info).actionView as SearchView
         addSearchQuery()
         createRV()
     }

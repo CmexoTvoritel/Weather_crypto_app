@@ -38,6 +38,7 @@ class CryptoAdd : Fragment() {
     private lateinit var toolbar: Toolbar
     private lateinit var searchView: SearchView
     private lateinit var cryptoDbFunctions: CryptoDbFunctions
+    private lateinit var requestsToApi: RequestsToApi
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_crypto__add, container, false)
@@ -50,6 +51,7 @@ class CryptoAdd : Fragment() {
         val anim = loadingCoins.drawable as AnimatedVectorDrawable
         anim.start()
 
+        requestsToApi = RequestsToApi()
         toolbar = (activity as AppCompatActivity).findViewById(R.id.toolbar)
         searchView = toolbar.menu.findItem(R.id.search_info).actionView as SearchView
         addSearchQuery()
@@ -74,14 +76,6 @@ class CryptoAdd : Fragment() {
                 return true
             }
         })
-    }
-
-    private fun generateRequestToApiCoins(): CryptoApi {
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.coingecko.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        return retrofit.create(CryptoApi::class.java)
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -137,7 +131,7 @@ class CryptoAdd : Fragment() {
         val data = mutableListOf<CryptoAddModel>()
         val viewDataCrypto = arrayListOf<CryptoAddModel>()
         var check: Boolean
-        val cryptoApi = generateRequestToApiCoins()
+        val cryptoApi: CryptoApi = requestsToApi.publicGenerateRequest("Coin") as CryptoApi
         CoroutineScope(Dispatchers.IO).launch {
             val infoCrypto = cryptoApi.getCrypto()
             withContext(Dispatchers.Main) {

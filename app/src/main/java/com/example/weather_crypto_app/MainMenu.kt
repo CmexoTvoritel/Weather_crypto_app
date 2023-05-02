@@ -31,8 +31,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import kotlin.math.floor
 
 
@@ -44,6 +42,7 @@ class MainMenu : Fragment() {
     private lateinit var weatherViewModel: WeatherViewModel
     private lateinit var menuViewModel: MenuViewModel
     private lateinit var adapter: MainMenuAdapter
+    private lateinit var requestsToApi: RequestsToApi
     private var menuWeather: String = ""
     private var menuMap: String = ""
     private var menuCoins: String = ""
@@ -56,6 +55,7 @@ class MainMenu : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requestsToApi = RequestsToApi()
         menuWeather = getString(R.string.menu_name_weather)
         menuMap = getString(R.string.menu_name_map)
         menuCoins = getString(R.string.menu_name_coins)
@@ -125,8 +125,8 @@ class MainMenu : Fragment() {
         var weatherInfo = WeatherMenuModel("",0.00, 0.00,
             "", "", 0.00, 0.00, 0, 0, 0.00, 0.00, 0.00)
         if(textWeather != menuWeather) {
-            val infoWeatherCoords = generateRequestToApiCords()
-            val infoWeatherApi = generateRequestToApiWeather()
+            val infoWeatherCoords = requestsToApi.publicGenerateRequest("Cords") as CordsWeatherApi
+            val infoWeatherApi = requestsToApi.publicGenerateRequest("Weather") as WeatherApi
             CoroutineScope(Dispatchers.IO).launch {
                 val coordsWeather = infoWeatherCoords.getCordsWeather(textWeather)
                 val infoWeather = infoWeatherApi.getWeather(coordsWeather[0].lat.toString(), coordsWeather[0].lon.toString(),
@@ -143,7 +143,7 @@ class MainMenu : Fragment() {
                         val handler = Handler(Looper.getMainLooper())
                         val runnable = object : Runnable {
                             override fun run() {
-                                val cryptoApi = generateRequestToApiCoins()
+                                val cryptoApi = requestsToApi.publicGenerateRequest("Coin") as CryptoApi
                                 CoroutineScope(Dispatchers.IO).launch {
                                     val infoCrypto = cryptoApi.getCrypto()
                                     withContext(Dispatchers.Main) {
@@ -228,30 +228,6 @@ class MainMenu : Fragment() {
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
-    }
-
-    private fun generateRequestToApiCords(): CordsWeatherApi {
-        val retrofitCords = Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        return retrofitCords.create(CordsWeatherApi::class.java)
-    }
-
-    private fun generateRequestToApiWeather(): WeatherApi {
-        val retrofitInfo = Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        return retrofitInfo.create(WeatherApi::class.java)
-    }
-
-    private fun generateRequestToApiCoins(): CryptoApi {
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.coingecko.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        return retrofit.create(CryptoApi::class.java)
     }
 
 }

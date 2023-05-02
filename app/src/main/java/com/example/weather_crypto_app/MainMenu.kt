@@ -43,10 +43,10 @@ class MainMenu : Fragment() {
     private lateinit var weatherViewModel: WeatherViewModel
     private lateinit var menuViewModel: MenuViewModel
     private lateinit var adapter: MainMenuAdapter
-    private var menuWeather: String = getString(R.string.menu_name_weather)
-    private var menuMap: String = getString(R.string.menu_name_map)
-    private var menuCoins: String = getString(R.string.menu_name_coins)
-    private var textButton: String = getString(R.string.text_choose_button)
+    private var menuWeather: String = ""
+    private var menuMap: String = ""
+    private var menuCoins: String = ""
+    private var textButton: String = ""
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?{
@@ -56,6 +56,10 @@ class MainMenu : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        menuWeather = getString(R.string.menu_name_weather)
+        menuMap = getString(R.string.menu_name_map)
+        menuCoins = getString(R.string.menu_name_coins)
+        textButton = getString(R.string.text_choose_button)
         var textMap = menuMap
         var textWeather = menuWeather
         var needPoint = PointCity(0.0, 0.0)

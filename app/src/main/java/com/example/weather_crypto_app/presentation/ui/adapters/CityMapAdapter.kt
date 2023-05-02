@@ -29,10 +29,10 @@ class CityMapAdapter(private val cityList: List<CityMapModel>): RecyclerView.Ada
             with(dataFiltered[position]) {
                 binding.cityShortName.text = this.shortName
                 binding.cityFullName.text = this.fullNameCity
-                holder.clickCallback = clickCallback
-                holder.bind(this)
             }
         }
+        holder.clickCallback = clickCallback
+        holder.bind(cityList[position])
     }
 
     override fun getItemCount(): Int {

@@ -125,11 +125,11 @@ class MainMenu : Fragment() {
         var weatherInfo = WeatherMenuModel("",0.00, 0.00,
             "", "", 0.00, 0.00, 0, 0, 0.00, 0.00, 0.00)
         if(textWeather != menuWeather) {
-            val infoWeatherCoords = requestsToApi.publicGenerateRequest("Cords") as CordsWeatherApi
+            val infoWeatherCords = requestsToApi.publicGenerateRequest("Cords") as CordsWeatherApi
             val infoWeatherApi = requestsToApi.publicGenerateRequest("Weather") as WeatherApi
             CoroutineScope(Dispatchers.IO).launch {
-                val coordsWeather = infoWeatherCoords.getCordsWeather(textWeather)
-                val infoWeather = infoWeatherApi.getWeather(coordsWeather[0].lat.toString(), coordsWeather[0].lon.toString(),
+                val cordsWeather = infoWeatherCords.getCordsWeather(textWeather)
+                val infoWeather = infoWeatherApi.getWeather(cordsWeather[0].lat.toString(), cordsWeather[0].lon.toString(),
                     "22c2b837bf6f65a956144d42d02343bb", "ru", "metric")
                 withContext(Dispatchers.Main) {
                     textWeather = infoWeather.name

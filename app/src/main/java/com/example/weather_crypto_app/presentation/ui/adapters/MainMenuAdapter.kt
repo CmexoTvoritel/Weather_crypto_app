@@ -27,6 +27,9 @@ import kotlin.math.floor
 class MainMenuAdapter(private val context: Context, private val mainMenuList: List<MainMenuModel>): RecyclerView.Adapter<MainMenuViewHolder>() {
 
     private lateinit var recyclerView: RecyclerView
+    private val menuMap = "Карта"
+    private val menuWeather = "Погода"
+    private val menuCoins = "Курс криптовалют"
 
     var clickCallback: ((type: MainMenuModules) -> Unit)? = null
 
@@ -58,7 +61,7 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
                 when(this.status) {
                     true -> {
                         when(this.nameMenu) {
-                            "Курс криптовалют" -> {
+                            menuCoins -> {
                                 binding.settingsButt.visibility = View.VISIBLE
                                 binding.rvCoinInfo.visibility = View.VISIBLE
                                 val adapterCrypto = CryptoMenuAdapter(this.cryptoList)
@@ -67,7 +70,7 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
                                 recyclerView.adapter = adapterCrypto
                                 adapterCrypto.notifyDataSetChanged()
                             }
-                            "Карта" -> {
+                            menuMap -> {
                                 binding.settingsButt.visibility = View.VISIBLE
                                 binding.mapCard.visibility = View.VISIBLE
                                 binding.mapView.map.move(
@@ -91,7 +94,7 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
                                 binding.mapView.map.isScrollGesturesEnabled = false
                                 binding.mapView.map.isZoomGesturesEnabled = false
                             }
-                            "Погода" -> {
+                            menuWeather -> {
                                 binding.settingsButt.visibility = View.VISIBLE
                                 binding.cardWeather.visibility = View.VISIBLE
                                 binding.nameCityWeather.text = this.weatherList.name_city
@@ -114,17 +117,17 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
                     }
                     false -> {
                         when(this.nameMenu) {
-                            "Курс криптовалют" -> {
+                            menuCoins -> {
                                 binding.nameButton.visibility = View.VISIBLE
                                 binding.noCoin1.visibility = View.VISIBLE
                                 binding.noCoin2.visibility = View.VISIBLE
                                 binding.noCoin3.visibility = View.VISIBLE
                             }
-                            "Карта" -> {
+                            menuMap -> {
                                 binding.nameButton.visibility = View.VISIBLE
                                 binding.noMap.visibility = View.VISIBLE
                             }
-                            "Погода" -> {
+                            menuWeather -> {
                                 binding.nameButton.visibility = View.VISIBLE
                                 binding.noWeather.visibility = View.VISIBLE
                             }

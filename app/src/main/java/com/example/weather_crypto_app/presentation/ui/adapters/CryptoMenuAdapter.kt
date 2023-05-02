@@ -20,21 +20,24 @@ class CryptoMenuAdapter(private val cryptoList: List<DbCrypto>): RecyclerView.Ad
     override fun onBindViewHolder(holder: CryptoMenuViewHolder, position: Int) {
         with(holder) {
             with(cryptoList[position]) {
+                 val price = this.costCoin.toString() + " $"
                  binding.nameCoin.text = this.nameCoin
                  Picasso.get()
                      .load(this.image)
                      .placeholder(R.drawable.usd_coin_usdc_1)
                      .fit()
                      .into(binding.imageOfCoin)
-                binding.totalCost.text = this.costCoin.toString() + " $"
+                binding.totalCost.text = price
                 if(this.price_change >= 0) {
-                    binding.changesCost.text = "+" + this.price_change.toString()
+                    val positivePrice = "+" + this.price_change.toString()
+                    binding.changesCost.text = positivePrice
                     binding.upCost.visibility = View.VISIBLE
                     binding.downCost.visibility = View.INVISIBLE
                     binding.changesCost.setTextColor(Color.parseColor("#36DD0D"))
                 }
                 else {
-                    binding.changesCost.text = "-" + this.price_change.toString()
+                    val negativePrice = "-" + this.price_change.toString()
+                    binding.changesCost.text = negativePrice
                     binding.upCost.visibility = View.INVISIBLE
                     binding.downCost.visibility = View.VISIBLE
                     binding.changesCost.setTextColor(Color.parseColor("#FF2727"))

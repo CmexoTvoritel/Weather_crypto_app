@@ -8,7 +8,7 @@ class CryptoAddViewHolder(val binding: CryptoAddItemLayoutBinding): RecyclerView
     var clickCallback: ((type: CryptoAddModel) -> Unit)?= null
 
     fun bind(item: CryptoAddModel) {
-        binding.checkEnableCoin.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.checkEnableCoin.setOnCheckedChangeListener { _, isChecked ->
             item.enableCoin = isChecked
             clickCallback?.invoke(item)
         }

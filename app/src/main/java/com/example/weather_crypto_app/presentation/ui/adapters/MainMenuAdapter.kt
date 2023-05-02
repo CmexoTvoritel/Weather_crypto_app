@@ -1,5 +1,6 @@
 package com.example.weather_crypto_app.presentation.ui.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -8,7 +9,6 @@ import android.graphics.drawable.VectorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.ui.res.stringResource
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,6 +35,7 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
         return MainMenuViewHolder(binding)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: MainMenuViewHolder, position: Int) {
         with(holder) {
             with(mainMenuList[position]) {

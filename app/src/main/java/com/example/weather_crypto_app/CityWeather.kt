@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +20,7 @@ import com.example.weather_crypto_app.presentation.ui.adapters.CityWeatherAdapte
 
 class CityWeather : Fragment() {
 
-    lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: RecyclerView
     private lateinit var weatherViewModel: WeatherViewModel
     private lateinit var adapter: CityWeatherAdapter
     private lateinit var toolbar: Toolbar
@@ -68,11 +67,17 @@ class CityWeather : Fragment() {
     private fun createRV() {
         adapter = CityWeatherAdapter(addWeatherItems())
         adapter.clickCallback = {type ->
-            weatherViewModel.readAllData.observe(viewLifecycleOwner, Observer { it ->
-                if(it.isNotEmpty()) weatherViewModel.updateCity(DbWeather(1, type.nameApiCity, type.fullNameCity))
+            weatherViewModel.readAllData.observe(viewLifecycleOwner) {
+                if (it.isNotEmpty()) weatherViewModel.updateCity(
+                    DbWeather(
+                        1,
+                        type.nameApiCity,
+                        type.fullNameCity
+                    )
+                )
                 else weatherViewModel.addCity(DbWeather(0, type.nameApiCity, type.fullNameCity))
                 findNavController().navigate(R.id.mainMenu)
-            })
+            }
         }
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter

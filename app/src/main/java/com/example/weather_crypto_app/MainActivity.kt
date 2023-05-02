@@ -20,6 +20,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val toolbarItemEditText = getString(R.string.toolbar_title_name_edit)
+        val toolbarItemSubmitText = getString(R.string.toolbar_title_name_submit)
         window.navigationBarColor = ColorUtils.setAlphaComponent(
             ContextCompat.getColor(this, R.color.white), 0
         )
@@ -40,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.mainMenu -> {
-                    editItem.title = "Править"
+                    editItem.title = toolbarItemEditText
                     searchItem.isVisible = false
                     editItem.isVisible = true
                     editItem.setOnMenuItemClickListener {
@@ -53,7 +55,7 @@ class MainActivity : AppCompatActivity() {
                     editItem.isVisible = false
                 }
                 R.id.editMenu -> {
-                    editItem.title = "Готово"
+                    editItem.title = toolbarItemSubmitText
                     editItem.isVisible = true
                     searchItem.isVisible = false
                 }

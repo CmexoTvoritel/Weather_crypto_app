@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,8 +32,8 @@ import kotlin.math.floor
 
 class CryptoAdd : Fragment() {
 
-    lateinit var recyclerView: RecyclerView
-    lateinit var cryptoViewModel: CryptoViewModel
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var cryptoViewModel: CryptoViewModel
     private lateinit var adapter: CryptoAddAdapter
     private lateinit var toolbar: Toolbar
     private lateinit var searchView: SearchView
@@ -56,9 +55,9 @@ class CryptoAdd : Fragment() {
 
         val dbCoinsList = arrayListOf<DbCrypto>()
         cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
-        cryptoViewModel.readAllData.observe(viewLifecycleOwner, Observer { coin ->
+        cryptoViewModel.readAllData.observe(viewLifecycleOwner) { coin ->
             coin.forEach { dbCoinsList.add(it) }
-        })
+        }
         showRV(dbCoinsList, view)
     }
 
@@ -79,8 +78,8 @@ class CryptoAdd : Fragment() {
         val name = data.nameCoin
         val image = data.image
         val cost = data.cost
-        val change_cost = data.price_change
-        val coinData = DbCrypto(data.uid, name, image, cost, change_cost)
+        val changeCost = data.price_change
+        val coinData = DbCrypto(data.uid, name, image, cost, changeCost)
         cryptoViewModel.deleteCoins(coinData)
     }
 
@@ -88,8 +87,8 @@ class CryptoAdd : Fragment() {
         val name = data.nameCoin
         val cost = data.cost
         val image = data.image
-        val change_cost = data.price_change
-        val coinData = DbCrypto(0, name, image, cost, change_cost)
+        val changeCost = data.price_change
+        val coinData = DbCrypto(0, name, image, cost, changeCost)
         cryptoViewModel.addCoins(coinData)
     }
 
@@ -101,6 +100,7 @@ class CryptoAdd : Fragment() {
         return retrofit.create(CryptoApi::class.java)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun createRV(data: MutableList<CryptoAddModel>, viewDataCrypto: ArrayList<CryptoAddModel>, infoCrypto: List<CryptoRepItem>, view: View) {
         var check: Boolean
         adapter = CryptoAddAdapter(data)
@@ -149,8 +149,8 @@ class CryptoAdd : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun showRV(dbCoins: List<DbCrypto>, view: View) {
-        val load_coin = view.findViewById<ImageView>(R.id.load_coins)
-        var data = mutableListOf<CryptoAddModel>()
+        val loadCoin = view.findViewById<ImageView>(R.id.load_coins)
+        val data = mutableListOf<CryptoAddModel>()
         val viewDataCrypto = arrayListOf<CryptoAddModel>()
         var check: Boolean
         val cryptoApi = generateRequestToApiCoins()
@@ -167,7 +167,7 @@ class CryptoAdd : Fragment() {
                     if(check) data.add(CryptoAddModel(0, coin.image, coin.name, floor(coin.current_price * 100)/100, floor(coin.price_change_24h * 100)/100, false))
                 }
                 createRV(data, viewDataCrypto, infoCrypto, view)
-                load_coin.visibility = View.GONE
+                loadCoin.visibility = View.GONE
             }
         }
     }

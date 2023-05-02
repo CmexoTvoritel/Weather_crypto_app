@@ -11,7 +11,7 @@ import com.yandex.mapkit.mapview.MapView
 
 class MainMenuViewHolder(val binding: MainMenuItemLayoutBinding): RecyclerView.ViewHolder(binding.root) {
 
-    val mapView: MapView = binding.mapView
+    private val mapView: MapView = binding.mapView
 
     init {
         mapView.map.mapType = MapType.MAP

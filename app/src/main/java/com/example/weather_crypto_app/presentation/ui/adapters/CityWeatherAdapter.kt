@@ -11,6 +11,7 @@ import com.example.weather_crypto_app.models.CityWeatherModel
 import com.example.weather_crypto_app.presentation.ui.viewholders.CityWeatherViewHolder
 import java.util.*
 
+@Suppress("UNCHECKED_CAST")
 class CityWeatherAdapter(private val cityList: List<CityWeatherModel>): RecyclerView.Adapter<CityWeatherViewHolder>(), Filterable {
     var clickCallback: ((type: CityWeatherModel) -> Unit)? = null
     private var dataFiltered: List<CityWeatherModel> = cityList

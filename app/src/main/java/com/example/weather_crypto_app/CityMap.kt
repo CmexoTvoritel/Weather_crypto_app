@@ -6,7 +6,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.data.db.dbMap.DbMap
 import com.example.weather_crypto_app.data.db.dbMap.MapViewModel
 import com.example.weather_crypto_app.data.names.city.CityNamesMap
-import com.example.weather_crypto_app.databinding.FragmentCityMapBinding
 import com.example.weather_crypto_app.models.CityMapModel
 import com.example.weather_crypto_app.presentation.ui.adapters.CityMapAdapter
 
@@ -69,11 +67,27 @@ class CityMap : Fragment() {
     private fun createRV() {
         adapter = CityMapAdapter(addMapItems())
         adapter.clickCallback = { type->
-            mapViewModel.readAllData.observe(viewLifecycleOwner, Observer { it  ->
-                if(it.isNotEmpty()) mapViewModel.updateMap(DbMap(1, type.nameApiCity, type.fullNameCity, type.pointCity.lan, type.pointCity.lon))
-                else mapViewModel.addCity(DbMap(0, type.nameApiCity, type.fullNameCity, type.pointCity.lan, type.pointCity.lon))
+            mapViewModel.readAllData.observe(viewLifecycleOwner) {
+                if (it.isNotEmpty()) mapViewModel.updateMap(
+                    DbMap(
+                        1,
+                        type.nameApiCity,
+                        type.fullNameCity,
+                        type.pointCity.lan,
+                        type.pointCity.lon
+                    )
+                )
+                else mapViewModel.addCity(
+                    DbMap(
+                        0,
+                        type.nameApiCity,
+                        type.fullNameCity,
+                        type.pointCity.lan,
+                        type.pointCity.lon
+                    )
+                )
                 findNavController().navigate(R.id.mainMenu)
-            })
+            }
         }
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter

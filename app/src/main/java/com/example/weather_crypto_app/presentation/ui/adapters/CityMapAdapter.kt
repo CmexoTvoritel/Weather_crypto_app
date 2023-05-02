@@ -11,6 +11,7 @@ import com.example.weather_crypto_app.models.CityMapModel
 import com.example.weather_crypto_app.presentation.ui.viewholders.CityMapViewHolder
 import java.util.*
 
+@Suppress("UNCHECKED_CAST")
 class CityMapAdapter(private val cityList: List<CityMapModel>): RecyclerView.Adapter<CityMapViewHolder>(), Filterable {
 
     var clickCallback: ((type: CityMapModel) -> Unit)? = null

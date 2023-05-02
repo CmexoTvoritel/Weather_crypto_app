@@ -13,6 +13,7 @@ import com.example.weather_crypto_app.presentation.ui.viewholders.CryptoAddViewH
 import com.squareup.picasso.Picasso
 import java.util.*
 
+@Suppress("UNCHECKED_CAST")
 class CryptoAddAdapter(private val cryptoList: List<CryptoAddModel>): RecyclerView.Adapter<CryptoAddViewHolder>(), Filterable {
 
     var clickCallback: ((type: CryptoAddModel) -> Unit)?= null

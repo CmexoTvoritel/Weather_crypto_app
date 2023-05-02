@@ -48,8 +48,4 @@ class EditMenuAdapter(private val menuList: MutableList<DbMenu>): RecyclerView.A
 
     private var itemTouchHelper: ItemTouchHelper? = null
 
-    fun setItemTouchHelper(itemTouchHelper: ItemTouchHelper) {
-        this.itemTouchHelper = itemTouchHelper
-    }
-
 }

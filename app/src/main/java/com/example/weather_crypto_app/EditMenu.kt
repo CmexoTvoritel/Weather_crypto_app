@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -36,16 +35,15 @@ class EditMenu : Fragment() {
 
         toolbar = (activity as AppCompatActivity).findViewById(R.id.toolbar)
         val editItem = toolbar.menu.findItem(R.id.edit_button)
-        //val editItem = (activity as AppCompatActivity).toolbar.menu.findItem(R.id.edit_button)
 
-        var dbMenuList = mutableListOf<DbMenu>()
+        val dbMenuList = mutableListOf<DbMenu>()
         menuViewModel = ViewModelProvider(this)[MenuViewModel::class.java]
-        menuViewModel.readAllData.observe(viewLifecycleOwner, Observer { menu ->
+        menuViewModel.readAllData.observe(viewLifecycleOwner) { menu ->
             menu.forEach { dbMenuList.add(it) }
             adapter = EditMenuAdapter(dbMenuList)
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
             recyclerView.adapter = adapter
-        })
+        }
 
 
         itemTouchHelper =

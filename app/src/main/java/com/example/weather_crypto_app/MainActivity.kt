@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.navigation.NavController
@@ -30,7 +29,6 @@ class MainActivity : AppCompatActivity() {
         val toolbar: MaterialToolbar = findViewById(R.id.toolbar)
         val menu: Menu = toolbar.menu
         val searchItem: MenuItem = menu.findItem(R.id.search_info)
-        val searchView: SearchView = searchItem.actionView as SearchView
         val editItem: MenuItem = menu.findItem(R.id.edit_button)
 
         val navHostFragment = supportFragmentManager.findFragmentById(
@@ -39,25 +37,25 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
         appBarConfiguration = AppBarConfiguration(navController.graph)
         toolbar.setupWithNavController(navController, appBarConfiguration)
-        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+        navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.mainMenu -> {
                     editItem.title = "Править"
-                    searchItem.setVisible(false)
-                    editItem.setVisible(true)
+                    searchItem.isVisible = false
+                    editItem.isVisible = true
                     editItem.setOnMenuItemClickListener {
                         navController.navigate(R.id.editMenu)
                         return@setOnMenuItemClickListener true
                     }
                 }
                 R.id.city_Map, R.id.city_Weather, R.id.crypto_Add -> {
-                    searchItem.setVisible(true)
-                    editItem.setVisible(false)
+                    searchItem.isVisible = true
+                    editItem.isVisible = false
                 }
                 R.id.editMenu -> {
                     editItem.title = "Готово"
-                    editItem.setVisible(true)
-                    searchItem.setVisible(false)
+                    editItem.isVisible = true
+                    searchItem.isVisible = false
                 }
             }
         }

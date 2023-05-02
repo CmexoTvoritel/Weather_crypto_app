@@ -6,9 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.*
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -52,9 +50,8 @@ class MainMenu : Fragment() {
     private var textButton: String = ""
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?{
-        val view = inflater.inflate(R.layout.fragment_main_menu, container, false)
-        return view
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_main_menu, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,29 +72,29 @@ class MainMenu : Fragment() {
 
         openDataBases()
 
-        mapViewModel.readAllData.observe(viewLifecycleOwner, Observer { map ->
-            if(map.isNotEmpty()) {
+        mapViewModel.readAllData.observe(viewLifecycleOwner) { map ->
+            if (map.isNotEmpty()) {
                 textMap = map[0].CityName
                 needPoint = PointCity(map[0].lan, map[0].lon)
             }
-            weatherViewModel.readAllData.observe(viewLifecycleOwner, Observer { weather ->
-                if(weather.isNotEmpty()) textWeather = weather[0].CityName
-                cryptoViewModel.readAllData.observe(viewLifecycleOwner, Observer { coins ->
+            weatherViewModel.readAllData.observe(viewLifecycleOwner) { weather ->
+                if (weather.isNotEmpty()) textWeather = weather[0].CityName
+                cryptoViewModel.readAllData.observe(viewLifecycleOwner) { coins ->
                     coinsInfo.clear()
                     coins.forEach { coinsInfo.add(it) }
-                    menuViewModel.readAllData.observe(viewLifecycleOwner, Observer { menu ->
+                    menuViewModel.readAllData.observe(viewLifecycleOwner) { menu ->
                         menuInfo.clear()
-                        if(menu.isNotEmpty()) menu.forEach { menuInfo.add(it) }
+                        if (menu.isNotEmpty()) menu.forEach { menuInfo.add(it) }
                         else {
                             menuViewModel.addMenu(DbMenu(0, menuMap))
                             menuViewModel.addMenu(DbMenu(0, menuWeather))
                             menuViewModel.addMenu(DbMenu(0, menuCoins))
                         }
                         creatingRV(textMap, textWeather, coinsInfo, menuInfo, needPoint, view)
-                    })
-                })
-            })
-        })
+                    }
+                }
+            }
+        }
     }
 
     private fun addMenuItems(textMap: String?, textWeather: String?, coinsInfo: List<DbCrypto>, menuList: List<DbMenu>, needPoint: PointCity, weatherInfo: WeatherMenuModel): List<MainMenuModel> {
@@ -113,7 +110,7 @@ class MainMenu : Fragment() {
                     else items.add(MainMenuModel(menu.MenuName, textButton, false, type = MainMenuModules.WEATHER, coinsInfo, weatherInfo, needPoint))
                 }
                 menuCoins -> {
-                    if(!coinsInfo.isEmpty()) items.add(MainMenuModel(menu.MenuName, textButton, true, type = MainMenuModules.COINS, coinsInfo, weatherInfo, needPoint))
+                    if(coinsInfo.isNotEmpty()) items.add(MainMenuModel(menu.MenuName, textButton, true, type = MainMenuModules.COINS, coinsInfo, weatherInfo, needPoint))
                     else items.add(MainMenuModel(menu.MenuName, textButton, false, type = MainMenuModules.COINS, coinsInfo, weatherInfo, needPoint))
                 }
             }
@@ -125,7 +122,6 @@ class MainMenu : Fragment() {
         val loadingMenu = view.findViewById<ImageView>(R.id.load_menu)
         var adapterItems: List<MainMenuModel>
         var textWeather = Weather
-        var textMap = Map
         var weatherInfo = WeatherMenuModel("",0.00, 0.00,
             "", "", 0.00, 0.00, 0, 0, 0.00, 0.00, 0.00)
         if(textWeather != menuWeather) {
@@ -138,7 +134,8 @@ class MainMenu : Fragment() {
                 withContext(Dispatchers.Main) {
                     textWeather = infoWeather.name
                     weatherInfo = setWeatherInfo(infoWeather)
-                    adapterItems = addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
+                    adapterItems =
+                        addMenuItems(Map, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
                     adapter = MainMenuAdapter(requireContext(), adapterItems)
                     showRv(view)
                     loadingMenu.visibility = View.INVISIBLE
@@ -150,7 +147,8 @@ class MainMenu : Fragment() {
                                 CoroutineScope(Dispatchers.IO).launch {
                                     val infoCrypto = cryptoApi.getCrypto()
                                     withContext(Dispatchers.Main) {
-                                        updateCoinsInfo(infoCrypto, coinsInfo, textMap, textWeather, menuList, needPoint, weatherInfo)
+                                        updateCoinsInfo(infoCrypto, coinsInfo, Map, textWeather,
+                                            menuList, needPoint, weatherInfo)
                                     }
                                 }
                                 handler.postDelayed(this, 20000)
@@ -163,20 +161,16 @@ class MainMenu : Fragment() {
 
         }
         else {
-            adapter = MainMenuAdapter(requireContext(), addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo))
+            adapter = MainMenuAdapter(requireContext(),
+                addMenuItems(Map, textWeather, coinsInfo, menuList, needPoint, weatherInfo))
             showRv(view)
             loadingMenu.visibility = View.INVISIBLE
         }
     }
 
-    companion object {
-        fun newInstance() = MainMenu()
-    }
-
     private fun updateCoinsInfo(infoCrypto: List<CryptoRepItem>, coinsInfo: List<DbCrypto>, textMap: String?,
                         textWeather: String?, menuList: List<DbMenu>, needPoint: PointCity,
                         weatherInfo: WeatherMenuModel) {
-        var adapterItems = listOf<MainMenuModel>()
         for (coin in infoCrypto) {
             for (dbCoin in coinsInfo) {
                 if (dbCoin.nameCoin == coin.name) {
@@ -187,13 +181,14 @@ class MainMenu : Fragment() {
                 }
             }
         }
-        adapterItems = addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
+        val adapterItems: List<MainMenuModel> =
+            addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
         adapter = MainMenuAdapter(
             requireContext(),
             adapterItems
         )
         adapter = recyclerView.adapter as MainMenuAdapter
-        val position = menuList.indexOfFirst{ it.MenuName == "Курс криптовалют" }
+        val position = menuList.indexOfFirst{ it.MenuName == menuCoins }
         adapter.notifyItemChanged(position)
     }
 

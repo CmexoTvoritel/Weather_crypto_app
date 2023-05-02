@@ -37,6 +37,7 @@ class CryptoAdd : Fragment() {
     private lateinit var adapter: CryptoAddAdapter
     private lateinit var toolbar: Toolbar
     private lateinit var searchView: SearchView
+    private lateinit var cryptoDbFunctions: CryptoDbFunctions
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_crypto__add, container, false)
@@ -55,6 +56,7 @@ class CryptoAdd : Fragment() {
 
         val dbCoinsList = arrayListOf<DbCrypto>()
         cryptoViewModel = ViewModelProvider(this)[CryptoViewModel::class.java]
+        cryptoDbFunctions = CryptoDbFunctions(cryptoViewModel)
         cryptoViewModel.readAllData.observe(viewLifecycleOwner) { coin ->
             coin.forEach { dbCoinsList.add(it) }
         }
@@ -72,24 +74,6 @@ class CryptoAdd : Fragment() {
                 return true
             }
         })
-    }
-
-    private fun deleteDataOfCoinDatabase(data: CryptoAddModel) {
-        val name = data.nameCoin
-        val image = data.image
-        val cost = data.cost
-        val changeCost = data.price_change
-        val coinData = DbCrypto(data.uid, name, image, cost, changeCost)
-        cryptoViewModel.deleteCoins(coinData)
-    }
-
-    private fun insertDataToCoinDatabase(data: CryptoAddModel) {
-        val name = data.nameCoin
-        val cost = data.cost
-        val image = data.image
-        val changeCost = data.price_change
-        val coinData = DbCrypto(0, name, image, cost, changeCost)
-        cryptoViewModel.addCoins(coinData)
     }
 
     private fun generateRequestToApiCoins(): CryptoApi {
@@ -112,9 +96,9 @@ class CryptoAdd : Fragment() {
                 type.uid = viewDataCrypto.size + 1
                 type.enableCoin = true
                 viewDataCrypto.add(type)
-                insertDataToCoinDatabase(type)
+                cryptoDbFunctions.publicInsertData(type)
                 if(viewDataCrypto.size > 3) {
-                    deleteDataOfCoinDatabase(viewDataCrypto[0])
+                    cryptoDbFunctions.publicDeleteData(viewDataCrypto[0])
                     viewDataCrypto.removeAt(0)
                 }
                 data.clear()
@@ -129,7 +113,7 @@ class CryptoAdd : Fragment() {
             }
             else {
                 viewDataCrypto.remove(type)
-                deleteDataOfCoinDatabase(type)
+                cryptoDbFunctions.publicDeleteData(type)
                 type.enableCoin = false
                 data.clear()
                 viewDataCrypto.forEach { data.add(it) }

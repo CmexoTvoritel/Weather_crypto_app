@@ -28,6 +28,10 @@ class MainMenuViewHolder(val binding: MainMenuItemLayoutBinding): RecyclerView.V
         binding.settingsButt.setOnClickListener {
             clickCallback?.invoke(item.type)
         }
+
+        binding.reloadButton.setOnClickListener {
+            clickCallback?.invoke(item.type)
+        }
     }
     fun unbind() {
         mapView.onStop()

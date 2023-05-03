@@ -202,7 +202,7 @@
             android:layout_width="match_parent"
             android:layout_height="176dp"
             android:layout_marginTop="10dp"
-            android:visibility="visible"
+            android:visibility="invisible"
             app:cardCornerRadius="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -513,6 +513,33 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_load_animated"
             tools:ignore="ContentDescription" />
+
+        <Button
+            android:id="@+id/reload_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/button_style"
+            android:text="@string/load_error_button"
+            android:textColor="@color/white"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/load_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:layout_marginBottom="40dp"
+            android:fontFamily="@font/roboto"
+            android:text="@string/load_error_message"
+            android:textSize="17sp"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@+id/name_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
 
 

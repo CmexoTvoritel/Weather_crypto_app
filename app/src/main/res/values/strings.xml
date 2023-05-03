@@ -40,4 +40,6 @@
     <string name="weather_pressure_desc">Давление</string>
     <string name="weather_pressure_info">759</string>
     <string name="weather_pressure_metric">мм</string>
+    <string name="load_error_message">Во время загрузки произошла ошибка</string>
+    <string name="load_error_button">Перезагрузить</string>
 </resources>

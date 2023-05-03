@@ -7,7 +7,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -37,6 +39,9 @@ class CryptoAdd : Fragment() {
     private lateinit var searchView: SearchView
     private lateinit var cryptoDbFunctions: CryptoDbFunctions
     private lateinit var requestsToApi: RequestsToApi
+    private lateinit var errorMessageTextView: TextView
+    private lateinit var errorButton: Button
+    private lateinit var loadingCoins: ImageView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_crypto__add, container, false)
@@ -44,10 +49,16 @@ class CryptoAdd : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val loadingCoins = view.findViewById<ImageView>(R.id.load_coins)
+        loadingCoins = view.findViewById(R.id.load_coins)
         loadingCoins.visibility = View.VISIBLE
         val anim = loadingCoins.drawable as AnimatedVectorDrawable
         anim.start()
+
+        errorMessageTextView = view.findViewById(R.id.error_message)
+        errorButton = view.findViewById(R.id.reload_button)
+        errorButton.visibility = View.INVISIBLE
+        errorMessageTextView.visibility = View.INVISIBLE
+
 
         requestsToApi = RequestsToApi()
         toolbar = (activity as AppCompatActivity).findViewById(R.id.toolbar)
@@ -125,25 +136,74 @@ class CryptoAdd : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun showRV(dbCoins: List<DbCrypto>, view: View) {
-        val loadCoin = view.findViewById<ImageView>(R.id.load_coins)
         val data = mutableListOf<CryptoAddModel>()
         val viewDataCrypto = arrayListOf<CryptoAddModel>()
         var check: Boolean
         val cryptoApi: CryptoApi = requestsToApi.publicGenerateRequest("Coin") as CryptoApi
         CoroutineScope(Dispatchers.IO).launch {
-            val infoCrypto = cryptoApi.getCrypto()
-            withContext(Dispatchers.Main) {
-                dbCoins.forEach { data.add(CryptoAddModel(it.uid, it.image, it.nameCoin, it.costCoin, it.price_change, true))
-                viewDataCrypto.add(CryptoAddModel(it.uid, it.image, it.nameCoin, it.costCoin, it.price_change, true))}
-                for (coin in infoCrypto) {
-                    check = true
-                    for(dbCoin in dbCoins) {
-                        if(coin.name == dbCoin.nameCoin) check = false
+            var infoCrypto: List<CryptoRepItem>
+            try {
+                infoCrypto = cryptoApi.getCrypto()
+                check = true
+            }catch (_: Exception) {
+                infoCrypto = emptyList()
+                check = false
+                withContext(Dispatchers.Main) {
+                    loadingCoins.visibility = View.GONE
+                    errorMessageTextView.visibility = View.VISIBLE
+                    errorButton.visibility = View.VISIBLE
+                    errorButton.setOnClickListener {
+                        errorMessageTextView.visibility = View.INVISIBLE
+                        errorButton.visibility = View.INVISIBLE
+                        loadingCoins.visibility = View.VISIBLE
+                        showRV(dbCoins, view)
                     }
-                    if(check) data.add(CryptoAddModel(0, coin.image, coin.name, floor(coin.current_price * 100)/100, floor(coin.price_change_24h * 100)/100, false))
                 }
-                createRV(data, viewDataCrypto, infoCrypto, view)
-                loadCoin.visibility = View.GONE
+
+            }
+            if(check) {
+                withContext(Dispatchers.Main) {
+                    dbCoins.forEach {
+                        data.add(
+                            CryptoAddModel(
+                                it.uid,
+                                it.image,
+                                it.nameCoin,
+                                it.costCoin,
+                                it.price_change,
+                                true
+                            )
+                        )
+                        viewDataCrypto.add(
+                            CryptoAddModel(
+                                it.uid,
+                                it.image,
+                                it.nameCoin,
+                                it.costCoin,
+                                it.price_change,
+                                true
+                            )
+                        )
+                    }
+                    for (coin in infoCrypto) {
+                        check = true
+                        for (dbCoin in dbCoins) {
+                            if (coin.name == dbCoin.nameCoin) check = false
+                        }
+                        if (check) data.add(
+                            CryptoAddModel(
+                                0,
+                                coin.image,
+                                coin.name,
+                                floor(coin.current_price * 100) / 100,
+                                floor(coin.price_change_24h * 100) / 100,
+                                false
+                            )
+                        )
+                    }
+                    createRV(data, viewDataCrypto, infoCrypto, view)
+                    loadingCoins.visibility = View.GONE
+                }
             }
         }
     }

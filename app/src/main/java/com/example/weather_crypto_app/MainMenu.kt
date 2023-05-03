@@ -25,7 +25,13 @@ import com.example.weather_crypto_app.models.MainMenuModel
 import com.example.weather_crypto_app.models.MainMenuModules
 import com.example.weather_crypto_app.models.crypto.CryptoRepItem
 import com.example.weather_crypto_app.models.weather.WeatherMenuModel
+import com.example.weather_crypto_app.models.weather.info.Clouds
+import com.example.weather_crypto_app.models.weather.info.Coord
+import com.example.weather_crypto_app.models.weather.info.Main
+import com.example.weather_crypto_app.models.weather.info.Sys
+import com.example.weather_crypto_app.models.weather.info.Weather
 import com.example.weather_crypto_app.models.weather.info.WeatherInfo
+import com.example.weather_crypto_app.models.weather.info.Wind
 import com.example.weather_crypto_app.presentation.ui.adapters.MainMenuAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -106,8 +112,16 @@ class MainMenu : Fragment() {
                     else items.add(MainMenuModel(menu.MenuName, textButton, false, type = MainMenuModules.MAP, coinsInfo, weatherInfo, needPoint))
                 }
                 menuWeather -> {
-                    if(textWeather != menuWeather) items.add(MainMenuModel(menu.MenuName, textButton, true, type = MainMenuModules.WEATHER, coinsInfo, weatherInfo, needPoint))
-                    else items.add(MainMenuModel(menu.MenuName, textButton, false, type = MainMenuModules.WEATHER, coinsInfo, weatherInfo, needPoint))
+                    if(weatherInfo.name_city != "") {
+                        if (textWeather != menuWeather) items.add(MainMenuModel(menu.MenuName, textButton, true,
+                            type = MainMenuModules.WEATHER, coinsInfo, weatherInfo, needPoint))
+                        else items.add(MainMenuModel(menu.MenuName, textButton, false,
+                                type = MainMenuModules.WEATHER, coinsInfo, weatherInfo, needPoint))
+                    }
+                    else {
+                        items.add(MainMenuModel(menu.MenuName, textButton, true,
+                            type = MainMenuModules.ERROR, coinsInfo, weatherInfo, needPoint))
+                    }
                 }
                 menuCoins -> {
                     if(coinsInfo.isNotEmpty()) items.add(MainMenuModel(menu.MenuName, textButton, true, type = MainMenuModules.COINS, coinsInfo, weatherInfo, needPoint))
@@ -128,9 +142,18 @@ class MainMenu : Fragment() {
             val infoWeatherCords = requestsToApi.publicGenerateRequest("Cords") as CordsWeatherApi
             val infoWeatherApi = requestsToApi.publicGenerateRequest("Weather") as WeatherApi
             CoroutineScope(Dispatchers.IO).launch {
-                val cordsWeather = infoWeatherCords.getCordsWeather(textWeather)
-                val infoWeather = infoWeatherApi.getWeather(cordsWeather[0].lat.toString(), cordsWeather[0].lon.toString(),
-                    "22c2b837bf6f65a956144d42d02343bb", "ru", "metric")
+                var infoWeather: WeatherInfo
+                try {
+                    val cordsWeather = infoWeatherCords.getCordsWeather(textWeather)
+                    infoWeather = infoWeatherApi.getWeather(cordsWeather[0].lat.toString(), cordsWeather[0].lon.toString(),
+                        "22c2b837bf6f65a956144d42d02343bb", "ru", "metric")
+                }catch (_: Exception) {
+                    infoWeather = WeatherInfo("", Clouds(0), 0, Coord(0.0, 0.0), 0, 0,
+                        Main(0.0, 0, 0, 0, 0, 0.0, 0.0, 0.0), "", Sys("", 0, 0, 0, 0),
+                        0, 0, listOf(Weather("", "", 0, "")), Wind(0, 0.0, 0.0)
+                    )
+                }
+
                 withContext(Dispatchers.Main) {
                     textWeather = infoWeather.name
                     weatherInfo = setWeatherInfo(infoWeather)
@@ -222,6 +245,9 @@ class MainMenu : Fragment() {
                 MainMenuModules.MAP -> findNavController().navigate(R.id.city_Map)
                 MainMenuModules.WEATHER -> findNavController().navigate(R.id.city_Weather)
                 MainMenuModules.COINS -> findNavController().navigate(R.id.crypto_Add)
+                MainMenuModules.ERROR -> {
+                    //TODO
+                }
             }
         }
         recyclerView = view.findViewById(R.id.rv_main_menu)

@@ -45,6 +45,8 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
                 binding.loadCard.visibility = View.VISIBLE
                 val anim = binding.loadCard.drawable as AnimatedVectorDrawable
                 anim.start()
+                binding.loadErrorMessage.visibility = View.INVISIBLE
+                binding.reloadButton.visibility = View.INVISIBLE
                 binding.rvCoinInfo.visibility = View.INVISIBLE
                 binding.cardWeather.visibility = View.INVISIBLE
                 binding.mapCard.visibility = View.INVISIBLE
@@ -95,23 +97,31 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
                                 binding.mapView.map.isZoomGesturesEnabled = false
                             }
                             menuWeather -> {
-                                binding.settingsButt.visibility = View.VISIBLE
-                                binding.cardWeather.visibility = View.VISIBLE
-                                binding.nameCityWeather.text = this.weatherList.name_city
-                                binding.idWeather.text = this.weatherList.name_weather
-                                binding.currentTemp.text = this.weatherList.temp.toString()
-                                Picasso.get()
-                                    .load("https://openweathermap.org/img/wn/${this.weatherList.icon}@2x.png")
-                                    .placeholder(R.drawable.usd_coin_usdc_1)
-                                    .fit()
-                                    .into(binding.weatherImage)
-                                binding.tempFeel.text = this.weatherList.feel_temp.toString()
-                                binding.windInfo.text = this.weatherList.wind.toString()
-                                binding.pressureInfo.text = (floor((this.weatherList.pressure * 0.750063755419211) * 100)/100).toString()
-                                binding.wetnessInfo.text = this.weatherList.wetness.toString()
-                                binding.cloudsInfo.text = this.weatherList.cloud.toString()
-                                binding.lowTemp.text = this.weatherList.min_temp.toString()
-                                binding.highTemp.text = this.weatherList.max_temp.toString()
+                                if(this.weatherList.name_city != "") {
+                                    binding.settingsButt.visibility = View.VISIBLE
+                                    binding.cardWeather.visibility = View.VISIBLE
+                                    binding.nameCityWeather.text = this.weatherList.name_city
+                                    binding.idWeather.text = this.weatherList.name_weather
+                                    binding.currentTemp.text = this.weatherList.temp.toString()
+                                    Picasso.get()
+                                        .load("https://openweathermap.org/img/wn/${this.weatherList.icon}@2x.png")
+                                        .placeholder(R.drawable.usd_coin_usdc_1)
+                                        .fit()
+                                        .into(binding.weatherImage)
+                                    binding.tempFeel.text = this.weatherList.feel_temp.toString()
+                                    binding.windInfo.text = this.weatherList.wind.toString()
+                                    binding.pressureInfo.text =
+                                        (floor((this.weatherList.pressure * 0.750063755419211) * 100) / 100).toString()
+                                    binding.wetnessInfo.text = this.weatherList.wetness.toString()
+                                    binding.cloudsInfo.text = this.weatherList.cloud.toString()
+                                    binding.lowTemp.text = this.weatherList.min_temp.toString()
+                                    binding.highTemp.text = this.weatherList.max_temp.toString()
+                                }
+                                else {
+                                    binding.settingsButt.visibility = View.VISIBLE
+                                    binding.reloadButton.visibility = View.VISIBLE
+                                    binding.loadErrorMessage.visibility = View.VISIBLE
+                                }
                             }
                         }
                     }

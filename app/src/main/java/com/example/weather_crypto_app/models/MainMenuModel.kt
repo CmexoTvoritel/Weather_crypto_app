@@ -17,5 +17,6 @@ data class MainMenuModel (
 enum class MainMenuModules {
     MAP,
     WEATHER,
-    COINS
+    COINS,
+    ERROR,
 }

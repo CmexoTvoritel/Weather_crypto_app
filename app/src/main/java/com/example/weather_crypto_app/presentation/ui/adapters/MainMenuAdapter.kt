@@ -9,6 +9,7 @@ import android.graphics.drawable.VectorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -40,6 +41,7 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: MainMenuViewHolder, position: Int) {
+        Toast.makeText(context, "$position, ${mainMenuList[position].weatherList.name_city}", Toast.LENGTH_SHORT).show()
         with(holder) {
             with(mainMenuList[position]) {
                 binding.loadCard.visibility = View.VISIBLE
@@ -98,6 +100,7 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
                             }
                             menuWeather -> {
                                 if(this.weatherList.name_city != "") {
+                                    Toast.makeText(context, "RIGHT", Toast.LENGTH_SHORT).show()
                                     binding.settingsButt.visibility = View.VISIBLE
                                     binding.cardWeather.visibility = View.VISIBLE
                                     binding.nameCityWeather.text = this.weatherList.name_city
@@ -118,6 +121,7 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
                                     binding.highTemp.text = this.weatherList.max_temp.toString()
                                 }
                                 else {
+                                    Toast.makeText(context, "INCORRECT", Toast.LENGTH_SHORT).show()
                                     binding.settingsButt.visibility = View.VISIBLE
                                     binding.reloadButton.visibility = View.VISIBLE
                                     binding.loadErrorMessage.visibility = View.VISIBLE

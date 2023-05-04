@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.*
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -157,10 +158,9 @@ class MainMenu : Fragment() {
                 withContext(Dispatchers.Main) {
                     textWeather = infoWeather.name
                     weatherInfo = setWeatherInfo(infoWeather)
-                    adapterItems =
-                        addMenuItems(Map, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
+                    adapterItems = addMenuItems(Map, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
                     adapter = MainMenuAdapter(requireContext(), adapterItems)
-                    showRv(view)
+                    showRv(Map, Weather, coinsInfo, menuList, needPoint ,view)
                     loadingMenu.visibility = View.INVISIBLE
                     if(coinsInfo.isNotEmpty()) {
                         val handler = Handler(Looper.getMainLooper())
@@ -186,7 +186,7 @@ class MainMenu : Fragment() {
         else {
             adapter = MainMenuAdapter(requireContext(),
                 addMenuItems(Map, textWeather, coinsInfo, menuList, needPoint, weatherInfo))
-            showRv(view)
+            showRv(Map, Weather, coinsInfo, menuList, needPoint, view)
             loadingMenu.visibility = View.INVISIBLE
         }
     }
@@ -204,12 +204,8 @@ class MainMenu : Fragment() {
                 }
             }
         }
-        val adapterItems: List<MainMenuModel> =
-            addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
-        adapter = MainMenuAdapter(
-            requireContext(),
-            adapterItems
-        )
+        val adapterItems: List<MainMenuModel> = addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
+        adapter = MainMenuAdapter(requireContext(), adapterItems)
         adapter = recyclerView.adapter as MainMenuAdapter
         val position = menuList.indexOfFirst{ it.MenuName == menuCoins }
         adapter.notifyItemChanged(position)
@@ -239,14 +235,40 @@ class MainMenu : Fragment() {
         menuViewModel = ViewModelProvider(this)[MenuViewModel::class.java]
     }
 
-    private fun showRv(view: View) {
+    private fun showRv(Map: String, Weather: String, coinsInfo: List<DbCrypto>, menuList: List<DbMenu>, needPoint: PointCity, view: View) {
         adapter.clickCallback = { type ->
             when (type) {
                 MainMenuModules.MAP -> findNavController().navigate(R.id.city_Map)
                 MainMenuModules.WEATHER -> findNavController().navigate(R.id.city_Weather)
                 MainMenuModules.COINS -> findNavController().navigate(R.id.crypto_Add)
                 MainMenuModules.ERROR -> {
-                    //TODO
+                    val infoWeatherCords = requestsToApi.publicGenerateRequest("Cords") as CordsWeatherApi
+                    val infoWeatherApi = requestsToApi.publicGenerateRequest("Weather") as WeatherApi
+                    CoroutineScope(Dispatchers.IO).launch {
+                        var infoWeather: WeatherInfo
+                        try {
+                            val cordsWeather = infoWeatherCords.getCordsWeather(Weather)
+                            infoWeather = infoWeatherApi.getWeather(cordsWeather[0].lat.toString(), cordsWeather[0].lon.toString(),
+                                "22c2b837bf6f65a956144d42d02343bb", "ru", "metric")
+                        } catch (_: Exception) {
+                            infoWeather = WeatherInfo("", Clouds(0), 0, Coord(0.0, 0.0), 0, 0,
+                                Main(0.0, 0, 0, 0, 0, 0.0, 0.0, 0.0),
+                                "", Sys("", 0, 0, 0, 0),
+                                0, 0, listOf(Weather("", "", 0, "")), Wind(0, 0.0, 0.0))
+                        }
+                        withContext(Dispatchers.Main) {
+                            val textWeather = infoWeather.name
+                            val weatherInfo = setWeatherInfo(infoWeather)
+                            val adapterItems = addMenuItems(Map, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
+                            Toast.makeText(context, "${adapterItems[1].type}", Toast.LENGTH_SHORT).show()
+                            adapter = MainMenuAdapter(requireContext(), adapterItems)
+                            recyclerView.adapter = adapter
+                            adapter = recyclerView.adapter as MainMenuAdapter
+                            val position = menuList.indexOfFirst { it.MenuName == menuWeather }
+                            Toast.makeText(context, "${adapterItems[1].type}", Toast.LENGTH_SHORT).show()
+                            adapter.notifyItemChanged(position)
+                        }
+                    }
                 }
             }
         }

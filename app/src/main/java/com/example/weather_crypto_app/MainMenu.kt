@@ -25,6 +25,7 @@ import com.example.weather_crypto_app.data.names.city.PointCity
 import com.example.weather_crypto_app.models.MainMenuModel
 import com.example.weather_crypto_app.models.MainMenuModules
 import com.example.weather_crypto_app.models.crypto.CryptoRepItem
+import com.example.weather_crypto_app.models.crypto.Roi
 import com.example.weather_crypto_app.models.weather.WeatherMenuModel
 import com.example.weather_crypto_app.models.weather.info.Clouds
 import com.example.weather_crypto_app.models.weather.info.Coord
@@ -113,7 +114,7 @@ class MainMenu : Fragment() {
                     else items.add(MainMenuModel(menu.MenuName, textButton, false, type = MainMenuModules.MAP, coinsInfo, weatherInfo, needPoint))
                 }
                 menuWeather -> {
-                    if(weatherInfo.name_city != "") {
+                    if(weatherInfo.name_city != "NULL") {
                         if (textWeather != menuWeather) items.add(MainMenuModel(menu.MenuName, textButton, true,
                             type = MainMenuModules.WEATHER, coinsInfo, weatherInfo, needPoint))
                         else items.add(MainMenuModel(menu.MenuName, textButton, false,
@@ -150,7 +151,7 @@ class MainMenu : Fragment() {
                         "22c2b837bf6f65a956144d42d02343bb", "ru", "metric")
                 }catch (_: Exception) {
                     infoWeather = WeatherInfo("", Clouds(0), 0, Coord(0.0, 0.0), 0, 0,
-                        Main(0.0, 0, 0, 0, 0, 0.0, 0.0, 0.0), "", Sys("", 0, 0, 0, 0),
+                        Main(0.0, 0, 0, 0, 0, 0.0, 0.0, 0.0), "NULL", Sys("", 0, 0, 0, 0),
                         0, 0, listOf(Weather("", "", 0, "")), Wind(0, 0.0, 0.0)
                     )
                 }
@@ -168,16 +169,23 @@ class MainMenu : Fragment() {
                             override fun run() {
                                 val cryptoApi = requestsToApi.publicGenerateRequest("Coin") as CryptoApi
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    val infoCrypto = cryptoApi.getCrypto()
+                                    var infoCrypto = emptyList<CryptoRepItem>()
+                                    try {
+                                        infoCrypto = cryptoApi.getCrypto()
+                                    }catch (_ : Exception) {
+                                        infoCrypto = listOf(CryptoRepItem(0.0, 0.0, "", 0.0, 0.0, "", 0.0, 0.0,
+                                        0, 0.0, "", "", "", 0.0, 0, 0.0, 0.0,
+                                        0, 0.0, "", 0.0, 0.0, Roi("", 0.0, 0.0), "", 0.0, 0.0))
+                                    }
                                     withContext(Dispatchers.Main) {
                                         updateCoinsInfo(infoCrypto, coinsInfo, Map, textWeather,
-                                            menuList, needPoint, weatherInfo)
+                                            menuList, needPoint, weatherInfo, view)
                                     }
                                 }
-                                handler.postDelayed(this, 20000)
+                                handler.postDelayed(this, 5000)
                             }
                         }
-                        handler.postDelayed(runnable, 20000)
+                        handler.postDelayed(runnable, 5000)
                     }
                 }
             }
@@ -193,19 +201,28 @@ class MainMenu : Fragment() {
 
     private fun updateCoinsInfo(infoCrypto: List<CryptoRepItem>, coinsInfo: List<DbCrypto>, textMap: String?,
                         textWeather: String?, menuList: List<DbMenu>, needPoint: PointCity,
-                        weatherInfo: WeatherMenuModel) {
-        for (coin in infoCrypto) {
-            for (dbCoin in coinsInfo) {
-                if (dbCoin.nameCoin == coin.name) {
-                    dbCoin.costCoin =
-                        floor(coin.current_price * 100) / 100
-                    dbCoin.price_change =
-                        floor(coin.price_change_24h * 100) / 100
+                        weatherInfo: WeatherMenuModel, view: View) {
+        var adapterItems = emptyList<MainMenuModel>()
+        if(infoCrypto[0].name == "") {
+            val errorCoin = listOf(DbCrypto(0, "", "", 0.0, 0.0))
+            adapterItems = addMenuItems(textMap, textWeather, errorCoin, menuList, needPoint, weatherInfo)
+        }
+        else {
+            for (coin in infoCrypto) {
+                for (dbCoin in coinsInfo) {
+                    if (dbCoin.nameCoin == coin.name) {
+                        dbCoin.costCoin =
+                            floor(coin.current_price * 100) / 100
+                        dbCoin.price_change =
+                            floor(coin.price_change_24h * 100) / 100
+                    }
                 }
             }
+            adapterItems = addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
         }
-        val adapterItems: List<MainMenuModel> = addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
         adapter = MainMenuAdapter(requireContext(), adapterItems)
+        addClickCallbackToRV(textMap.toString(), textWeather.toString(), coinsInfo, menuList, needPoint, view)
+        recyclerView.adapter = adapter
         adapter = recyclerView.adapter as MainMenuAdapter
         val position = menuList.indexOfFirst{ it.MenuName == menuCoins }
         adapter.notifyItemChanged(position)
@@ -236,6 +253,14 @@ class MainMenu : Fragment() {
     }
 
     private fun showRv(Map: String, Weather: String, coinsInfo: List<DbCrypto>, menuList: List<DbMenu>, needPoint: PointCity, view: View) {
+        addClickCallbackToRV(Map, Weather, coinsInfo, menuList, needPoint, view)
+        recyclerView = view.findViewById(R.id.rv_main_menu)
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = adapter
+    }
+
+    private fun addClickCallbackToRV(Map: String, Weather: String, coinsInfo: List<DbCrypto>, menuList: List<DbMenu>, needPoint: PointCity, view: View) {
         adapter.clickCallback = { type ->
             when (type) {
                 MainMenuModules.MAP -> findNavController().navigate(R.id.city_Map)
@@ -253,29 +278,24 @@ class MainMenu : Fragment() {
                         } catch (_: Exception) {
                             infoWeather = WeatherInfo("", Clouds(0), 0, Coord(0.0, 0.0), 0, 0,
                                 Main(0.0, 0, 0, 0, 0, 0.0, 0.0, 0.0),
-                                "", Sys("", 0, 0, 0, 0),
+                                "NULL", Sys("", 0, 0, 0, 0),
                                 0, 0, listOf(Weather("", "", 0, "")), Wind(0, 0.0, 0.0))
                         }
                         withContext(Dispatchers.Main) {
                             val textWeather = infoWeather.name
                             val weatherInfo = setWeatherInfo(infoWeather)
                             val adapterItems = addMenuItems(Map, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
-                            Toast.makeText(context, "${adapterItems[1].type}", Toast.LENGTH_SHORT).show()
                             adapter = MainMenuAdapter(requireContext(), adapterItems)
+                            addClickCallbackToRV(Map, Weather, coinsInfo, menuList, needPoint, view)
                             recyclerView.adapter = adapter
                             adapter = recyclerView.adapter as MainMenuAdapter
                             val position = menuList.indexOfFirst { it.MenuName == menuWeather }
-                            Toast.makeText(context, "${adapterItems[1].type}", Toast.LENGTH_SHORT).show()
                             adapter.notifyItemChanged(position)
                         }
                     }
                 }
             }
         }
-        recyclerView = view.findViewById(R.id.rv_main_menu)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = adapter
     }
 
 }

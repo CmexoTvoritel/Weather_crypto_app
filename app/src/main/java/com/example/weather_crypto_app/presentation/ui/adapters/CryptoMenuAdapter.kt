@@ -22,11 +22,13 @@ class CryptoMenuAdapter(private val cryptoList: List<DbCrypto>): RecyclerView.Ad
             with(cryptoList[position]) {
                  val price = this.costCoin.toString() + " $"
                  binding.nameCoin.text = this.nameCoin
-                 Picasso.get()
-                     .load(this.image)
-                     .placeholder(R.drawable.usd_coin_usdc_1)
-                     .fit()
-                     .into(binding.imageOfCoin)
+                 if(this.image != "") {
+                     Picasso.get()
+                         .load(this.image)
+                         .placeholder(R.drawable.usd_coin_usdc_1)
+                         .fit()
+                         .into(binding.imageOfCoin)
+                 }
                 binding.totalCost.text = price
                 if(this.price_change >= 0) {
                     val positivePrice = "+" + this.price_change.toString()

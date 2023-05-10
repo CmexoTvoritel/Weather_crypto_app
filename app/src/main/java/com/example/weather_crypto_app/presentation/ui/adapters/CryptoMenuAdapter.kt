@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.graphics.Color
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.R
-import com.example.weather_crypto_app.data.db.dbCrypto.DbCrypto
+import com.example.weather_crypto_app.data.model.DbCrypto
 import com.example.weather_crypto_app.databinding.CryptoMainItemLayoutBinding
 import com.example.weather_crypto_app.presentation.ui.viewholders.CryptoMenuViewHolder
 import com.squareup.picasso.Picasso

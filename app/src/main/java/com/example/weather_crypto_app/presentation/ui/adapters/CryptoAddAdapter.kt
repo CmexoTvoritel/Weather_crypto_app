@@ -8,7 +8,7 @@ import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.R
 import com.example.weather_crypto_app.databinding.CryptoAddItemLayoutBinding
-import com.example.weather_crypto_app.models.CryptoAddModel
+import com.example.weather_crypto_app.presentation.model.CryptoAddModel
 import com.example.weather_crypto_app.presentation.ui.viewholders.CryptoAddViewHolder
 import com.squareup.picasso.Picasso
 import java.util.*

@@ -6,7 +6,7 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.example.weather_crypto_app.data.db.dbMenu.DbMenu
+import com.example.weather_crypto_app.data.model.DbMenu
 import com.example.weather_crypto_app.databinding.EditMenuItemLayoutBinding
 import com.example.weather_crypto_app.presentation.ui.viewholders.EditMenuViewHolder
 

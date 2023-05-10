@@ -2,7 +2,7 @@ package com.example.weather_crypto_app.presentation.ui.viewholders
 
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.databinding.CryptoAddItemLayoutBinding
-import com.example.weather_crypto_app.models.CryptoAddModel
+import com.example.weather_crypto_app.presentation.model.CryptoAddModel
 
 class CryptoAddViewHolder(val binding: CryptoAddItemLayoutBinding): RecyclerView.ViewHolder(binding.root) {
     var clickCallback: ((type: CryptoAddModel) -> Unit)?= null

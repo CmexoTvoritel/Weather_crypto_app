@@ -6,7 +6,7 @@
     app:startDestination="@id/mainMenu">
     <fragment
         android:id="@+id/mainMenu"
-        android:name="com.example.weather_crypto_app.MainMenu"
+        android:name="com.example.weather_crypto_app.presentation.ui.fragments.MainMenuFragment"
         android:label="@string/main_menu_title"
         tools:layout="@layout/fragment_main_menu" >
         <action
@@ -36,7 +36,7 @@
     </fragment>
     <fragment
         android:id="@+id/city_Weather"
-        android:name="com.example.weather_crypto_app.CityWeather"
+        android:name="com.example.weather_crypto_app.presentation.ui.fragments.CityWeatherFragment"
         android:label="@string/weather_map_add_title"
         tools:layout="@layout/fragment_city__weather" >
         <action
@@ -47,7 +47,7 @@
     </fragment>
     <fragment
         android:id="@+id/city_Map"
-        android:name="com.example.weather_crypto_app.CityMap"
+        android:name="com.example.weather_crypto_app.presentation.ui.fragments.CityMapFragment"
         android:label="@string/weather_map_add_title"
         tools:layout="@layout/fragment_city__map" >
         <action
@@ -58,12 +58,12 @@
     </fragment>
     <fragment
         android:id="@+id/crypto_Add"
-        android:name="com.example.weather_crypto_app.CryptoAdd"
+        android:name="com.example.weather_crypto_app.presentation.ui.fragments.CryptoAddFragment"
         android:label="@string/crypto_add_title"
         tools:layout="@layout/fragment_crypto__add" />
     <fragment
         android:id="@+id/editMenu"
-        android:name="com.example.weather_crypto_app.EditMenu"
+        android:name="com.example.weather_crypto_app.presentation.ui.fragments.EditMenuFragment"
         android:label="@string/main_menu_title"
         tools:layout="@layout/fragment_edit_menu" >
         <action

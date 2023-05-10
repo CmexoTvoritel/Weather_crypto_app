@@ -9,14 +9,13 @@ import android.graphics.drawable.VectorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.R
 import com.example.weather_crypto_app.databinding.MainMenuItemLayoutBinding
-import com.example.weather_crypto_app.models.MainMenuModel
-import com.example.weather_crypto_app.models.MainMenuModules
+import com.example.weather_crypto_app.presentation.model.MainMenuModel
+import com.example.weather_crypto_app.presentation.model.MainMenuModules
 import com.example.weather_crypto_app.presentation.ui.viewholders.MainMenuViewHolder
 import com.squareup.picasso.Picasso
 import com.yandex.mapkit.Animation

@@ -7,7 +7,7 @@ import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.databinding.CityWeatherItemLayoutBinding
-import com.example.weather_crypto_app.models.CityWeatherModel
+import com.example.weather_crypto_app.presentation.model.CityWeatherModel
 import com.example.weather_crypto_app.presentation.ui.viewholders.CityWeatherViewHolder
 import java.util.*
 

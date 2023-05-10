@@ -2,7 +2,7 @@ package com.example.weather_crypto_app.presentation.ui.viewholders
 
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.databinding.CityMapItemLayoutBinding
-import com.example.weather_crypto_app.models.CityMapModel
+import com.example.weather_crypto_app.presentation.model.CityMapModel
 
 class CityMapViewHolder(val binding: CityMapItemLayoutBinding): RecyclerView.ViewHolder(binding.root) {
 

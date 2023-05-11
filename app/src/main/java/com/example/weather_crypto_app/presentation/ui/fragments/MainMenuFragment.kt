@@ -210,34 +210,7 @@ class MainMenuFragment : Fragment() {
                     showRv(Map, Weather, coinsInfo, menuList, needPoint ,view)
                     loadingMenu.visibility = View.INVISIBLE
                     if(coinsInfo.isNotEmpty()) {
-                        val handler = Handler(Looper.getMainLooper())
-                        val runnable = object : Runnable {
-                            override fun run() {
-                                    if(adapterItems[menuList.indexOfFirst{ it.MenuName == menuCoins }].type != MainMenuModules.ERROR2) {
-                                        val cryptoService = requestsToApiUtils.publicGenerateRequest("Coin") as CryptoService
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            var infoCrypto = emptyList<CryptoRepItem>()
-                                            try {
-                                                infoCrypto = cryptoService.getCrypto()
-                                            } catch (_: Exception) {
-                                                infoCrypto = listOf(CryptoRepItem(0.0, 0.0, "", 0.0, 0.0, "",
-                                                    0.0, 0.0, 0, 0.0, "", "", "",
-                                                    0.0, 0, 0.0, 0.0, 0, 0.0, "",
-                                                    0.0, 0.0, Roi("", 0.0, 0.0), "",
-                                                    0.0, 0.0))
-                                            }
-                                            withContext(Dispatchers.Main) {
-                                                updateCoinsInfo(
-                                                    infoCrypto, coinInfo, Map, textWeather,
-                                                    menuList, needPoint, weatherInfo, view
-                                                )
-                                            }
-                                        }
-                                        handler.postDelayed(this, 10000)
-                                    }
-                            }
-                        }
-                        handler.postDelayed(runnable, 10000)
+                        startLoopLoadCoins(menuList, coinInfo, textWeather, needPoint, Map, view)
                     }
                 }
             }
@@ -307,6 +280,37 @@ class MainMenuFragment : Fragment() {
         recyclerView.adapter = adapter
     }
 
+    private fun startLoopLoadCoins(menuList: List<DbMenu>, coinInfo: List<DbCrypto>, textWeather: String?, needPoint: PointCity, Map: String, view: View) {
+        val handler = Handler(Looper.getMainLooper())
+        val runnable = object : Runnable {
+            override fun run() {
+                if(adapterItems[menuList.indexOfFirst{ it.MenuName == menuCoins }].type != MainMenuModules.ERROR2) {
+                    val cryptoService = requestsToApiUtils.publicGenerateRequest("Coin") as CryptoService
+                    CoroutineScope(Dispatchers.IO).launch {
+                        var infoCrypto = emptyList<CryptoRepItem>()
+                        try {
+                            infoCrypto = cryptoService.getCrypto()
+                        } catch (_: Exception) {
+                            infoCrypto = listOf(CryptoRepItem(0.0, 0.0, "", 0.0, 0.0, "",
+                                0.0, 0.0, 0, 0.0, "", "", "",
+                                0.0, 0, 0.0, 0.0, 0, 0.0, "",
+                                0.0, 0.0, Roi("", 0.0, 0.0), "",
+                                0.0, 0.0))
+                        }
+                        withContext(Dispatchers.Main) {
+                            updateCoinsInfo(
+                                infoCrypto, coinInfo, Map, textWeather,
+                                menuList, needPoint, weatherInfo, view
+                            )
+                        }
+                    }
+                    handler.postDelayed(this, 10000)
+                }
+            }
+        }
+        handler.postDelayed(runnable, 10000)
+    }
+
     private fun addClickCallbackToRV(Map: String, Weather: String, coinsInfo: List<DbCrypto>, menuList: List<DbMenu>, needPoint: PointCity, view: View) {
         adapter.clickCallback = { type ->
             when (type) {
@@ -358,34 +362,7 @@ class MainMenuFragment : Fragment() {
                                 menuList, needPoint, weatherInfo, view
                             )
                             if(adapterItems[menuList.indexOfFirst{ it.MenuName == menuCoins }].type != MainMenuModules.ERROR2) {
-                                val handler = Handler(Looper.getMainLooper())
-                                val runnable = object : Runnable {
-                                    override fun run() {
-                                        if(adapterItems[menuList.indexOfFirst{ it.MenuName == menuCoins }].type != MainMenuModules.ERROR2) {
-                                            val cryptoService = requestsToApiUtils.publicGenerateRequest("Coin") as CryptoService
-                                            CoroutineScope(Dispatchers.IO).launch {
-                                                var infoCrypto = emptyList<CryptoRepItem>()
-                                                try {
-                                                    infoCrypto = cryptoService.getCrypto()
-                                                } catch (_: Exception) {
-                                                    infoCrypto = listOf(CryptoRepItem(0.0, 0.0, "", 0.0, 0.0, "",
-                                                        0.0, 0.0, 0, 0.0, "", "", "",
-                                                        0.0, 0, 0.0, 0.0, 0, 0.0, "",
-                                                        0.0, 0.0, Roi("", 0.0, 0.0), "",
-                                                        0.0, 0.0))
-                                                }
-                                                withContext(Dispatchers.Main) {
-                                                    updateCoinsInfo(
-                                                        infoCrypto, coinsInfo, Map, Weather,
-                                                        menuList, needPoint, weatherInfo, view
-                                                    )
-                                                }
-                                            }
-                                            handler.postDelayed(this, 10000)
-                                        }
-                                    }
-                                }
-                                handler.postDelayed(runnable, 10000)
+                                startLoopLoadCoins(menuList, coinsInfo, Weather, needPoint, Map, view)
                             }
                         }
                     }

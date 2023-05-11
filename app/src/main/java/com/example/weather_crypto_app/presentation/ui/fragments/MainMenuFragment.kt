@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.*
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -56,6 +57,8 @@ class MainMenuFragment : Fragment() {
     private var menuMap: String = ""
     private var menuCoins: String = ""
     private var textButton: String = ""
+    private lateinit var adapterItems: MutableList<MainMenuModel>
+    private lateinit var weatherInfo: WeatherMenuModel
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -106,7 +109,7 @@ class MainMenuFragment : Fragment() {
         }
     }
 
-    private fun addMenuItems(textMap: String?, textWeather: String?, coinsInfo: List<DbCrypto>, menuList: List<DbMenu>, needPoint: PointCity, weatherInfo: WeatherMenuModel): List<MainMenuModel> {
+    private fun addMenuItems(textMap: String?, textWeather: String?, coinsInfo: List<DbCrypto>, menuList: List<DbMenu>, needPoint: PointCity, weatherInfo: WeatherMenuModel): MutableList<MainMenuModel> {
         val items = mutableListOf<MainMenuModel>()
         menuList.forEach { menu ->
             when (menu.MenuName) {
@@ -128,12 +131,17 @@ class MainMenuFragment : Fragment() {
                     else {
                         items.add(
                             MainMenuModel(menu.MenuName, textButton, true,
-                            type = MainMenuModules.ERROR, coinsInfo, weatherInfo, needPoint)
+                            type = MainMenuModules.ERROR1, coinsInfo, weatherInfo, needPoint)
                         )
                     }
                 }
                 menuCoins -> {
-                    if(coinsInfo.isNotEmpty()) items.add(MainMenuModel(menu.MenuName, textButton, true, type = MainMenuModules.COINS, coinsInfo, weatherInfo, needPoint))
+                    if(coinsInfo.isNotEmpty()) {
+                        if(coinsInfo[0].nameCoin != "")
+                            items.add(MainMenuModel(menu.MenuName, textButton, true, type = MainMenuModules.COINS, coinsInfo, weatherInfo, needPoint))
+                        else
+                            items.add(MainMenuModel(menu.MenuName, textButton, true, type = MainMenuModules.ERROR2, coinsInfo, weatherInfo, needPoint))
+                    }
                     else items.add(MainMenuModel(menu.MenuName, textButton, false, type = MainMenuModules.COINS, coinsInfo, weatherInfo, needPoint))
                 }
             }
@@ -142,14 +150,16 @@ class MainMenuFragment : Fragment() {
     }
 
     private fun creatingRV(Map: String, Weather: String, coinsInfo: List<DbCrypto>, menuList: List<DbMenu>, needPoint: PointCity, view: View) {
+        var coinInfo = coinsInfo
         val loadingMenu = view.findViewById<ImageView>(R.id.load_menu)
-        var adapterItems: List<MainMenuModel>
+        //var adapterItems: List<MainMenuModel>
         var textWeather = Weather
-        var weatherInfo = WeatherMenuModel("",0.00, 0.00,
+        weatherInfo = WeatherMenuModel("",0.00, 0.00,
             "", "", 0.00, 0.00, 0, 0, 0.00, 0.00, 0.00)
         if(textWeather != menuWeather) {
             val infoWeatherCords = requestsToApiUtils.publicGenerateRequest("Cords") as CordsWeatherService
             val infoWeatherService = requestsToApiUtils.publicGenerateRequest("Weather") as WeatherService
+            val infoCoinsService = requestsToApiUtils.publicGenerateRequest("Coin") as CryptoService
             CoroutineScope(Dispatchers.IO).launch {
                 var infoWeather: WeatherInfo
                 try {
@@ -162,11 +172,40 @@ class MainMenuFragment : Fragment() {
                         0, 0, listOf(Weather("", "", 0, "")), Wind(0, 0.0, 0.0)
                     )
                 }
+                if(coinsInfo.isNotEmpty()) {
+                    var infoCrypto: List<CryptoRepItem>
+                    try {
+                        infoCrypto = infoCoinsService.getCrypto()
+                    }catch (_ : Exception) {
+                        infoCrypto = listOf(CryptoRepItem(0.0, 0.0, "", 0.0, 0.0, "",
+                            0.0, 0.0, 0, 0.0, "", "", "",
+                            0.0, 0, 0.0, 0.0, 0, 0.0, "",
+                            0.0, 0.0, Roi("", 0.0, 0.0), "",
+                            0.0, 0.0))
+                    }
+                    withContext(Dispatchers.Main) {
+                        if(infoCrypto[0].name == "") {
+                            coinInfo = listOf(DbCrypto(0, "", "", 0.0, 0.0))
+                        }
+                        else {
+                            for (coin in infoCrypto) {
+                                for (dbCoin in coinInfo) {
+                                    if (dbCoin.nameCoin == coin.name) {
+                                        dbCoin.costCoin =
+                                            floor(coin.current_price * 100) / 100
+                                        dbCoin.price_change =
+                                            floor(coin.price_change_24h * 100) / 100
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
                 withContext(Dispatchers.Main) {
                     textWeather = infoWeather.name
                     weatherInfo = setWeatherInfo(infoWeather)
-                    adapterItems = addMenuItems(Map, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
+                    adapterItems = addMenuItems(Map, textWeather, coinInfo, menuList, needPoint, weatherInfo)
                     adapter = MainMenuAdapter(requireContext(), adapterItems)
                     showRv(Map, Weather, coinsInfo, menuList, needPoint ,view)
                     loadingMenu.visibility = View.INVISIBLE
@@ -174,24 +213,28 @@ class MainMenuFragment : Fragment() {
                         val handler = Handler(Looper.getMainLooper())
                         val runnable = object : Runnable {
                             override fun run() {
-                                val cryptoService = requestsToApiUtils.publicGenerateRequest("Coin") as CryptoService
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    var infoCrypto = emptyList<CryptoRepItem>()
-                                    try {
-                                        infoCrypto = cryptoService.getCrypto()
-                                    }catch (_ : Exception) {
-                                        infoCrypto = listOf(
-                                            CryptoRepItem(0.0, 0.0, "", 0.0, 0.0, "", 0.0, 0.0,
-                                        0, 0.0, "", "", "", 0.0, 0, 0.0, 0.0,
-                                        0, 0.0, "", 0.0, 0.0, Roi("", 0.0, 0.0), "", 0.0, 0.0)
-                                        )
+                                    if(adapterItems[menuList.indexOfFirst{ it.MenuName == menuCoins }].type != MainMenuModules.ERROR2) {
+                                        val cryptoService = requestsToApiUtils.publicGenerateRequest("Coin") as CryptoService
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            var infoCrypto = emptyList<CryptoRepItem>()
+                                            try {
+                                                infoCrypto = cryptoService.getCrypto()
+                                            } catch (_: Exception) {
+                                                infoCrypto = listOf(CryptoRepItem(0.0, 0.0, "", 0.0, 0.0, "",
+                                                    0.0, 0.0, 0, 0.0, "", "", "",
+                                                    0.0, 0, 0.0, 0.0, 0, 0.0, "",
+                                                    0.0, 0.0, Roi("", 0.0, 0.0), "",
+                                                    0.0, 0.0))
+                                            }
+                                            withContext(Dispatchers.Main) {
+                                                updateCoinsInfo(
+                                                    infoCrypto, coinInfo, Map, textWeather,
+                                                    menuList, needPoint, weatherInfo, view
+                                                )
+                                            }
+                                        }
+                                        handler.postDelayed(this, 10000)
                                     }
-                                    withContext(Dispatchers.Main) {
-                                        updateCoinsInfo(infoCrypto, coinsInfo, Map, textWeather,
-                                            menuList, needPoint, weatherInfo, view)
-                                    }
-                                }
-                                handler.postDelayed(this, 10000)
                             }
                         }
                         handler.postDelayed(runnable, 10000)
@@ -211,7 +254,6 @@ class MainMenuFragment : Fragment() {
     private fun updateCoinsInfo(infoCrypto: List<CryptoRepItem>, coinsInfo: List<DbCrypto>, textMap: String?,
                                 textWeather: String?, menuList: List<DbMenu>, needPoint: PointCity,
                                 weatherInfo: WeatherMenuModel, view: View) {
-        var adapterItems = emptyList<MainMenuModel>()
         if(infoCrypto[0].name == "") {
             val errorCoin = listOf(DbCrypto(0, "", "", 0.0, 0.0))
             adapterItems = addMenuItems(textMap, textWeather, errorCoin, menuList, needPoint, weatherInfo)
@@ -229,11 +271,8 @@ class MainMenuFragment : Fragment() {
             }
             adapterItems = addMenuItems(textMap, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
         }
-        adapter = MainMenuAdapter(requireContext(), adapterItems)
-        addClickCallbackToRV(textMap.toString(), textWeather.toString(), coinsInfo, menuList, needPoint, view)
-        adapter = recyclerView.adapter as MainMenuAdapter
         val position = menuList.indexOfFirst{ it.MenuName == menuCoins }
-        adapter.notifyItemChanged(position)
+        adapter.updateItem(position, adapterItems[position])
     }
 
     private fun setWeatherInfo(infoWeather: WeatherInfo): WeatherMenuModel {
@@ -274,7 +313,7 @@ class MainMenuFragment : Fragment() {
                 MainMenuModules.MAP -> findNavController().navigate(R.id.city_Map)
                 MainMenuModules.WEATHER -> findNavController().navigate(R.id.city_Weather)
                 MainMenuModules.COINS -> findNavController().navigate(R.id.crypto_Add)
-                MainMenuModules.ERROR -> {
+                MainMenuModules.ERROR1 -> {
                     val infoWeatherCords = requestsToApiUtils.publicGenerateRequest("Cords") as CordsWeatherService
                     val infoWeatherService = requestsToApiUtils.publicGenerateRequest("Weather") as WeatherService
                     CoroutineScope(Dispatchers.IO).launch {
@@ -292,14 +331,62 @@ class MainMenuFragment : Fragment() {
                         }
                         withContext(Dispatchers.Main) {
                             val textWeather = infoWeather.name
-                            val weatherInfo = setWeatherInfo(infoWeather)
-                            val adapterItems = addMenuItems(Map, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
-                            adapter = MainMenuAdapter(requireContext(), adapterItems)
-                            addClickCallbackToRV(Map, Weather, coinsInfo, menuList, needPoint, view)
-                            recyclerView.adapter = adapter
-                            adapter = recyclerView.adapter as MainMenuAdapter
+                            weatherInfo = setWeatherInfo(infoWeather)
+                            adapterItems = addMenuItems(Map, textWeather, coinsInfo, menuList, needPoint, weatherInfo)
                             val position = menuList.indexOfFirst { it.MenuName == menuWeather }
-                            adapter.notifyItemChanged(position)
+                            adapter.updateItem(position, adapterItems[position])
+                        }
+                    }
+                }
+                MainMenuModules.ERROR2 -> {
+                    val cryptoService =
+                        requestsToApiUtils.publicGenerateRequest("Coin") as CryptoService
+                    CoroutineScope(Dispatchers.IO).launch {
+                        var infoCrypto = emptyList<CryptoRepItem>()
+                        try {
+                            infoCrypto = cryptoService.getCrypto()
+                        } catch (_: Exception) {
+                            infoCrypto = listOf(CryptoRepItem(0.0, 0.0, "", 0.0, 0.0, "",
+                                0.0, 0.0, 0, 0.0, "", "", "",
+                                0.0, 0, 0.0, 0.0, 0, 0.0, "",
+                                0.0, 0.0, Roi("", 0.0, 0.0), "",
+                                0.0, 0.0))
+                        }
+                        withContext(Dispatchers.Main) {
+                            updateCoinsInfo(
+                                infoCrypto, coinsInfo, Map, Weather,
+                                menuList, needPoint, weatherInfo, view
+                            )
+                            if(adapterItems[menuList.indexOfFirst{ it.MenuName == menuCoins }].type != MainMenuModules.ERROR2) {
+                                val handler = Handler(Looper.getMainLooper())
+                                val runnable = object : Runnable {
+                                    override fun run() {
+                                        if(adapterItems[menuList.indexOfFirst{ it.MenuName == menuCoins }].type != MainMenuModules.ERROR2) {
+                                            val cryptoService = requestsToApiUtils.publicGenerateRequest("Coin") as CryptoService
+                                            CoroutineScope(Dispatchers.IO).launch {
+                                                var infoCrypto = emptyList<CryptoRepItem>()
+                                                try {
+                                                    infoCrypto = cryptoService.getCrypto()
+                                                } catch (_: Exception) {
+                                                    infoCrypto = listOf(CryptoRepItem(0.0, 0.0, "", 0.0, 0.0, "",
+                                                        0.0, 0.0, 0, 0.0, "", "", "",
+                                                        0.0, 0, 0.0, 0.0, 0, 0.0, "",
+                                                        0.0, 0.0, Roi("", 0.0, 0.0), "",
+                                                        0.0, 0.0))
+                                                }
+                                                withContext(Dispatchers.Main) {
+                                                    updateCoinsInfo(
+                                                        infoCrypto, coinsInfo, Map, Weather,
+                                                        menuList, needPoint, weatherInfo, view
+                                                    )
+                                                }
+                                            }
+                                            handler.postDelayed(this, 10000)
+                                        }
+                                    }
+                                }
+                                handler.postDelayed(runnable, 10000)
+                            }
                         }
                     }
                 }

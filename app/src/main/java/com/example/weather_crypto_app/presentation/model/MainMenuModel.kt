@@ -17,5 +17,6 @@ enum class MainMenuModules {
     MAP,
     WEATHER,
     COINS,
-    ERROR,
+    ERROR1,
+    ERROR2,
 }

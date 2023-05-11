@@ -24,7 +24,7 @@ import com.yandex.mapkit.map.*
 import com.yandex.runtime.image.ImageProvider
 import kotlin.math.floor
 
-class MainMenuAdapter(private val context: Context, private val mainMenuList: List<MainMenuModel>): RecyclerView.Adapter<MainMenuViewHolder>() {
+class MainMenuAdapter(private val context: Context, private val mainMenuList: MutableList<MainMenuModel>): RecyclerView.Adapter<MainMenuViewHolder>() {
 
     private lateinit var recyclerView: RecyclerView
     private val menuMap = "Карта"
@@ -66,11 +66,22 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
                             menuCoins -> {
                                 binding.settingsButt.visibility = View.VISIBLE
                                 binding.rvCoinInfo.visibility = View.VISIBLE
-                                val adapterCrypto = CryptoMenuAdapter(this.cryptoList)
-                                recyclerView = binding.rvCoinInfo
-                                recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-                                recyclerView.adapter = adapterCrypto
-                                adapterCrypto.notifyDataSetChanged()
+                                if(this.type != MainMenuModules.ERROR2) {
+                                    val adapterCrypto = CryptoMenuAdapter(this.cryptoList)
+                                    recyclerView = binding.rvCoinInfo
+                                    recyclerView.layoutManager = LinearLayoutManager(
+                                        itemView.context,
+                                        LinearLayoutManager.HORIZONTAL,
+                                        false
+                                    )
+                                    recyclerView.adapter = adapterCrypto
+                                    adapterCrypto.notifyDataSetChanged()
+                                }
+                                else {
+                                    binding.rvCoinInfo.visibility = View.INVISIBLE
+                                    binding.reloadButton.visibility = View.VISIBLE
+                                    binding.loadErrorMessage.visibility = View.VISIBLE
+                                }
                             }
                             menuMap -> {
                                 binding.settingsButt.visibility = View.VISIBLE
@@ -158,6 +169,11 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Li
 
     override fun getItemCount(): Int {
         return mainMenuList.size
+    }
+
+    fun updateItem(position: Int, item: MainMenuModel) {
+        mainMenuList[position] = item
+        notifyItemChanged(position)
     }
 
 }

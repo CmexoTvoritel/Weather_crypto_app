@@ -11,16 +11,14 @@ import com.yandex.mapkit.mapview.MapView
 
 class MainMenuViewHolder(val binding: MainMenuItemLayoutBinding): RecyclerView.ViewHolder(binding.root) {
 
-    private val mapView: MapView = binding.mapView
-
     init {
-        mapView.map.mapType = MapType.MAP
+        binding.mapView.map.mapType = MapType.MAP
     }
 
     var clickCallback: ((type: MainMenuModules) -> Unit)? = null
 
     fun bind(item: MainMenuModel) {
-        mapView.onStart()
+        binding.mapView.onStart()
         MapKitFactory.getInstance().onStart()
         binding.nameButton.setOnClickListener {
             clickCallback?.invoke(item.type)
@@ -34,8 +32,7 @@ class MainMenuViewHolder(val binding: MainMenuItemLayoutBinding): RecyclerView.V
         }
     }
     fun unbind() {
-        mapView.onStop()
-        mapView.visibility = View.INVISIBLE
+        binding.mapView.onStop()
         MapKitFactory.getInstance().onStop()
     }
 }

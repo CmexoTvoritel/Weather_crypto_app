@@ -9,6 +9,7 @@ import android.graphics.drawable.VectorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +20,7 @@ import com.example.weather_crypto_app.presentation.model.MainMenuModules
 import com.example.weather_crypto_app.presentation.ui.viewholders.MainMenuViewHolder
 import com.squareup.picasso.Picasso
 import com.yandex.mapkit.Animation
+import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.*
 import com.yandex.runtime.image.ImageProvider
@@ -42,14 +44,12 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Mu
     override fun onBindViewHolder(holder: MainMenuViewHolder, position: Int) {
         with(holder) {
             with(mainMenuList[position]) {
-                binding.loadCard.visibility = View.VISIBLE
-                val anim = binding.loadCard.drawable as AnimatedVectorDrawable
-                anim.start()
                 binding.loadErrorMessage.visibility = View.INVISIBLE
                 binding.reloadButton.visibility = View.INVISIBLE
                 binding.rvCoinInfo.visibility = View.INVISIBLE
                 binding.cardWeather.visibility = View.INVISIBLE
                 binding.mapCard.visibility = View.INVISIBLE
+                binding.mapView.visibility = View.GONE
                 binding.noMap.visibility = View.INVISIBLE
                 binding.noWeather.visibility = View.INVISIBLE
                 binding.noCoin1.visibility = View.INVISIBLE
@@ -85,6 +85,7 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Mu
                             }
                             menuMap -> {
                                 binding.settingsButt.visibility = View.VISIBLE
+                                binding.mapView.visibility = View.VISIBLE
                                 binding.mapCard.visibility = View.VISIBLE
                                 binding.mapView.map.move(
                                     CameraPosition(Point(this.needPoint.lan, this.needPoint.lon), 8.0f, 0.0f, 0.0f),
@@ -155,7 +156,6 @@ class MainMenuAdapter(private val context: Context, private val mainMenuList: Mu
                         }
                     }
                 }
-                binding.loadCard.visibility = View.GONE
             }
         }
         holder.clickCallback = clickCallback

@@ -188,6 +188,7 @@
             <com.yandex.mapkit.mapview.MapView
                 android:id="@+id/map_view"
                 android:layout_width="match_parent"
+                android:visibility="invisible"
                 android:layout_height="176dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

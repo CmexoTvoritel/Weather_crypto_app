@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_crypto_app.R
 import com.example.weather_crypto_app.data.model.DbWeather
-import com.example.weather_crypto_app.data.viewmodel.WeatherViewModel
+import com.example.weather_crypto_app.presentation.viewmodel.WeatherViewModel
 import com.example.weather_crypto_app.data.model.city.CityNamesWeather
 import com.example.weather_crypto_app.presentation.model.CityWeatherModel
 import com.example.weather_crypto_app.presentation.ui.adapters.CityWeatherAdapter

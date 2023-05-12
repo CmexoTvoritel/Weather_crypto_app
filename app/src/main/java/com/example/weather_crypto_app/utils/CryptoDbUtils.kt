@@ -1,6 +1,6 @@
 package com.example.weather_crypto_app.utils
 
-import com.example.weather_crypto_app.data.viewmodel.CryptoViewModel
+import com.example.weather_crypto_app.presentation.viewmodel.CryptoViewModel
 import com.example.weather_crypto_app.data.model.DbCrypto
 import com.example.weather_crypto_app.presentation.model.CryptoAddModel
 

@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.*
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -17,12 +16,12 @@ import com.example.weather_crypto_app.utils.RequestsToApiUtils
 import com.example.weather_crypto_app.network.services.weather.CordsWeatherService
 import com.example.weather_crypto_app.network.services.CryptoService
 import com.example.weather_crypto_app.network.services.weather.WeatherService
-import com.example.weather_crypto_app.data.viewmodel.CryptoViewModel
+import com.example.weather_crypto_app.presentation.viewmodel.CryptoViewModel
 import com.example.weather_crypto_app.data.model.DbCrypto
-import com.example.weather_crypto_app.data.viewmodel.MapViewModel
+import com.example.weather_crypto_app.presentation.viewmodel.MapViewModel
 import com.example.weather_crypto_app.data.model.DbMenu
-import com.example.weather_crypto_app.data.viewmodel.MenuViewModel
-import com.example.weather_crypto_app.data.viewmodel.WeatherViewModel
+import com.example.weather_crypto_app.presentation.viewmodel.MenuViewModel
+import com.example.weather_crypto_app.presentation.viewmodel.WeatherViewModel
 import com.example.weather_crypto_app.data.model.city.PointCity
 import com.example.weather_crypto_app.presentation.model.MainMenuModel
 import com.example.weather_crypto_app.presentation.model.MainMenuModules

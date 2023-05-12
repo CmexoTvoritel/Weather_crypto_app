@@ -21,7 +21,7 @@ import com.example.weather_crypto_app.utils.CryptoDbUtils
 import com.example.weather_crypto_app.R
 import com.example.weather_crypto_app.utils.RequestsToApiUtils
 import com.example.weather_crypto_app.network.services.CryptoService
-import com.example.weather_crypto_app.data.viewmodel.CryptoViewModel
+import com.example.weather_crypto_app.presentation.viewmodel.CryptoViewModel
 import com.example.weather_crypto_app.data.model.DbCrypto
 import com.example.weather_crypto_app.presentation.model.CryptoAddModel
 import com.example.weather_crypto_app.network.model.crypto.CryptoRepItem

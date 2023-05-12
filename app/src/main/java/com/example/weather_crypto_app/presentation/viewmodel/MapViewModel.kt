@@ -1,4 +1,4 @@
-package com.example.weather_crypto_app.data.viewmodel
+package com.example.weather_crypto_app.presentation.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
